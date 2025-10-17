@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../public/android-chrome-512x512.png";
+import logo from "../../public/vite.svg";
 import SideItems from "./SideItems";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaUser, FaClipboardList } from "react-icons/fa";
