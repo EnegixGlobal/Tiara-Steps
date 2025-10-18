@@ -1,8 +1,8 @@
-import b1 from "../Images/b1.webp";
-import b2 from "../Images/b2.webp";
-import b3 from "../Images/b3.webp";
-import b4 from "../Images/b4.webp";
-import b5 from "../Images/b5.webp";
+import b1 from "../Images/tiara-steps-1.png";
+import b2 from "../Images/tiara-steps-2.png";
+import b3 from "../Images/tiara-steps-5.webp";
+import b4 from "../Images/tiara-steps-4.png";
+import b5 from "../Images/tiara-steps-3.png";
 
 const BannerSection = () => {
   return (

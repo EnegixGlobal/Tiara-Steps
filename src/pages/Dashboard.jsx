@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../styles/adminDashboard.css";
 import DashCard from "../components/DashCard";
 import {
   Chart as ChartJS,

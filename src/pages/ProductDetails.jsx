@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import "../styles/productDetails.css";
 import { useEffect, useState } from "react";
 import Axios from "../Axios";
 import { toast } from "react-toastify";

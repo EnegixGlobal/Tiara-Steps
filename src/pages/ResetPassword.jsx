@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import loginImage from "../Images/abc4.png";
-import "../styles/auth.css";
 import { useState } from "react";
 import Axios from "../Axios";
 import { toast } from "react-toastify";

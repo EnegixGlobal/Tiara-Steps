@@ -56,8 +56,7 @@ const App = () => {
   }, []);
   return (
     <BrowserRouter>
-      <Suspense fallback={null}>
-      {/* <Suspense fallback={<TriangleLoader height="100vh" />}> */}
+      <Suspense fallback={<TriangleLoader height="100vh" />}>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomeLayout />}>

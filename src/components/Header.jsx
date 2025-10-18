@@ -1,4 +1,3 @@
-import "../styles/contactpage.css";
 import PropTypes from "prop-types";
 
 const Header = (props) => {

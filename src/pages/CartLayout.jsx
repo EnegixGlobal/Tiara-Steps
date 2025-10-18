@@ -1,4 +1,3 @@
-import "../styles/cartlayout.css";
 import CartItems from "../components/CartItems";
 import { useCallback, useEffect, useState } from "react";
 import Axios from "../Axios";

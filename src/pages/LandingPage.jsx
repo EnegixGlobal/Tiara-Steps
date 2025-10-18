@@ -8,7 +8,6 @@ import Countdown from "../components/Countdown";
 import BannerSection from "../components/BannerSection";
 import FeaturedIcon from "../components/FeaturedIcon";
 import LandingBanner from "../components/LandingBanner";
-import "../styles/landingpage.css";
 import { useLocation } from "react-router-dom";
 import { LoadingContext } from "./HomeLayout";
 
@@ -25,63 +24,103 @@ const LandingPage = () => {
     }
   }, [location.state]);
 
+  // Scroll reveal on sections, images, and product cards
+  useEffect(() => {
+    const elements = document.querySelectorAll('.reveal-hidden');
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-show');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <LandingBanner />
 
-      <section id="trending" className="title">
+      <section id="trending" className="title reveal-hidden reveal-delay-1">
         <h1>Who You Are Shopping For?</h1>
       </section>
 
       <section className="shopping-gender">
-        <img src={oldwomen} alt="" />
-        <img src={women} alt="" />
-        <img src={kid} alt="" />
+        <img className="reveal-hidden reveal-delay-1" src={oldwomen} alt="" />
+        <img className="reveal-hidden reveal-delay-2" src={women} alt="" />
+        <img className="reveal-hidden reveal-delay-3" src={kid} alt="" />
       </section>
 
-      <section id="trending" className="title">
+      <section id="trending" className="title reveal-hidden reveal-delay-1">
         <h1>New Arrivals</h1>
         <h2>summer collection new modern design</h2>
       </section>
 
-      <Container />
+      <div className="reveal-hidden reveal-delay-2">
+        <Container />
+      </div>
 
       {data?.featured && data.featured.length > 0 && (
         <>
-          <section id="featuredProd" className="title">
+          <section id="featuredProd" className="title reveal-hidden reveal-delay-1">
             <h1>Featured Products</h1>
             <h2>The new modern design summer collection</h2>
           </section>
 
           <section className="Featured-products">
             <div className="product-container">
-              {data.featured.map((item) => {
-                return <Card key={item._id} {...item} />;
+              {data.featured.map((item, index) => {
+                const delayClass = `reveal-delay-${(index % 5) + 1}`;
+                return (
+                  <div key={item._id} className={`reveal-hidden ${delayClass}`}>
+                    <Card {...item} />
+                  </div>
+                );
               })}
             </div>
           </section>
         </>
       )}
 
-      <Countdown />
+      <div className="reveal-hidden reveal-delay-1">
+        <Countdown />
+      </div>
       <div ref={trendingRef} style={{ marginBottom: "15px" }}></div>
       {data?.trending && data.trending.length > 0 && (
         <>
-          <section className="title">
+          <section className="title reveal-hidden reveal-delay-1">
             <h1>Hot Deal On Sales</h1>
             <h2>The new modern design summer collection</h2>
           </section>
           <section className="Featured-products">
             <div className="product-container">
-              {data.trending.map((item) => {
-                return <Card key={item._id} {...item} />;
+              {data.trending.map((item, index) => {
+                const delayClass = `reveal-delay-${(index % 5) + 1}`;
+                return (
+                  <div key={item._id} className={`reveal-hidden ${delayClass}`}>
+                    <Card {...item} />
+                  </div>
+                );
               })}
             </div>
           </section>
         </>
       )}
-      <FeaturedIcon />
-      <BannerSection />
+      <div className="reveal-hidden reveal-delay-2">
+        <FeaturedIcon />
+      </div>
+      <div className="reveal-hidden reveal-delay-3">
+        <BannerSection />
+      </div>
     </>
   );
 };

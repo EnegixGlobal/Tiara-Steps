@@ -1,5 +1,4 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import "../styles/navbar.css";
 // import logo from "../assets/LOGO.svg";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
