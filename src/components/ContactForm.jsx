@@ -76,7 +76,7 @@ const ContactForm = () => {
           />
           <p>
             <span>Mustak Ansary</span>Software Engineer <br />
-            Mustak65@gmail.com
+            Mustak65ee@gmail.com
           </p>
         </div>
         <div>
@@ -86,7 +86,7 @@ const ContactForm = () => {
           />
           <p>
             <span>Mustak Ansary</span>Software Engineer <br />
-            Mustak65@gmail.com
+            Mustak65ee@gmail.com
           </p>
         </div>
         <div>
@@ -96,7 +96,7 @@ const ContactForm = () => {
           />
           <p>
             <span>Mustak Ansary</span>Software Engineer <br />
-            Mustak65@gmail.com
+            Mustak65ee@gmail.com
           </p>
         </div>
         <div>
@@ -106,7 +106,7 @@ const ContactForm = () => {
           />
           <p>
             <span>Mustak Ansary</span>Software Engineer <br />
-            Mustak65@gmail.com
+            Mustak65ee@gmail.com
           </p>
         </div>
       </div>

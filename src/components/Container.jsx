@@ -8,21 +8,21 @@ import React, { useState } from "react";
 const Container = () => {
   const [activeBox, setActiveBox] = useState(null);
 
-  // const boxes = [
-  //   { id: 1, image: image4, color: "#e6e2d9" },
-  //   { id: 2, image: image2, color: "#64aedd" },
-  //   { id: 3, image: image1, color: "#42a3c7" },
-  //   { id: 4, image: image2, color: "#295eb4" },
-  //   { id: 5, image: image3, color: "#08214a" },
-  // ];
-
   const boxes = [
-    { id: 1, image: image1, color: "#FFC5D3" }, // pastel pink
-    { id: 2, image: image2, color: "#FFB6A0" }, // peach coral
-    { id: 3, image: image3, color: "#C8A2C8" }, // lavender
-    { id: 4, image: image4, color: "#F7D794" }, // soft gold
-    { id: 5, image: image5, color: "#FF8DA1" }, // rose pink
+    { id: 1, image: image3, color: "#e6e2d9" },
+    { id: 2, image: image2, color: "#64aedd" },
+    { id: 3, image: image1, color: "#42a3c7" },
+    { id: 4, image: image4, color: "#295eb4" },
+    { id: 5, image: image5, color: "#08214a" },
   ];
+
+  // const boxes = [
+  //   { id: 1, image: image1, color: "#FFC5D3" }, // pastel pink
+  //   { id: 2, image: image2, color: "#FFB6A0" }, // peach coral
+  //   { id: 3, image: image3, color: "#C8A2C8" }, // lavender
+  //   { id: 4, image: image4, color: "#F7D794" }, // soft gold
+  //   { id: 5, image: image5, color: "#FF8DA1" }, // rose pink
+  // ];
 
 
   const handleMouseEnter = (id) => {
