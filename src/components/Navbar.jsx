@@ -1,5 +1,5 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
-// import logo from "../assets/LOGO.svg";
+import logo from "../Images/Tiara-logo2.png";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
 import { CgProfile, CgClose } from "react-icons/cg";
@@ -22,9 +22,13 @@ const Navbar = () => {
       >
         <FiMenu />
       </div>
-      <span className="logo">
-        <Link to="/">TIARASTEPS</Link>
-        {/* <img src={logo} alt="LOGO" /> */}
+      <span className="logo" style={{ marginTop: "5px", marginLeft: "10px" }}>
+        {/* <Link to="/">TIARASTEPS</Link> */}
+        <img
+          src={logo}
+          alt="LOGO"
+          style={{ width: "80px", height: "auto" }}
+        />
       </span>
       <div className={isOpen ? "nav-links-md" : "nav-links"}>
         <div
