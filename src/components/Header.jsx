@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import backgroundImage from "../Images/1.jpg";
 
 const Header = (props) => {
   const { text1, text2 } = props.combinedText;
@@ -6,7 +7,7 @@ const Header = (props) => {
     <div
       className="Header_title"
       style={{
-        backgroundImage: `url("/src/Images/1.jpg")`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
