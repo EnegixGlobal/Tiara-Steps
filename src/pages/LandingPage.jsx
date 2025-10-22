@@ -10,9 +10,14 @@ import FeaturedIcon from "../components/FeaturedIcon";
 import LandingBanner from "../components/LandingBanner";
 import { useLocation } from "react-router-dom";
 import { LoadingContext } from "./HomeLayout";
+import { datas } from "../../public/dummyData";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 const LandingPage = () => {
-  const { data, setData } = useContext(LoadingContext);
+  // const { data, setData } = useContext(LoadingContext);
   const trendingRef = useRef(null);
   const scrollToTop = () => {
     trendingRef.current.scrollIntoView({ behavior: "smooth" });
@@ -23,6 +28,35 @@ const LandingPage = () => {
       scrollToTop();
     }
   }, [location.state]);
+
+
+
+  const data = {
+    featured: datas.featured,
+    trending: datas.Products,
+  };
+  
+
+ const settings = {
+   dots: false,
+   infinite: true,
+   slidesToShow: 4,
+   slidesToScroll: 1,
+   autoplay: true,
+   autoplaySpeed: 0, // no delay
+   speed: 4000, // slow constant movement
+   cssEase: "linear", // constant smooth motion
+   arrows: false,
+   pauseOnHover: true,
+   responsive: [
+     { breakpoint: 1024, settings: { slidesToShow: 3 } },
+     { breakpoint: 600, settings: { slidesToShow: 1 } },
+   ],
+ };
+
+
+
+
 
   // Scroll reveal on sections, images, and product cards
   useEffect(() => {
@@ -71,7 +105,10 @@ const LandingPage = () => {
 
       {data?.featured && data.featured.length > 0 && (
         <>
-          <section id="featuredProd" className="title reveal-hidden reveal-delay-1">
+          <section
+            id="featuredProd"
+            className="title reveal-hidden reveal-delay-1"
+          >
             <h1>Featured Products</h1>
             <h2>The new modern design summer collection</h2>
           </section>
@@ -95,7 +132,7 @@ const LandingPage = () => {
         <Countdown />
       </div>
       <div ref={trendingRef} style={{ marginBottom: "15px" }}></div>
-      {data?.trending && data.trending.length > 0 && (
+      {/* {data?.trending && data.trending.length > 0 && (
         <>
           <section className="title reveal-hidden reveal-delay-1">
             <h1>Hot Deal On Sales</h1>
@@ -114,7 +151,25 @@ const LandingPage = () => {
             </div>
           </section>
         </>
+      )} */}
+      {data?.trending && data.trending.length > 0 && (
+        <>
+          <section className="title reveal-hidden reveal-delay-1">
+            <h1>Hot Deal On Sales</h1>
+            <h2>The new modern design summer collection</h2>
+          </section>
+          <section className="Featured-products">
+            <Slider {...settings}>
+              {data.trending.map((item) => (
+                <div key={item._id} className="reveal-hidden">
+                  <Card {...item} />
+                </div>
+              ))}
+            </Slider>
+          </section>
+        </>
       )}
+
       <div className="reveal-hidden reveal-delay-2">
         <FeaturedIcon />
       </div>

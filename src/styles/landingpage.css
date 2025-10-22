@@ -1119,13 +1119,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid #d9eadc;
 }
 
 .Featured-products img {
-  object-fit: contain;
+  /* object-fit: contain; */
+  object-fit: cover;
   width: inherit;
   aspect-ratio: 1;
-  padding: 15px 8px 0;
+  /* padding: 15px 8px 0; */
 }
 
 .desc {
@@ -1379,7 +1381,7 @@
   }
 
   .Featured-products .card-container {
-    width: 45%;
+    width: 99%;
   }
 
   
@@ -1579,7 +1581,7 @@
   }
 
   .Featured-products .card-container {
-    width: 47%;
+    width: 99%;
   }
 
   .main-img {

@@ -6,6 +6,7 @@ import Axios from "../Axios";
 import Pagination from "./Pagination";
 import FilterModal from "../components/FilterModal";
 import TriangleLoader from "../components/TriangleLoader";
+import { datas } from "../../public/dummyData";
 
 const Product = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,23 +29,35 @@ const Product = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Axios.get("/product/filter", {
-          params: {
-            ...filters,
-            search: debouncedValue,
-            page: currentPage,
-            limit: 12,
-          },
-        });
-        setProducts(response.data.products);
-        setTotalPages(Math.ceil(response.data.count / 12));
+        // const response = await Axios.get("/product/filter", {
+        //   params: {
+        //     ...filters,
+        //     search: debouncedValue,
+        //     page: currentPage,
+        //     limit: 12,
+        //   },
+        // });
+        // setProducts(response.data.products);
+        // setTotalPages(Math.ceil(response.data.count / 12));
+        // setOptions({
+        //   colors: response.data.colorOptions,
+        //   brands: response.data.brandOptions,
+        //   category: response.data.categoryOptions,
+        // });
+        // setLoading(false);
+        // console.log(response.data);
+
+        setProducts(datas.Products);
+        setTotalPages(Math.ceil(datas.count / 12));
         setOptions({
-          colors: response.data.colorOptions,
-          brands: response.data.brandOptions,
-          category: response.data.categoryOptions,
+          colors: datas.colorOptions,
+          brands: datas.brandOptions,
+          category: datas.categoryOptions,
         });
         setLoading(false);
-        console.log(response.data);
+        console.log(datas);
+
+
       } catch (error) {
         console.log(error);
       }

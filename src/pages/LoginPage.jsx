@@ -72,7 +72,7 @@ const ForgetPasswordModal = ({ onClose }) => {
               <button
                 className="login-button"
                 style={{ width: "100%", margin: "0" }}
-                type="submit" 
+                type="submit"
               >
                 Rest Password
               </button>

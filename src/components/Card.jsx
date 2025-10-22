@@ -41,7 +41,7 @@ const Card = (data) => {
       )}
       <Link to={`/product/${data.slug}`} style={{ textDecoration: "none" }}>
         <div className="image-div">
-          <img src={data.image} alt="image" height="240px" loading="lazy" />
+          <img src={data.image} alt="image"  height="240px" loading="lazy" />
         </div>
       </Link>
       <div className="desc">
