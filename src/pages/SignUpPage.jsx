@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import loginImage from "../Images/abc4.png";
+import loginImage from "../Images/adcffc.png";
+import bgImage from "../Images/diwali.jpg";
 import "../styles/auth.css";
 import { useState } from "react";
 import Axios from "../Axios";
@@ -36,7 +37,14 @@ const SignUpPage = () => {
   };
   return (
     <div className="login-page">
-      <div className="login-div div1">
+      <div
+        className="login-div div1"
+        style={{
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="login-box">
           <h1 className="login-heading">Sign up</h1>
           <h2 className="login-subheading">
@@ -44,7 +52,7 @@ const SignUpPage = () => {
             <Link
               style={{
                 textDecoration: "none",
-                color: "#6286A0",
+                color: "#d3a15f",
                 pointerEvents: "cursor",
               }}
               to="/login"

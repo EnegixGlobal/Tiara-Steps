@@ -15,6 +15,8 @@ import ProtectedRoute from "./utils/protectedRoute";
 import AdminRoute from "./utils/adminRoute";
 import TriangleLoader from "./components/TriangleLoader";
 import ResetPassword from "./pages/ResetPassword";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 
 const AdminLayout = lazy(() => import("./pages/AdminLayout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -23,7 +25,7 @@ const App = () => {
   const { setAuth } = useAuth();
   const ScrollToTop = () => {
     const { pathname } = useLocation();
-    console.log("ScrollToTop");
+    // console.log("ScrollToTop");
     useEffect(() => {
       window.scrollTo(0, 0);
     }, [pathname]);
@@ -85,9 +87,10 @@ const App = () => {
             }
           >
             <Route index element={<Dashboard />} />
-        
           </Route>
-         
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

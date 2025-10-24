@@ -2,7 +2,7 @@ import { memo } from "react";
 import { FaStar, FaUserCircle } from "react-icons/fa";
 import Star from "./Star";
 const RatingCard = ({ data }) => {
-  // console.log(data);
+  console.log(data);
   const date = new Date(data.date);
   const formattedDate = date.toLocaleString("en-US", {
     day: "numeric",

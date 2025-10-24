@@ -75,7 +75,38 @@ export const datas = {
         "https://image.made-in-china.com/2f0j00YfSbwVOykmrG/2024-Three-Colors-Luxury-Fashion-Women-Girls-Shoes-Sandals-Elegant-Comfort-Lady-Woman-Shoe-Sandal-Summer-Footwear.webp",
       price: 8499,
       ratingScore: 18,
-      ratings: [5, 4, 5, 4],
+      ratings: [
+        {
+          name: "Daulat Khan",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Gaurav Raj",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Manoj Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Roza Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Anuj Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "7", quantity: 3 },
         { size: "8", quantity: 5 },
@@ -90,7 +121,38 @@ export const datas = {
       image: "https://kxadmin.metroshoes.com/product/57-65/550/57-65LA24.jpg",
       price: 10999,
       ratingScore: 25,
-      ratings: [5, 5, 5, 5, 5],
+      ratings: [
+        {
+          name: "Raj choudhary",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Pawan Raj",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Dilip Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Farah Khan",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Badal Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "6", quantity: 4 },
         { size: "7", quantity: 0 },
@@ -106,7 +168,38 @@ export const datas = {
         "https://images.unsplash.com/photo-1534653299134-96a171b61581?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjBmb290d2VhcnxlbnwwfHwwfHx8MA%3D%3D&fm=jpg&q=60&w=3000",
       price: 5999,
       ratingScore: 12,
-      ratings: [4, 3, 5],
+      ratings: [
+        {
+          name: "Muskan choudhary",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Udit Raj",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Sonal Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Muskan Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Riya Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "7", quantity: 10 },
         { size: "8", quantity: 0 },
@@ -122,7 +215,38 @@ export const datas = {
         "https://atlas-content-cdn.pixelsquid.com/stock-images/women-shoes-high-heels-Q99d4q1-600.jpg",
       price: 3999,
       ratingScore: 11,
-      ratings: [4, 3, 5],
+      ratings: [
+        {
+          name: "Rajesh Talwar",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Amit Aryan",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Raja Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Anuja Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Muskan Kundu",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "7", quantity: 10 },
         { size: "8", quantity: 0 },
@@ -138,7 +262,38 @@ export const datas = {
       image: "https://www.nkinternationals.com/uploads/img/leather.webp",
       price: 2999,
       ratingScore: 20,
-      ratings: [4, 5, 4, 4, 3],
+      ratings: [
+        {
+          name: "Ankit choudhary",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Aryan Raj",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Raja Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Puja Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Muskan Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "5", quantity: 15 },
         { size: "6", quantity: 10 },
@@ -154,7 +309,38 @@ export const datas = {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHnZAoH5ku9XvHNEtKC-GQsCErQbrn3WQ69g&s",
       price: 6999,
       ratingScore: 22,
-      ratings: [5, 4, 5, 4, 4, 4],
+      ratings: [
+        {
+          name: "Sunil Patel",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Shona Sharma",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Mohit Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Reha Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Sumit Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "6", quantity: 5 },
         { size: "7", quantity: 4 },
@@ -170,7 +356,38 @@ export const datas = {
         "https://rukminim2.flixcart.com/image/704/844/krjjde80/sandal/q/x/n/6-bb0020gold-38-b-b-ladies-footwear-gold-original-imag5b3wb3nudqty.jpeg?q=90&crop=false",
       price: 5499,
       ratingScore: 18,
-      ratings: [4, 4, 5, 5, 3, 2],
+      ratings: [
+        {
+          name: "Rakesh Jain",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Mona Das",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Rohit Kumar",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Neha Singh",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Amit Gope",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
+      ],
       sizeQuantity: [
         { size: "5", quantity: 8 },
         { size: "6", quantity: 6 },
@@ -186,11 +403,42 @@ export const datas = {
         "https://5.imimg.com/data5/SELLER/Default/2024/5/419842556/AI/OA/RU/107398964/fancy-women-footwear-500x500.jpeg",
       price: 7999,
       ratingScore: 24,
-      ratings: [5, 5, 5, 4, 5],
       sizeQuantity: [
         { size: "6", quantity: 3 },
         { size: "7", quantity: 7 },
         { size: "8", quantity: 4 },
+      ],
+      ratings: [
+        {
+          name: "Ankit Kar",
+          rating: 5,
+          review: "Amazing quality! Loved the comfort and finish.",
+          date: "2025-10-23T14:30:00Z",
+        },
+        {
+          name: "Mona Sharma",
+          rating: 4,
+          review: "Looks classy, but size runs a bit small.",
+          date: "2025-10-22T10:15:00Z",
+        },
+        {
+          name: "Rohit Verma",
+          rating: 5,
+          review: "Perfect for party wear, totally worth the price!",
+          date: "2025-10-20T09:00:00Z",
+        },
+        {
+          name: "Neha Patel",
+          rating: 5,
+          review: "Excellent color and comfort level.",
+          date: "2025-10-18T17:45:00Z",
+        },
+        {
+          name: "Amit Roy",
+          rating: 5,
+          review: "Very durable, highly recommended!",
+          date: "2025-10-17T12:30:00Z",
+        },
       ],
     },
   ],

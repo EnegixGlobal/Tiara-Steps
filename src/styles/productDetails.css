@@ -18,7 +18,7 @@
   transform: scale(1.2);
 }
 .prod-image img {
-  object-fit: contain;
+  object-fit: cover;
   margin-bottom: 0%;
   height: 550px;
   width: 100%;
@@ -36,7 +36,7 @@
   border-radius: 6px;
   height: 200px;
   overflow: hidden;
-  object-fit: contain;
+  object-fit: cover;
 }
 .prod-details-cont {
   font-family: "Inter", sans-serif;
@@ -178,7 +178,7 @@
   flex-direction: row;
   gap: 3px;
 }
-.pStar{
+.pStar {
   color: #fbbf24;
   font-size: 1.5rem;
   display: flex;
@@ -186,7 +186,7 @@
   gap: 0.2rem;
   margin-top: -1rem;
 }
-.outOfStock{
+.outOfStock {
   color: #ff0000;
   font-size: 1.5rem;
   display: flex;
@@ -194,6 +194,54 @@
   gap: 0.2rem;
   margin-top: -1rem;
 }
+
+.coupon-pro {
+  background-color: #ffefc5;
+  color: #a1480c;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid #f0b27a;
+  transition: all 0.2s ease;
+}
+.coupon-pro:hover {
+  transform: scale(0.95);
+}
+
+.size-select {
+  color: #111827;
+  font-size: 12px; 
+  border-radius: 3px;
+  padding: 10px; /* p-2.5 */
+  width: 20%;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.size-select:focus {
+  border-color: #3b82f6; /* focus:border-blue-500 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* focus:ring-blue-500 */
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .size-select {
+    background-color: #54bab9; /* dark:bg-gray-700 */
+    border-color: #4b5563; /* dark:border-gray-600 */
+    color: #fff; /* dark:text-white */
+  }
+  .size-select::placeholder {
+    color: #9ca3af; /* dark:placeholder-gray-400 */
+  }
+  .size-select:focus {
+    border-color: #72a1ec;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  }
+}
+
+
+
 @media only screen and (max-width: 850px) {
   .product-bg {
     flex-direction: column;

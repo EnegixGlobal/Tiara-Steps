@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import loginImage from "../Images/abc4.png";
+import loginImage from "../Images/pnghe.png";
+import bgImage from "../Images/diwali.jpg";
 import "../styles/auth.css";
 import { useRef, useState } from "react";
 import Axios from "../Axios";
@@ -123,7 +124,11 @@ const LoginPage = () => {
   };
   return (
     <div className="login-page">
-      <div className="login-div div1">
+      <div className="login-div div1" style={{
+                backgroundImage: `url(${bgImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}>
         <div className="login-box">
           <h1 className="login-heading">Log in to your account</h1>
           <h2 className="login-subheading">

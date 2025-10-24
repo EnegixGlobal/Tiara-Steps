@@ -6,6 +6,8 @@ import TriangleLoader from "../components/TriangleLoader";
 import useAuth from "../../hooks/useAuth";
 import Star from "../components/Star";
 import RatingContainer from "../components/RatingContainer";
+import { datas } from "../../public/dummyData";
+
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -14,22 +16,34 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
+  // useEffect(() => {
+  //   const fetchProduct = async () => {
+  //     try {
+  //       const response = await Axios.get(`/product/${slug}`);
+  //       setData(response.data.data);
+  //       console.log(response.data.data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       toast.error(error?.response?.data?.message || "Something went wrong", {
+  //         position: "bottom-right",
+  //       });
+  //       navigate("/404");
+  //     }
+  //   };
+  //   fetchProduct();
+  // }, []);
+
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await Axios.get(`/product/${slug}`);
-        setData(response.data.data);
-        console.log(response.data.data);
-        setLoading(false);
-      } catch (error) {
-        toast.error(error?.response?.data?.message || "Something went wrong", {
-          position: "bottom-right",
-        });
-        navigate("/404");
-      }
-    };
-    fetchProduct();
-  }, []);
+    const product = datas.Products.find((p) => p.slug === slug);
+    console.log("🔍 Fetched product :", product);
+    if (product) {
+      setData(product);
+      setLoading(false);
+    } else {
+      console.log("❌ No product found for slug:", slug);
+    }
+  }, [slug]);
+
 
   const handleAddToCart = async () => {
     try {
@@ -66,6 +80,14 @@ const ProductDetails = () => {
       console.log(error);
     }
   };
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText("MUSTAKTIGER420");
+    toast.success("Coupon code copied!");
+  };
+
+
+
   if (loading) return <TriangleLoader height="500px" />;
   return (
     <section className="product-bg">
@@ -87,9 +109,27 @@ const ProductDetails = () => {
         <div className="pStar">
           <Star rating={data.ratingScore / data.ratings.length || 0} />
         </div>
+        {/* <select
+          name="size"
+          id="size"
+          value={size}
+          disabled={data.sizeQuantity.length === 0}
+          onChange={(e) => setSize(e.target.value)}
+        >
+          <option value="">Select Size</option>
+          {data.sizeQuantity &&
+            data.sizeQuantity
+              .filter((data) => data.quantity > 0)
+              .map((data) => (
+                <option key={data.size} value={data.size}>
+                  {data.size}
+                </option>
+              ))}
+        </select> */}
         <select
           name="size"
           id="size"
+          className="size-select"
           value={size}
           disabled={data.sizeQuantity.length === 0}
           onChange={(e) => setSize(e.target.value)}
@@ -184,8 +224,19 @@ const ProductDetails = () => {
         </div>
         <h3 className="pDescTitle">Offers</h3>
         <ul type="none">
-          <li>Use &apos;SUMILSUTHAR197&apos; to avail flat 20% Off</li>
+          <li>
+            Use{" "}
+            <span
+              onClick={handleCopyCode}
+              className="coupon-pro"
+              title="Click to copy"
+            >
+              HAPPYDIWALI420
+            </span>{" "}
+            to avail flat 20% Off
+          </li>
         </ul>
+
         <RatingContainer ratings={data.ratings} />
       </div>
     </section>

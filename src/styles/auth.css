@@ -68,11 +68,11 @@
   border: 0;
   font-weight: 500;
   color: #ffffff;
-  background-color: #7a9cb8;
+  background-color: #d8b98f;
   cursor: pointer;
 }
 .login-button:hover {
-  background-color: #6286a0;
+  background-color: #d3a15f;
 }
 .forget-button button {
   border: none;
@@ -89,7 +89,7 @@
 }
 .signup-link {
   text-decoration: none;
-  color: #6286a0;
+  color: #d3a15f;
 }
 .reset-pass-btn {
   display: flex;
