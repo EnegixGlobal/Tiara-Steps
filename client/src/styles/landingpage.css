@@ -1592,3 +1592,35 @@
   }
   
 }
+
+
+.shopping-gender {
+  display: flex;
+  flex-wrap: wrap; /* allow wrapping for mobile */
+  justify-content: center;
+  align-items: center;
+  gap: 16px; /* space between images */
+  padding: 1rem;
+}
+
+.shopping-gender img {
+  flex: 1 1 calc(25% - 12px); /* 4 per row (100/4 = 25%) */
+  max-width: calc(25% - 12px);
+  height: 320px; /* tall images */
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.shopping-gender img:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ Mobile view (max width 768px = tablets & phones) */
+@media (max-width: 768px) {
+  .shopping-gender img {
+    flex: 1 1 calc(50% - 12px); /* 2 per row */
+    max-width: calc(50% - 12px);
+    height: 280px; /* slightly shorter for small screens */
+  }
+}

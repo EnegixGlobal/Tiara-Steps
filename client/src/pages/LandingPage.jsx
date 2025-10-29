@@ -1,7 +1,8 @@
 import { useEffect, useRef, useContext } from "react";
-import kid from "../Images/kid.png";
-import oldwomen from "../Images/oldwomen.png";
-import women from "../Images/women.webp";
+import image1 from "../Images/office-wear.png";
+import image2 from "../Images/holiday-wear.png";
+import image3 from "../Images/casual-wear.png";
+import image4 from "../Images/party-wear.png";
 import Card from "../components/Card";
 import Container from "../components/Container";
 import Countdown from "../components/Countdown";
@@ -89,9 +90,10 @@ const LandingPage = () => {
       </section>
 
       <section className="shopping-gender">
-        <img className="reveal-hidden reveal-delay-1" src={oldwomen} alt="" />
-        <img className="reveal-hidden reveal-delay-2" src={women} alt="" />
-        <img className="reveal-hidden reveal-delay-3" src={kid} alt="" />
+        <img className="reveal-hidden reveal-delay-1" src={image1} alt="" />
+        <img className="reveal-hidden reveal-delay-2" src={image2} alt="" />
+        <img className="reveal-hidden reveal-delay-3" src={image3} alt="" />
+        <img className="reveal-hidden reveal-delay-4" src={image4} alt="" />
       </section>
 
       <section id="trending" className="title reveal-hidden reveal-delay-1">
