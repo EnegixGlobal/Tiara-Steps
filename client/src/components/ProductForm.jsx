@@ -49,7 +49,7 @@ const ProductForm = ({
         formData.append("folder", "image");
 
         const cloudinaryResponse = await axios.post(
-          "https://api.cloudinary.com/v1_1/dwdedlyac/image/upload",
+          "https://api.cloudinary.com/v1_1/dnwcwqhue/image/upload",
           formData,
           {
             headers: {
