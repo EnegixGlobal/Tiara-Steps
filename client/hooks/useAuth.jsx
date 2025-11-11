@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthProvider";
+import useAuthStore from "../src/store/authStore";
 
 const useAuth = () => {
-  return useContext(AuthContext);
+  const { auth, setAuth, admin, setAdmin, clearAuth, clearAdmin } = useAuthStore();
+  return { auth, setAuth, admin, setAdmin, clearAuth, clearAdmin };
 };
 
 export default useAuth;

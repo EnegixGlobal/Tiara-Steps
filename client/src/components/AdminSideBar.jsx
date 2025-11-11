@@ -18,24 +18,24 @@ const AdminSideBar = ({ toggleOpen }) => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="sideBarLogoMain">
-        <div className="sideBarLogo">
-          <img src={logo} alt="logo" />
-          <div>
-            <div className="sideBrandName">TIARASTEPS</div>
+      <div className="flex justify-between py-2.5 px-2.5">
+        <div className="flex flex-row items-center gap-2">
+          <img src={logo} alt="logo" className="w-[2.6rem] aspect-square" />
+          <div className="flex flex-col gap-0">
+            <div className="text-base font-bold text-[#1a1a1a] no-underline italic">TIARASTEPS</div>
             <Link
               to="/"
-              className="sideBrandLink text-sm underline text-[#ccc] hover:text-white"
+              className="text-[#ccc] text-[13px] -mt-1 underline hover:text-white"
             >
               Visit store
             </Link>
           </div>
         </div>
-        <div onClick={() => toggleOpen()} className="sidebarCloseBtn">
+        <div onClick={() => toggleOpen()} className="hidden max-[1024px]:flex max-[1024px]:justify-center max-[1024px]:items-center">
           <MdMenuOpen size={28} />
         </div>
       </div>
-      <ul className="sideItemList p-2 list-none flex-1">
+      <ul className="flex-1 list-none p-2">
         <SideItems iconName={<FaHome size={20} />} text="Home" to="/admin" />
         <SideItems
           iconName={<FaUser size={17} />}
@@ -77,12 +77,12 @@ const AdminSideBar = ({ toggleOpen }) => {
             localStorage.removeItem("jwtAdmin");
             navigate("/adminlogin");
           }}
-          className="sideItemLink hover:cursor-pointer hover:bg-[#ffffff0d] flex items-center gap-3 px-4 py-2 rounded-md mb-1 text-[14px]"
+          className="cursor-pointer flex justify-items-start items-center gap-3 py-2 px-4 text-[#1a1a1a] text-sm font-medium rounded-md mb-1 transition-[background-color,color] duration-200 ease-in-out hover:text-[#54bab9] hover:bg-white/5"
         >
-          <div className="sideItemIcon">
+          <div className="flex">
             <MdOutlineLogout size={20} />
           </div>
-          <div className="sideItemName">Logout</div>
+          <div className="text-[15px] flex justify-center items-center">Logout</div>
         </li>
       </ul>
     </>

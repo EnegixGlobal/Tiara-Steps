@@ -34,19 +34,31 @@ const Container = () => {
   };
 
   return (
-    <section className="New-Arrival">
-      <div className="box1">
+    <section className="py-[1%] px-[5%]">
+      <div className="flex h-[680px] w-full bg-[#08214a] mb-2.5 max-[1000px]:h-[380px] max-[700px]:h-[280px] max-[415px]:h-[190px]">
         {boxes.map((box) => (
           <div
             key={box.id}
-            className={`box1-container${box.id} ${
-              activeBox === box.id ? "slide-max" : ""
-            } ${activeBox !== null && activeBox !== box.id ? "slide-min" : ""}`}
+            className={`relative h-full flex justify-center items-center transition-all duration-[700ms] ease-in-out ${
+              activeBox === box.id 
+                ? "w-[50%] max-[1000px]:w-[34%] max-[700px]:w-[40%]" 
+                : activeBox !== null && activeBox !== box.id
+                ? "w-[12.5%] transition-duration-[1.5s] max-[1000px]:w-[16.5%]"
+                : "w-[20%]"
+            }`}
             onMouseEnter={() => handleMouseEnter(box.id)}
             onMouseLeave={handleMouseLeave}
             style={{ backgroundColor: box.color }}
           >
-            <img src={box.image} alt="" />
+            <img 
+              src={box.image} 
+              alt="" 
+              className={`transition-all duration-[700ms] ease-in-out ${
+                activeBox === box.id 
+                  ? "w-[600px] z-[1] max-[1000px]:w-full" 
+                  : "w-[280px] max-[1000px]:w-full"
+              }`}
+            />
           </div>
         ))}
       </div>

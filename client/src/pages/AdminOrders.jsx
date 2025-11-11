@@ -1,4 +1,3 @@
-import "../styles/order.css";
 import { useEffect, useState } from "react";
 import TriangleLoader from "../components/TriangleLoader";
 import EmptyImage from "../Images/empty-cart.png";
@@ -74,76 +73,55 @@ const AdminOrders = () => {
 
   if (loading) return <TriangleLoader height="500px" />;
   return (
-    <div className="orderMainContainer">
-      <h1 className="cHeader" style={{ textAlign: "left" }}>
+    <div className="font-sans my-[2%] mx-[3%] mb-[4%]">
+      <h1 className="text-2xl leading-8 font-semibold text-left">
         Orders List
       </h1>
-      <div className="orderContainer" style={{ flexDirection: "column" }}>
-        <table className="order-table">
+      <div className="flex flex-col my-4 w-full overflow-x-scroll">
+        <table className="min-w-full leading-normal">
           <thead>
             <tr>
-              <th
-                className="order-subheader order-th"
-                style={{ textAlign: "left" }}
-              >
-                Product Details
-              </th>
-              <th className="order-subheader order-th ">Customer</th>
-              <th className="order-subheader order-th ">Order Date</th>
-              <th className="order-subheader order-th ">Status</th>
-              <th className="order-subheader order-th ">Total Price</th>
-              <th className="order-subheader order-th ">Action</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center text-left">Product Details</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Customer</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Order Date</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Status</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Total Price</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Action</th>
             </tr>
           </thead>
-          <tbody className="order-table-tbody">
+          <tbody>
             {data.map((item, index) => (
               <tr key={index}>
-                <td className="order-td">
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   {item.products.map((product) => (
-                    <div key={product._id} className="order-td-div">
-                      <div className="cart-product-cont">
-                        <div className="cart-image-cont">
+                    <div key={product._id} className="flex justify-between py-3 px-4 items-center">
+                      <div className="flex items-center">
+                        <div className="w-16 h-16 flex-shrink-0">
                           <img
                             src={product.image}
                             alt="product"
-                            className="cart-image"
+                            className="object-contain w-full h-full rounded-[15%] bg-gray-100"
                           />
                         </div>
-                        <div className="cart-product-details">
-                          <p
-                            className="cart-name-cont"
-                            style={{
-                              width: "13rem",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
-                          >
+                        <div className="ml-3 text-left">
+                          <p className="text-base ml-3 w-[13rem] whitespace-nowrap overflow-hidden text-ellipsis">
                             {product.name}
                           </p>
-                          <p className="cart-desc-cont">{product.desc}</p>
+                          <p className="text-sm ml-3">{product.desc}</p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </td>
-                <td className="order-td">{item.user}</td>
-                <td className="order-td">{item.createdAt}</td>
-                <td className="order-td">{item.delivered}</td>
-                <td className="order-td">₹{item.total}</td>
-                <td className="order-td">
-                  <div
-                    className="order-btn-cont"
-                    style={{ flexDirection: "column" }}
-                  >
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.user}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.createdAt}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.delivered}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">₹{item.total}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <div className="flex justify-center items-center flex-col">
                     <button
-                      className="cart-delete-btn"
+                      className="w-24 py-2.5 mx-1.5 mb-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={item.delivered !== "pending"}
-                      style={
-                        item.delivered !== "pending"
-                          ? { cursor: "not-allowed", opacity: "0.5" }
-                          : {}
-                      }
                       onClick={() =>
                         updateOrderStatus(item._id, "Delivered", item.paymentId)
                       }
@@ -151,13 +129,8 @@ const AdminOrders = () => {
                       Delivered
                     </button>
                     <button
-                      className="cart-delete-btn"
+                      className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={item.delivered !== "pending"}
-                      style={
-                        item.delivered !== "pending"
-                          ? { cursor: "not-allowed", opacity: "0.5" }
-                          : {}
-                      }
                       onClick={() =>
                         updateOrderStatus(item._id, "Cancelled", item.paymentId)
                       }
@@ -171,9 +144,9 @@ const AdminOrders = () => {
           </tbody>
         </table>
         {(!data || data.length <= 0) && (
-          <div className="empty-cart">
-            <img src={EmptyImage} alt="empty-cart" />
-            <p>No orders have been placed yet.</p>
+          <div className="flex justify-center items-center min-w-full flex-col gap-0">
+            <img src={EmptyImage} alt="empty-cart" className="w-full max-w-[500px] h-auto my-4" />
+            <p className="text-xl font-semibold text-gray-900 -mt-8 mb-8 text-center">No orders have been placed yet.</p>
           </div>
         )}
       </div>

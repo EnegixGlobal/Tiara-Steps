@@ -54,9 +54,9 @@ const CustomerList = () => {
   ];
   if (loading) return <TriangleLoader height="500px" />;
   return (
-    <div className="dashboardMain">
-      <h1>Customers</h1>
-      <div className="dashOverview" style={{ overflow: "auto" }}>
+    <div className="py-4 px-8 max-h-full max-[600px]:py-5 max-[600px]:px-4">
+      <h1 className="text-2xl font-bold text-[#1a1a1a] mb-3">Customers</h1>
+      <div className="flex flex-row gap-4 overflow-auto max-[600px]:flex-col">
         <CustomerTable columns={columns} data={data} />
       </div>
     </div>

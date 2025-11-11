@@ -21,25 +21,24 @@ const CustomerTable = ({ columns, data, handleChange }) => {
   const endPage = Math.min(pageOptions.length, startPage + 4);
 
   return (
-    <div className="reactTableMain">
-      <div style={{ overflow: "auto" }}>
-        <table className="reactTable" {...getTableProps()}>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="overflow-auto">
+        <table className="w-full border-collapse text-base leading-normal" {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup, index) => (
               <tr
-                className="reactTableTr"
+                className="flex justify-between items-center border-b-2 border-gray-100 min-w-max w-full bg-gray-100"
                 key={index}
-                style={{ backgroundColor: "#f3f4f6" }}
                 {...headerGroup.getHeaderGroupProps()}
               >
                 {headerGroup.headers.map((column, columnIndex) => (
                   <th
-                    className="reactTableTh"
+                    className="py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-left flex justify-start items-center min-w-[12rem] w-full"
                     key={columnIndex}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
                     {column.render("Header")}
-                    <span className="reactTableSorted">
+                    <span className="py-1 px-3 flex w-max">
                       {column.isSorted ? (
                         column.isSortedDesc ? (
                           <FaCaretDown size={12} />
@@ -63,18 +62,13 @@ const CustomerTable = ({ columns, data, handleChange }) => {
                   onClick={() => {
                     handleChange(row.original);
                   }}
-                  className="reactTableTr"
+                  className="flex justify-between items-center border-b-2 border-gray-100 min-w-max w-full cursor-pointer hover:bg-gray-50"
                   key={index}
                   {...row.getRowProps()}
                 >
                   {row.cells.map((cell, cellIndex) => (
                     <td
-                      style={{
-                        whiteSpace: "nowrap",
-                        width: "100%",
-                        textAlign: "center",
-                      }}
-                      className="reactTableTd"
+                      className="py-3 px-5 text-sm text-left min-w-fit w-full border-none flex whitespace-nowrap text-center"
                       key={cellIndex}
                       {...cell.getCellProps()}
                     >
@@ -88,7 +82,7 @@ const CustomerTable = ({ columns, data, handleChange }) => {
         </table>
       </div>
       {data.length === 0 ? (
-        <div className="no-data-message">
+        <div className="text-center mt-3 text-[#1a1a1a] opacity-70 text-base font-bold">
           Unfortunately, we couldn't find any data that matches your criteria.
         </div>
       ) : (

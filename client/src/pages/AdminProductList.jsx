@@ -1,4 +1,3 @@
-import "../styles/order.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TriangleLoader from "../components/TriangleLoader";
@@ -83,80 +82,67 @@ const AdminProductList = () => {
 
   if (loading) return <TriangleLoader height="500px" />;
   return (
-    <div className="orderMainContainer">
-      <h1 className="cHeader" style={{ textAlign: "left" }}>
+    <div className="font-sans my-[2%] mx-[3%] mb-[4%]">
+      <h1 className="text-2xl leading-8 font-semibold text-left">
         Product List
       </h1>
-      <div className="searchBar adminSearchBar">
-        <div className="searchForm">
+      <div className="w-full flex gap-2 mb-4">
+        <div className="w-[43%] relative font-sans">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="What shoes are you looking for ?"
+            className="w-full h-9 pl-8 text-base outline-none border-2 border-gray-300 text-gray-600"
           />
-          <div>
+          <div className="absolute z-[99] top-[18%] left-1.5 text-xl font-semibold flex bg-white text-gray-600">
             <FiSearch />
           </div>
         </div>
         <button
-          style={{ margin: "0" }}
+          className="m-0 text-lg font-semibold border-none text-white bg-red-600 outline-none cursor-pointer py-1.5 px-5 h-9"
           onClick={() => navigate("/admin/product/add")}
-          className="open-modal cart-delete-btn"
           type="button"
         >
           Add Product
         </button>
       </div>
-      <div className="orderContainer" style={{ flexDirection: "column" }}>
-        <table className="order-table">
+      <div className="flex flex-col my-4 w-full overflow-x-scroll">
+        <table className="min-w-full leading-normal">
           <thead>
             <tr>
-              <th
-                className="order-subheader order-th"
-                style={{ textAlign: "left" }}
-              >
-                Product Details
-              </th>
-              <th className="order-subheader order-th ">Brand</th>
-              <th className="order-subheader order-th ">Size(UK)</th>
-              <th className="order-subheader order-th ">Status</th>
-              <th className="order-subheader order-th ">Price</th>
-              <th className="order-subheader order-th ">Action</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center text-left">Product Details</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Brand</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Size(UK)</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Status</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Price</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Action</th>
             </tr>
           </thead>
-          <tbody className="order-table-tbody">
+          <tbody>
             {data.map((item, index) => (
               <tr key={index}>
-                <td className="order-td">
-                  <div key={item._id} className="order-td-div">
-                    <div className="cart-product-cont">
-                      <div className="cart-image-cont">
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <div key={item._id} className="flex justify-between py-3 px-4 items-center">
+                    <div className="flex items-center">
+                      <div className="w-16 h-16 flex-shrink-0">
                         <img
                           src={item.image}
                           alt="product"
-                          className="cart-image"
+                          className="object-contain w-full h-full rounded-[15%] bg-gray-100"
                         />
                       </div>
-                      <div className="cart-product-details">
-                        <p
-                          className="cart-name-cont"
-                          style={{
-                            width: "13rem",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
+                      <div className="ml-3 text-left">
+                        <p className="text-base ml-3 w-[13rem] whitespace-nowrap overflow-hidden text-ellipsis">
                           {item.name}
                         </p>
-                        <p className="cart-desc-cont">{item.desc}</p>
+                        <p className="text-sm ml-3">{item.desc}</p>
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="order-td">{item.brand}</td>
-                <td className="order-td">
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.brand}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   {item.size.split(", ").map((s, i) => (
                     <div key={i}>
                       {s}
@@ -164,15 +150,12 @@ const AdminProductList = () => {
                     </div>
                   ))}
                 </td>
-                <td className="order-td">{item.status}</td>
-                <td className="order-td">₹{item.price}</td>
-                <td className="order-td">
-                  <div
-                    className="order-btn-cont"
-                    style={{ flexDirection: "column" }}
-                  >
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.status}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">₹{item.price}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <div className="flex justify-center items-center flex-col">
                     <button
-                      className="cart-delete-btn"
+                      className="w-24 py-2.5 mx-1.5 mb-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e]"
                       onClick={() =>
                         navigate(`/admin/product/update/${item.slug}`)
                       }
@@ -180,7 +163,7 @@ const AdminProductList = () => {
                       Edit
                     </button>
                     <button
-                      className="cart-delete-btn"
+                      className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e]"
                       onClick={() =>
                         updateProductStatus(
                           item._id,
@@ -197,9 +180,9 @@ const AdminProductList = () => {
           </tbody>
         </table>
         {(!data || data.length <= 0) && (
-          <div className="empty-cart">
-            <img src={EmptyImage} alt="empty-cart" />
-            <p>No products have been added yet. Start adding some!</p>
+          <div className="flex justify-center items-center min-w-full flex-col gap-0">
+            <img src={EmptyImage} alt="empty-cart" className="w-full max-w-[500px] h-auto my-4" />
+            <p className="text-xl font-semibold text-gray-900 -mt-8 mb-8 text-center">No products have been added yet. Start adding some!</p>
           </div>
         )}
       </div>

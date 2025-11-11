@@ -23,14 +23,14 @@ const features = [
 
 const FeaturedIcon = () => {
   return (
-    <section className="features">
+    <section className="flex flex-wrap justify-around items-center text-center bg-[#d4b8b8] min-h-[170px] py-5 px-[60px] max-[700px]:gap-3 max-[700px]:py-2.5 max-[700px]:px-1 max-[415px]:justify-evenly max-[415px]:gap-0">
       {features.map((feature, index) => (
-        <div key={index} className="features-icon">
-          <div>
-            <img src={feature.imgSrc} />
+        <div key={index} className="flex justify-center items-center flex-col py-2.5">
+          <div className="w-[clamp(38px,10vw,70px)] aspect-square mx-auto">
+            <img src={feature.imgSrc} className="w-full aspect-square object-cover mx-auto" alt={feature.text} />
           </div>
-          <div>
-            <h5>{feature.text}</h5>
+          <div className="w-full mx-auto mt-2.5 leading-none">
+            <h5 className="font-['League_Spartan','Poppins',sans-serif] text-[clamp(12px,2.2vw,16px)] font-semibold">{feature.text}</h5>
           </div>
         </div>
       ))}

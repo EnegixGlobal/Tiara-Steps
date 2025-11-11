@@ -138,27 +138,27 @@ const CategoryList = () => {
   };
   if (loading) return <TriangleLoader height="500px" />;
   return (
-    <div className="dashboardMain">
-      <h1>Category</h1>
-      <div className="dashOverview dash-forms">
-        <form onSubmit={handleFormSubmit}>
-          <div className="inputs">
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
+    <div className="py-4 px-8 max-h-full max-[600px]:py-5 max-[600px]:px-4">
+      <h1 className="text-2xl font-bold text-[#1a1a1a] mb-3">Category</h1>
+      <div className="flex flex-row gap-4 max-[600px]:flex-col">
+        <form onSubmit={handleFormSubmit} className="w-full flex flex-col">
+          <div className="flex justify-between flex-row w-full gap-4 max-[768px]:flex-col max-[768px]:gap-0">
+            <div className="w-full">
+              <label htmlFor="name" className="text-sm font-medium text-[#1a1a1a]">Name</label>
               <input
                 type="text"
-                className="form-control"
+                className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded mb-2 w-full overflow-auto font-sans"
                 id="name"
                 placeholder="Enter category name"
                 onChange={handleInputChange}
                 value={formData.name}
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
+            <div className="w-full">
+              <label htmlFor="description" className="text-sm font-medium text-[#1a1a1a]">Description</label>
               <input
                 type="text"
-                className="form-control"
+                className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded mb-2 w-full overflow-auto font-sans"
                 id="description"
                 placeholder="Enter brand description"
                 onChange={handleInputChange}
@@ -166,18 +166,20 @@ const CategoryList = () => {
               />
             </div>
           </div>
-          <div className="inputs-btn">
-            <button type="button" onClick={handleUpdate(formData.id)}>
+          <div className="flex justify-center items-center gap-4 mb-6 max-[650px]:flex-col max-[650px]:gap-0">
+            <button type="button" onClick={handleUpdate(formData.id)} className="py-2 px-6 w-full text-base font-medium text-white bg-[#54bab9] border-none rounded cursor-pointer my-2">
               Update
             </button>
-            <button type="button" onClick={() => deleteCoupon(formData.id)}>
+            <button type="button" onClick={() => deleteCoupon(formData.id)} className="py-2 px-6 w-full text-base font-medium text-white bg-[#54bab9] border-none rounded cursor-pointer my-2">
               Delete
             </button>
-            <button type="submit">Add</button>
+            <button type="submit" className="py-2 px-6 w-full text-base font-medium text-white bg-[#54bab9] border-none rounded cursor-pointer my-2">
+              Add
+            </button>
           </div>
         </form>
       </div>
-      <div className="dashOverview" style={{ overflow: "auto" }}>
+      <div className="flex flex-row gap-4 overflow-auto max-[600px]:flex-col">
         <CustomerTable
           columns={columns}
           data={data}

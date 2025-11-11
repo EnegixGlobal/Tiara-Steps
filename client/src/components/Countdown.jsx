@@ -47,35 +47,46 @@ const Countdown = () => {
     return time < 10 ? `0${time}` : `${time}`;
   };
   return (
-    <section className="countdown">
-      <div className="time-title-1">
-        <h1>Make a purchase before </h1>
-        <h1>
-          and get <span style={{ color: "#54bab9" }}>free delivery </span>and{" "}
-          <span style={{ color: "#54bab9" }}>upto 60% off</span>
+    <section className="bg-[#d4b8b8] flex items-center justify-center gap-[clamp(1px,3vw,96px)] min-h-[180px] font-['League_Spartan','Poppins',sans-serif] font-black max-[600px]:gap-0.5 max-[600px]:flex-col max-[600px]:my-5">
+      <div className="hidden max-[600px]:block">
+        <h1 className="text-center leading-[50px] leading-none text-[clamp(19px,2.5vw,60px)] text-[#1a1a1a]">Make a purchase before </h1>
+        <h1 className="text-center leading-[50px] leading-none text-[clamp(19px,2.5vw,60px)] text-[#1a1a1a]">
+          and get <span className="text-[#54bab9]">free delivery </span>and{" "}
+          <span className="text-[#54bab9]">upto 60% off</span>
         </h1>
       </div>
-      <div className="time-container">
-        <div>
-          <span id="days">{days}</span>Days
+      <div className="flex justify-around items-center flex-wrap text-[#54bab9] max-[600px]:my-1 max-[600px]:mb-2">
+        <div className="text-center flex items-center justify-center flex-col text-[clamp(17px,2.5vw,20px)]">
+          <span className="h-[clamp(42px,5vw,70px)] w-[clamp(42px,5vw,70px)] border-2 border-[#54bab9] flex mb-1.5 items-center justify-center font-medium text-[clamp(22px,2vw,40px)] rounded-[10px] pt-1" id="days">{days}</span>
+          Days
         </div>
-        <h2>:</h2>
-        <div>
-          <span id="hours">{hours}</span>Hours
+        <h2 className="flex my-5 pb-9 items-center justify-center font-medium text-[clamp(32px,3.5vw,45px)] max-[1000px]:my-1.5 max-[1000px]:pb-7">:</h2>
+        <div className="text-center flex items-center justify-center flex-col text-[clamp(17px,2.5vw,20px)]">
+          <span className="h-[clamp(42px,5vw,70px)] w-[clamp(42px,5vw,70px)] border-2 border-[#54bab9] flex mb-1.5 items-center justify-center font-medium text-[clamp(22px,2vw,40px)] rounded-[10px] pt-1" id="hours">{hours}</span>
+          Hours
         </div>
-        <h2>:</h2>
-        <div>
-          <span id="min">{minutes}</span>Minutes
+        <h2 className="flex my-5 pb-9 items-center justify-center font-medium text-[clamp(32px,3.5vw,45px)] max-[1000px]:my-1.5 max-[1000px]:pb-7">:</h2>
+        <div className="text-center flex items-center justify-center flex-col text-[clamp(17px,2.5vw,20px)]">
+          <span className="h-[clamp(42px,5vw,70px)] w-[clamp(42px,5vw,70px)] border-2 border-[#54bab9] flex mb-1.5 items-center justify-center font-medium text-[clamp(22px,2vw,40px)] rounded-[10px] pt-1" id="min">{minutes}</span>
+          Minutes
         </div>
-        <h2>:</h2>
-        <div>
-          <span id="sec">{seconds}</span>Seconds
+        <h2 className="flex my-5 pb-9 items-center justify-center font-medium text-[clamp(32px,3.5vw,45px)] max-[1000px]:my-1.5 max-[1000px]:pb-7">:</h2>
+        <div className="text-center flex items-center justify-center flex-col text-[clamp(17px,2.5vw,20px)]">
+          <span className="h-[clamp(42px,5vw,70px)] w-[clamp(42px,5vw,70px)] border-2 border-[#54bab9] flex mb-1.5 items-center justify-center font-medium text-[clamp(22px,2vw,40px)] rounded-[10px] pt-1" id="sec">{seconds}</span>
+          Seconds
         </div>
       </div>
-      <div className="time-title-2">
-        <h1>
-          and get <span style={{ color: "#54bab9" }}>free delivery </span>and{" "}
-          <span style={{ color: "#54bab9" }}>upto 60% off</span>
+      <div className="hidden max-[600px]:block -mt-2.5">
+        <h1 className="text-center leading-[50px] leading-none text-[clamp(19px,2.5vw,60px)] text-[#1a1a1a]">
+          and get <span className="text-[#54bab9]">free delivery </span>and{" "}
+          <span className="text-[#54bab9]">upto 60% off</span>
+        </h1>
+      </div>
+      <div className="max-[600px]:hidden">
+        <h1 className="text-center leading-[50px] leading-none text-[clamp(19px,2.5vw,60px)] text-[#1a1a1a]">Make a purchase before </h1>
+        <h1 className="text-center leading-[50px] leading-none text-[clamp(19px,2.5vw,60px)] text-[#1a1a1a]">
+          and get <span className="text-[#54bab9]">free delivery </span>and{" "}
+          <span className="text-[#54bab9]">upto 60% off</span>
         </h1>
       </div>
     </section>
@@ -83,3 +94,4 @@ const Countdown = () => {
 };
 
 export default Countdown;
+

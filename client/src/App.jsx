@@ -19,6 +19,7 @@ import ProtectedRoute from "./utils/protectedRoute";
 import AdminRoute from "./utils/adminRoute";
 import TriangleLoader from "./components/TriangleLoader";
 import ResetPassword from "./pages/ResetPassword";
+import WishlistPage from "./pages/Wishlist";
 
 const AdminLayout = lazy(() => import("./pages/AdminLayout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -78,6 +79,12 @@ const App = () => {
             <Route path="products" element={<Product />} />
             <Route path="cart" element={<CartLayout />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="wishlist" element={<WishlistPage />} />
+
+            {/* ✅ TEMPORARY route for frontend testing */}
+            <Route path="productdetails" element={<ProductDetails />} />
+
+
           </Route>
           <Route
             path="/orders"

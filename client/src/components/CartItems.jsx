@@ -1,5 +1,5 @@
-import { AiFillDelete, AiFillHeart } from "react-icons/ai";
-import { HiMinusCircle, HiPlusCircle } from "react-icons/hi";
+import { AiFillHeart } from "react-icons/ai";
+import { FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { memo, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -11,9 +11,9 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
   const [debounceQty, setDebounceQty] = useState(null);
   const { auth, setAuth } = useAuth();
   const firstUpdate = useRef(true);
+  
   useEffect(() => {
     const handler = setTimeout(() => {
-      console.log("debounce");
       if (firstUpdate.current) {
         firstUpdate.current = false;
         return;
@@ -24,6 +24,7 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
       clearTimeout(handler);
     };
   }, [currentQty]);
+  
   const changeQty = async () => {
     try {
       const response = await Axios.put(
@@ -37,75 +38,93 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
           },
         }
       );
-      console.log(response.data);
       updateData(response.data.cart);
-      // if (response.data.success === true) {
       toast.success("Quantity updated successfully");
       setAuth({ ...auth, cartSize: auth.cartSize - qty + debounceQty });
-      // }
     } catch (error) {
       toast.error("Something went wrong");
     }
   };
+  
   useEffect(() => {
     if (debounceQty !== null) {
       changeQty();
     }
   }, [debounceQty]);
+  
   return (
-    <tr>
-      <td>
-        <div className="cart-product-cont">
-          <div className="cart-image-cont">
-            <Link
-              to={`/product/${data.slug}`}
-              style={{ textDecoration: "none" }}
-            >
-              <img src={data.image} alt="cart-img"/>
-            </Link>
-          </div>
-          <div className="cart-name-cont">
-            <p style={{ textAlign: "left" }}>
-              {data.brand} {data.name}
-            </p>
-            <div className="cart-name-cont-btn">
-              <button onClick={deleteItem}>
-                <AiFillDelete /> delete item
+    <div className="px-6 py-6">
+      <div className="flex gap-6">
+        {/* Product Image */}
+        <div className="w-24 h-24 flex-shrink-0">
+          <Link to={`/product/${data.slug}`}>
+            <img 
+              src={data.image} 
+              alt={data.name} 
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </Link>
+        </div>
+
+        {/* Product Details */}
+        <div className="flex-1">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-semibold text-gray-900 uppercase text-sm">
+                {data.brand}
+              </h3>
+              <p className="text-gray-700 mt-1">
+                {data.name}
+              </p>
+              <p className="text-gray-600 text-sm mt-1">
+                Size {size}
+              </p>
+              <p className="text-gray-900 font-semibold mt-2">
+                Rs. {data.price}
+              </p>
+            </div>
+
+            {/* Action Icons */}
+            <div className="flex gap-3">
+              <button
+                onClick={deleteItem}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                title="Delete item"
+              >
+                <FiTrash2 size={20} className="text-gray-600" />
               </button>
-              <button>
-                <AiFillHeart /> move to favorite
+              <button
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                title="Move to favorite"
+              >
+                <AiFillHeart size={20} className="text-gray-600" />
+              </button>
+            </div>
+          </div>
+
+          {/* Quantity Controls */}
+          <div className="mt-4 flex items-center">
+            <div className="inline-flex items-center border border-gray-300 rounded-md">
+              <button
+                onClick={() => setCurrentQty((prev) => (prev > 1 ? prev - 1 : prev))}
+                className="px-3 py-1 hover:bg-gray-100 transition-colors"
+              >
+                -
+              </button>
+              <span className="px-4 py-1 border-x border-gray-300 min-w-[50px] text-center">
+                {currentQty}
+              </span>
+              <button
+                onClick={() => setCurrentQty((prev) => prev + 1)}
+                className="px-3 py-1 hover:bg-gray-100 transition-colors"
+              >
+                +
               </button>
             </div>
           </div>
         </div>
-        <div className="cart-mobile-info">
-          <p>Size: {size}</p>
-          <p>Quantity: {size}</p>
-          <p>Price: ₹ {data.price}/item</p>
-        </div>
-      </td>
-      <td className="cart-subheader">
-        <p>{size}</p>
-      </td>
-      <td className="td-qty cart-subheader">
-        <div>
-          <button
-            onClick={() =>
-              setCurrentQty((prev) => (prev > 0 ? prev - 1 : prev))
-            }
-          >
-            <HiMinusCircle />
-          </button>
-          <p>{currentQty}</p>
-          <button onClick={() => setCurrentQty((prev) => prev + 1)}>
-            <HiPlusCircle />
-          </button>
-        </div>
-      </td>
-      <td className="cart-subheader">
-        <p>₹ {qty * data.price}</p>
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 };
 

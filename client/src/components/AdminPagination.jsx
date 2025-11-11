@@ -12,16 +12,18 @@ const AdminPagination = ({
   pageIndex,
 }) => {
   return (
-    <div className="pagination-container">
+    <div className="flex mb-8 items-center justify-center">
       <button
         onClick={() => previousPage()}
         disabled={!canPreviousPage}
-        className={`admin-pagination-button pagination-ctrl ${
-          !canPreviousPage ? "disabled" : ""
-        }`}
+        className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] border border-gray-200 transition-all duration-300 rounded-md cursor-pointer ${
+          !canPreviousPage 
+            ? "cursor-not-allowed bg-gray-100 text-black opacity-50" 
+            : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
+        } ${pageIndex + 1 === startPage ? "bg-[#54bab9] text-[#e8f6ea] border-[#54bab9]" : ""}`}
       >
-        <div className="button-content">
-          <MdKeyboardArrowLeft className="arrow-icon" />
+        <div className="flex items-center justify-around">
+          <MdKeyboardArrowLeft className="text-xl" />
           <span>Previous</span>
         </div>
       </button>
@@ -32,8 +34,10 @@ const AdminPagination = ({
       ).map((number) => (
         <button
           key={number}
-          className={`admin-pagination-button ${
-            number === pageIndex + 1 ? "active" : ""
+          className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] border border-gray-200 transition-all duration-300 rounded-md cursor-pointer ${
+            number === pageIndex + 1 
+              ? "bg-[#54bab9] text-[#e8f6ea] border-[#54bab9]" 
+              : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
           }`}
           onClick={() => gotoPage(number - 1)}
         >
@@ -44,13 +48,15 @@ const AdminPagination = ({
       <button
         onClick={() => nextPage()}
         disabled={!canNextPage}
-        className={`admin-pagination-button pagination-ctrl ${
-          !canNextPage ? "disabled" : ""
-        }`}
+        className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] border border-gray-200 transition-all duration-300 rounded-md cursor-pointer ${
+          !canNextPage 
+            ? "cursor-not-allowed bg-gray-100 text-black opacity-50" 
+            : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
+        } ${pageIndex + 1 === endPage ? "bg-[#54bab9] text-[#e8f6ea] border-[#54bab9]" : ""}`}
       >
-        <div className="button-content">
+        <div className="flex items-center justify-around">
           <span>Next</span>
-          <MdKeyboardArrowRight className="arrow-icon" />
+          <MdKeyboardArrowRight className="text-xl" />
         </div>
       </button>
     </div>

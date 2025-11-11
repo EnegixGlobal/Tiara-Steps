@@ -6,15 +6,15 @@ import b5 from "../Images/tiara-steps-3.png";
 
 const BannerSection = () => {
   return (
-    <section className="banner">
-      <div className="banner-row-1">
-        <img src={b1} alt="Banner-Image" />
-        <img src={b2} alt="Banner-Image" />
-        <img className="banner3" src={b4} alt="Banner-Image" />
+    <section className="my-[2.778vw] mx-[5.5vw] flex gap-[2.778vw] flex-col">
+      <div className="flex justify-between items-center flex-wrap max-[700px]:flex-col">
+        <img src={b1} alt="Banner-Image" className="w-[31.5%] h-[fill-available] max-[700px]:w-full max-[700px]:my-2.5 max-[700px]:mx-0" />
+        <img src={b2} alt="Banner-Image" className="w-[31.5%] h-[fill-available] max-[700px]:w-full max-[700px]:my-2.5 max-[700px]:mx-0" />
+        <img src={b4} alt="Banner-Image" className="w-[31.5%] h-[fill-available] max-[700px]:w-full max-[700px]:my-2.5 max-[700px]:mx-0" />
       </div>
-      <div className="banner-row-2">
-        <img className="banner3" src={b5} alt="Banner-Image" />
-        <img src={b3} alt="Banner-Image" />
+      <div className="flex justify-between items-center flex-wrap max-[700px]:hidden">
+        <img src={b5} alt="Banner-Image" className="w-[48%] h-[fill-available]" />
+        <img src={b3} alt="Banner-Image" className="w-[48%] h-[fill-available]" />
       </div>
     </section>
   );

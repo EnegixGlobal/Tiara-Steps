@@ -49,19 +49,14 @@ const SizeModal = ({ id, size, onClose }) => {
     <div
       ref={modelRef}
       onClick={closeModal}
-      style={{
-        background: "rgba(0, 0, 0, 0.3)",
-        backdropFilter: "blur(1.5px)",
-        boxShadow: "20px 20px 30px rgba(0, 0, 0, 0.06)",
-      }}
-      className="modal"
+      className="fixed inset-0 z-[100000] backdrop-blur-[1px] bg-black/30 flex justify-center items-center"
     >
-      <div className="modal-container">
-        <div className="modal-div">
-          <h4>Choose Your Perfect Fit Size:</h4>
+      <div className="flex items-center flex-col gap-5 bg-white rounded-xl m-0 mx-4 p-7 px-8">
+        <div className="flex w-full justify-between gap-5 items-center pb-0">
+          <h4 className="m-0 text-lg font-semibold text-[#777]">Choose Your Perfect Fit Size:</h4>
         </div>
-        <div className="modal-div">
-          <div className="select-main-box">
+        <div className="flex w-full justify-between gap-5 items-center pb-0">
+          <div className="w-full">
             <MultiSelectBox
               multiple={false}
               options={sizeOptions}
@@ -70,10 +65,10 @@ const SizeModal = ({ id, size, onClose }) => {
             />
           </div>
         </div>
-        <div className="modal-div">
-          <div className="filter-modal-btn">
+        <div className="flex w-full justify-between gap-5 items-center pb-0">
+          <div className="w-full flex justify-center items-center gap-8 mt-2">
             <button
-              className="btn-filter "
+              className="w-full py-2 text-sm font-semibold font-['Poppins',sans-serif] bg-[#e5e5e5] text-[#777] border border-gray-300 rounded-md cursor-pointer hover:bg-[#e8f6ea] hover:text-[#54bab9] hover:border-[#54bab9]"
               onClick={() => {
                 onClose();
               }}
@@ -81,7 +76,7 @@ const SizeModal = ({ id, size, onClose }) => {
               Cancel
             </button>
             <button
-              className="btn-filter"
+              className="w-full py-2 text-sm font-semibold font-['Poppins',sans-serif] bg-[#e5e5e5] text-[#777] border border-gray-300 rounded-md cursor-pointer hover:bg-[#e8f6ea] hover:text-[#54bab9] hover:border-[#54bab9]"
               onClick={() => {
                 requestData();
                 onClose();

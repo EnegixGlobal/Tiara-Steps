@@ -53,39 +53,41 @@ const ResetPassword = () => {
     }
   };
   return (
-    <div className="login-page">
-      <div className="login-div div1">
-        <div className="login-box">
-          <h1 className="login-heading">Reset Your Password</h1>
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="input-div">
-              <label htmlFor="password">New Password</label>
+    <div className="h-screen w-full flex bg-white flex-row-reverse">
+      <div className="w-1/2 lg:w-full flex justify-center items-center">
+        <div className="w-full p-[20%] lg:p-[8%] h-full flex justify-center flex-col">
+          <h1 className="text-gray-900 text-[clamp(2rem,2.5vw,3rem)] leading-8 font-bold">Reset Your Password</h1>
+          <form onSubmit={handleSubmit} className="flex gap-3.5 flex-col my-7 mt-0 mb-4">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-base text-gray-600 font-medium text-left">New Password</label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your new password"
+                className="w-full rounded-lg text-gray-900 border border-gray-900 mt-2 py-2.5 px-3 text-left outline-none"
               />
             </div>
-            <div className="input-div">
-              <label htmlFor="confirmPassword">Confirm Password</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirmPassword" className="text-base text-gray-600 font-medium text-left">Confirm Password</label>
               <input
                 type="password"
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm your new password"
+                className="w-full rounded-lg text-gray-900 border border-gray-900 mt-2 py-2.5 px-3 text-left outline-none"
               />
             </div>
-            <button className="login-button" type="submit">
+            <button className="py-2.5 px-3 text-base rounded-lg mt-3 border-0 font-medium text-white bg-[#d8b98f] cursor-pointer hover:bg-[#d3a15f]" type="submit">
               Reset Password
             </button>
           </form>
         </div>
       </div>
-      <div className="login-div div2">
-        <img className="login-image-r" src={loginImage} alt="image" />
+      <div className="w-1/2 lg:hidden flex justify-center items-center">
+        <img className="w-full h-full object-contain bg-[#d4b8b8]" src={loginImage} alt="image" />
       </div>
     </div>
   );

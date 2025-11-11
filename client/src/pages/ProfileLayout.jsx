@@ -6,7 +6,7 @@ const ProfileLayout = () => {
   return (
     <>
       <Navbar />
-      <section className="page">
+      <section className="min-h-screen">
         <Outlet />
       </section>
       <Footer />

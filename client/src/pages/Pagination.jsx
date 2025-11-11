@@ -17,16 +17,18 @@ const Pagination = ({
     startPage = Math.max(endPage - 4, 1);
   }
   return (
-    <div className="pagination-container">
+    <div className="flex mb-8 items-center justify-center">
       <button
         onClick={() => previousPage()}
         disabled={!canPreviousPage}
-        className={`pagination-button pagination-ctrl ${
-          !canPreviousPage ? "disabled" : ""
+        className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] bg-[#e8f6ea] text-[#54bab9] border border-[#cce7d0] transition-all duration-300 rounded-md cursor-pointer ${
+          !canPreviousPage 
+            ? "cursor-not-allowed bg-white text-[#cce7d0]" 
+            : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
         }`}
       >
-        <div className="button-content">
-          <MdKeyboardArrowLeft className="arrow-icon" />
+        <div className="flex items-center justify-around">
+          <MdKeyboardArrowLeft className="text-xl max-[768px]:hidden" />
           <span>Previous</span>
         </div>
       </button>
@@ -37,8 +39,10 @@ const Pagination = ({
       ).map((number) => (
         <button
           key={number}
-          className={`pagination-button ${
-            number === pageIndex + 1 ? "active" : ""
+          className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] bg-[#e8f6ea] text-[#54bab9] border border-[#cce7d0] transition-all duration-300 rounded-md cursor-pointer ${
+            number === pageIndex + 1 
+              ? "bg-[#54bab9] text-[#e8f6ea] border-[#54bab9]" 
+              : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
           }`}
           onClick={() => gotoPage(number)}
         >
@@ -49,13 +53,15 @@ const Pagination = ({
       <button
         onClick={() => nextPage()}
         disabled={!canNextPage}
-        className={`pagination-button pagination-ctrl ${
-          !canNextPage ? "disabled" : ""
+        className={`py-2.5 px-4 m-1 text-[15px] font-semibold font-['Poppins',sans-serif] bg-[#e8f6ea] text-[#54bab9] border border-[#cce7d0] transition-all duration-300 rounded-md cursor-pointer ${
+          !canNextPage 
+            ? "cursor-not-allowed bg-white text-[#cce7d0]" 
+            : "hover:bg-[#54bab9] hover:text-[#e8f6ea] hover:border-[#54bab9]"
         }`}
       >
-        <div className="button-content">
+        <div className="flex items-center justify-around">
           <span>Next</span>
-          <MdKeyboardArrowRight className="arrow-icon" />
+          <MdKeyboardArrowRight className="text-xl max-[768px]:hidden" />
         </div>
       </button>
     </div>

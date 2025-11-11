@@ -79,14 +79,11 @@ const AddProducts = () => {
   };
 
   return (
-    <div className="orderMainContainer">
-      <h1
-        className="cHeader"
-        style={{ textAlign: "left", marginBottom: "1rem" }}
-      >
+    <div className="font-sans my-[2%] mx-[3%] mb-[4%]">
+      <h1 className="text-2xl leading-8 font-semibold text-left mb-4">
         Add Product
       </h1>
-      <div className="dashOverview">
+      <div className="flex flex-row gap-4 max-[600px]:flex-col">
         <ProductForm
           link={link}
           changeLink={changeLink}

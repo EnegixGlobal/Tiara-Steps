@@ -1,245 +1,506 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Axios from "../Axios";
-import { toast } from "react-toastify";
-import TriangleLoader from "../components/TriangleLoader";
-import useAuth from "../../hooks/useAuth";
 import Star from "../components/Star";
 import RatingContainer from "../components/RatingContainer";
-import { datas } from "../../public/dummyData";
-
 
 const ProductDetails = () => {
-  const { slug } = useParams();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [size, setSize] = useState("");
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [expandedSection, setExpandedSection] = useState(null);
+
+  // ✅ Mock Data (for frontend testing)
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await Axios.get(`/product/${slug}`);
-        setData(response.data.data);
-        console.log(response.data.data);
-        setLoading(false);
-      } catch (error) {
-        toast.error(error?.response?.data?.message || "Something went wrong", {
-          position: "bottom-right",
-        });
-        navigate("/404");
-      }
+    const mockProduct = {
+      name: "Elegant Red Heels",
+      brand: "Tiara Steps",
+      price: 2999,
+      image: "https://adn-static1.nykaa.com/nykdesignstudio-images/pub/media/catalog/product/f/b/fb98b11Heel033Cherry_2.jpg?tr=w-512",
+      ratingScore: 40,
+      ratings: [5, 4, 5, 5], // ✅ not empty
+      color: "Red",
+      material: "Synthetic",
+      sizeQuantity: [
+        { size: 36, quantity: 4 },
+        { size: 37, quantity: 2 },
+        { size: 38, quantity: 5 },
+        { size: 39, quantity: 6 },
+        { size: 40, quantity: 3 },
+        { size: 41, quantity: 5 },
+        { size: 42, quantity: 4 },
+      ],
     };
-    fetchProduct();
+
+    setData(mockProduct);
+    setLoading(false);
   }, []);
 
-  // useEffect(() => {
-  //   const product = datas.Products.find((p) => p.slug === slug);
-  //   console.log("🔍 Fetched product :", product);
-  //   if (product) {
-  //     setData(product);
-  //     setLoading(false);
-  //   } else {
-  //     console.log("❌ No product found for slug:", slug);
-  //   }
-  // }, [slug]);
-
-
-  const handleAddToCart = async () => {
-    try {
-      if (!auth) {
-        toast.error("Login required");
-        navigate("/login");
-        return;
-      }
-
-      if (!size) {
-        toast.error("Please select a size");
-        return;
-      }
-      const token = localStorage.getItem("jwt");
-      const response = await Axios.post(
-        "/cart/add",
-        {
-          productId: data._id,
-          qty: 1,
-          size: Number(size),
-        },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      toast.success(response?.data?.message);
-      setAuth({ ...auth, cartSize: auth.cartSize + 1 });
-    } catch (error) {
-      toast.error("Something went wrong", {
-        position: "bottom-right",
-      });
-      console.log(error);
-    }
+  // ✅ Re-enable helper functions
+  const handleAddToCart = () => {
+    alert("🛒 Product added to cart (frontend test only)");
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText("MUSKATTIGER420");
-    toast.success("Coupon code copied!");
+    navigator.clipboard.writeText("HAPPYDIWALI420");
+    alert("Coupon code copied!");
   };
 
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
+  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
 
-  if (loading) return <TriangleLoader height="500px" />;
   return (
-    <section className="product-bg">
-      <div className="prod-images-cont">
-        <div className="prod-image">
-          <img src={data.image} alt="img" />
-        </div>
-        <div className="pRow">
-          <img src={data.image} alt="img" />
-          <img src={data.image} alt="img" />
-          <img src={data.image} alt="img" />
-        </div>
-      </div>
-      <div className="prod-details-cont">
-        <h1 className="ptitle">{data.brand + " " + data.name.toLowerCase()}</h1>
-        <h3 className="pprize">
-          ₹ {data.price} <span>3000 </span>
-        </h3>
-        <div className="pStar">
-          <Star rating={data.ratingScore / data.ratings.length || 0} />
-        </div>
-        {/* <select
-          name="size"
-          id="size"
-          value={size}
-          disabled={data.sizeQuantity.length === 0}
-          onChange={(e) => setSize(e.target.value)}
-        >
-          <option value="">Select Size</option>
-          {data.sizeQuantity &&
-            data.sizeQuantity
-              .filter((data) => data.quantity > 0)
-              .map((data) => (
-                <option key={data.size} value={data.size}>
-                  {data.size}
-                </option>
-              ))}
-        </select> */}
-        <select
-          name="size"
-          id="size"
-          className="size-select"
-          value={size}
-          disabled={data.sizeQuantity.length === 0}
-          onChange={(e) => setSize(e.target.value)}
-        >
-          <option value="">Select Size</option>
-          {data.sizeQuantity &&
-            data.sizeQuantity
-              .filter((data) => data.quantity > 0)
-              .map((data) => (
-                <option key={data.size} value={data.size}>
-                  {data.size}
-                </option>
-              ))}
-        </select>
+    // <div className="grid grid-cols-2  gap-[60px] max-w-[1400px] mx-auto p-10 lg:p-[30px] lg:gap-10 bg-white">
+    //   {/* Left Side - Images */}
+    //   <div className="flex flex-col gap-5 lg:max-w-[570px] lg:mx-auto">
+    //     <div className="w-full aspect-square overflow-hidden bg-gray-100">
+    //       <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
+    //     </div>
+    //     <div className="grid grid-cols-4 gap-4">
+    //       {[data.image, data.image, data.image, data.image].map((img, index) => (
+    //         <div
+    //           key={index}
+    //           className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index ? "border-black" : "border-transparent hover:border-gray-400"
+    //             }`}
+    //           onClick={() => setSelectedImage(index)}
+    //         >
+    //           <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
+    //         </div>
+    //       ))}
+    //     </div>
+    //   </div>
 
-        <button
-          disabled={data.sizeQuantity.length === 0}
-          className="add-to-carts"
-          onClick={handleAddToCart}
-        >
-          Add to cart
-        </button>
-        {data.sizeQuantity.length === 0 && (
-          <p className="outOfStock">
-            Unfortunately, this product is currently out of stock.
-          </p>
-        )}
-        <h3 className="pDescTitle">Product Details</h3>
-        <p>{data.description}</p>
-        <h3 className="pDescTitle">
-          Color:{" "}
-          <p style={{ fontWeight: "normal", display: "inline" }}>
-            {data.color}
-          </p>
-        </h3>
-        <h3 className="pDescTitle">
-          Material:{" "}
-          <p style={{ fontWeight: "normal", display: "inline" }}>
-            {data.material}
-          </p>
-        </h3>
-        <h3 className="pDescTitle">Features:</h3>
-        <div style={{ marginLeft: "15px" }}>
-          {" "}
-          <ol>
-            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-            <li>Integer ut justo quis diam finibus lobortis vel at dui.</li>
-            <li>
-              Morbi ultricies leo sit amet nisl suscipit, et vulputate orci
-              fringilla.
-            </li>
-            <li>
-              Nullam sit amet lacus ut nibh pharetra rutrum venenatis ac purus.
-            </li>
-            <li>Sed ut arcu dapibus, viverra ex vitae, fermentum libero.</li>
-            <li>Fusce eget mauris in elit ultricies vehicula.</li>
-            <li>Vivamus tincidunt ligula id sollicitudin finibus.</li>
-            <li>Nullam facilisis enim viverra nulla malesuada consequat.</li>
-            <li>
-              Nullam feugiat turpis ullamcorper augue fringilla, at facilisis
-              magna dignissim.
-            </li>
-          </ol>
-        </div>
-        <h3 className="pDescTitle">Delivery Option</h3>
-        <div>
-          <div>
-            <input
-              type="number"
-              name="pincode"
-              max={999999}
-              min={0}
-              placeholder="Enter Pincode"
-              onInput={(e) => {
-                e.target.value = Math.max(0, parseInt(e.target.value))
-                  .toString()
-                  .slice(0, 6);
-              }}
-            />
-            <button className="pincode-check">check</button>
+    //   {/* Right Side - Product Info */}
+    //   <div className="flex flex-col gap-6">
+    //     <h1 className="text-lg font-semibold text-black uppercase tracking-wide m-0">{data.brand}</h1>
+    //     <h2 className="text-2xl font-normal text-gray-800 m-0 leading-tight">{data.name}</h2>
+    //     <div className="text-[28px] font-bold text-black ">Rs. {data.price}</div>
+
+    //     {/* Rating */}
+    //     <div className="flex items-center gap-4 py-4 ">
+    //       <span className="text-[24px] text-gray-800 font-medium">
+    //         {(data.ratingScore / data.ratings.length || 0).toFixed(1)} ★ |{" "}
+    //         {data.ratings.length} Ratings
+    //       </span>
+    //     </div>
+
+    //     {/* Size Selection */}
+    //     <div className="my-3">
+    //       <h3 className="text-base font-semibold text-black mb-4">Select Size</h3>
+    //       <div className="flex flex-wrap gap-3">
+    //         {data.sizeQuantity &&
+    //           data.sizeQuantity.map((item) => (
+    //             <button
+    //               key={item.size}
+    //               className={`min-w-[60px] h-[50px] px-5 border-[1.5px] rounded bg-white text-[15px] font-medium text-gray-800 cursor-pointer transition-all hover:border-black ${size === item.size.toString()
+    //                   ? "bg-black text-white border-black"
+    //                   : "border-gray-300"
+    //                 }`}
+    //               onClick={() => setSize(item.size.toString())}
+    //             >
+    //               {item.size}
+    //             </button>
+    //           ))}
+    //       </div>
+    //     </div>
+
+    //     {/* Add to Cart */}
+    //     <button
+    //       className="w-full h-[55px] bg-black text-white border-none rounded text-base font-semibold uppercase tracking-wide cursor-pointer transition-colors my-2.5 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+    //       onClick={handleAddToCart}
+    //     >
+    //       Add to Cart
+    //     </button>
+
+    //     {/* Product Details Accordion */}
+    //     <div className="my-8 ">
+    //       <div className="border-b border-gray-200">
+    //         <button
+    //           className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+    //           onClick={() => toggleSection("details")}
+    //         >
+    //           <span>Product details and description</span>
+    //           <span className="text-2xl font-light text-gray-600">
+    //             {expandedSection === "details" ? "−" : "+"}
+    //           </span>
+    //         </button>
+    //         {expandedSection === "details" && (
+    //           <div className="pb-5 animate-slideDown">
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+    //           </div>
+    //         )}
+    //       </div>
+
+    //       <div className="border-b border-gray-200">
+    //         <button
+    //           className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+    //           onClick={() => toggleSection("details")}
+    //         >
+    //           <span>SHIPPING POLICY & FREE RETURNS POLICY</span>
+    //           <span className="text-2xl font-light text-gray-600">
+    //             {expandedSection === "details" ? "−" : "+"}
+    //           </span>
+    //         </button>
+    //         {expandedSection === "details" && (
+    //           <div className="pb-5 animate-slideDown">
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+    //           </div>
+    //         )}
+    //       </div>
+
+    //       <div className="border-b border-gray-200">
+    //         <button
+    //           className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+    //           onClick={() => toggleSection("details")}
+    //         >
+    //           <span>Manufacturer/Importer Details</span>
+    //           <span className="text-2xl font-light text-gray-600">
+    //             {expandedSection === "details" ? "−" : "+"}
+    //           </span>
+    //         </button>
+    //         {expandedSection === "details" && (
+    //           <div className="pb-5 animate-slideDown">
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+    //           </div>
+    //         )}
+    //       </div>
+
+    //       <div className="border-b border-gray-200">
+    //         <button
+    //           className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+    //           onClick={() => toggleSection("details")}
+    //         >
+    //           <span>Product Care</span>
+    //           <span className="text-2xl font-light text-gray-600">
+    //             {expandedSection === "details" ? "−" : "+"}
+    //           </span>
+    //         </button>
+    //         {expandedSection === "details" && (
+    //           <div className="pb-5 animate-slideDown">
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+    //             <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+    //           </div>
+    //         )}
+    //       </div>
+
+    //     </div>
+
+
+    //   </div>
+
+    //   {/* ===== CUSTOMER REVIEWS SECTION ===== */}
+    //   <div className="w-[1400px] mx-auto px-5">
+    //     <h3 className="text-base font-semibold text-black mb-4">Customer Reviews</h3>
+
+    //     <div className="flex justify-between items-center border border-gray-300 p-5 rounded-lg mt-4 bg-white shadow-sm flex-wrap gap-4">
+    //       <div className="flex items-center gap-2.5">
+    //         <Star rating={0} />
+    //         <span className="text-gray-800 text-base">Be the first to write a review</span>
+    //       </div>
+
+    //       <button className="bg-gray-100 border-none py-3 px-8 font-medium text-gray-800 rounded cursor-pointer transition-colors hover:bg-gray-200">
+    //         Write a review
+    //       </button>
+    //     </div>
+    //   </div>
+
+
+    //   {/* ===== SIMILAR PRODUCTS SECTION ===== */}
+    //   <div className="grid grid-cols">
+    //     <h3 className="text-base font-semibold text-black mb-4">Similar Products</h3>
+
+    //     <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6 mt-5">
+    //       {[
+    //         {
+    //           image:
+    //             "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+    //           brand: "MODARE",
+    //           name: "Women Open Toe Flats",
+    //           price: 3199,
+    //         },
+    //         {
+    //           image:
+    //             "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+    //           brand: "MODARE",
+    //           name: "Women Open Toe Flats",
+    //           price: 3199,
+    //         },
+    //         {
+    //           image:
+    //             "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+    //           brand: "Tiara Steps",
+    //           name: "Women Party Heels",
+    //           price: 3199,
+    //         },
+    //         {
+    //           image:
+    //             "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+    //           brand: "Tiara Steps",
+    //           name: "Women Open Toe Flats",
+    //           price: 3199,
+    //         },
+    //       ].map((item, index) => (
+    //         <div key={index} className="text-left cursor-pointer relative">
+    //           <div className="relative overflow-hidden rounded-lg">
+    //             <img src={item.image} alt={item.name} className="w-full h-auto block transition-transform duration-400 ease-in-out hover:scale-105" />
+    //             <button className="absolute top-2.5 right-2.5 bg-white border-none text-xl rounded-full w-[34px] h-[34px] cursor-pointer text-black">♡</button>
+    //           </div>
+    //           <div className="mt-2.5">
+    //             <h4 className="text-sm text-gray-800 font-semibold">{item.brand}</h4>
+    //             <p className="text-[13px] text-gray-600 my-1">{item.name}</p>
+    //             <p className="text-sm text-black font-medium">{item.price}</p>
+    //           </div>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   </div>
+
+    // </div>
+
+    <div className="max-w-[1400px] mx-auto p-10 lg:p-[30px] bg-white">
+      {/* ===== TOP GRID (IMAGES + DETAILS) ===== */}
+      <div className="grid grid-cols-2 gap-[60px] lg:gap-10 l">
+        {/* Left Side - Images */}
+        <div className="flex flex-col gap-5 lg:max-w-[570px] lg:mx-auto">
+          <div className="w-full aspect-square overflow-hidden bg-gray-100">
+            <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
           </div>
-          <h5>
-            Please enter PIN code to check delivery time & Pay on Delivery
-            Availability
-          </h5>
-          <ul type="none">
-            <li>100% Original Products</li>
-            <li>Pay on delivery might be available</li>
-            <li>Easy 30 days returns and exchanges</li>
-            <li>Try & Buy might be available</li>
-          </ul>
+          <div className="grid grid-cols-4 gap-4">
+            {[data.image, data.image, data.image, data.image].map((img, index) => (
+              <div
+                key={index}
+                className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index
+                  ? "border-black"
+                  : "border-transparent hover:border-gray-400"
+                  }`}
+                onClick={() => setSelectedImage(index)}
+              >
+                <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
         </div>
-        <h3 className="pDescTitle">Offers</h3>
-        <ul type="none">
-          <li>
-            Use{" "}
-            <span
-              onClick={handleCopyCode}
-              className="coupon-pro"
-              title="Click to copy"
-            >
-              HAPPYDIWALI420
-            </span>{" "}
-            to avail flat 20% Off
-          </li>
-        </ul>
 
-        <RatingContainer ratings={data.ratings} />
+        {/* Right Side - Product Info */}
+        <div className="flex flex-col gap-6">
+          <h1 className="text-lg font-semibold text-black uppercase tracking-wide m-0">
+            {data.brand}
+          </h1>
+          <h2 className="text-2xl font-normal text-gray-800 m-0 leading-tight">
+            {data.name}
+          </h2>
+          <div className="text-[28px] font-bold text-black">Rs. {data.price}</div>
+
+          {/* Rating */}
+          <div className="flex items-center gap-4 py-4">
+            <span className="text-[24px] text-gray-800 font-medium">
+              {(data.ratingScore / data.ratings.length || 0).toFixed(1)} ★ |{" "}
+              {data.ratings.length} Ratings
+            </span>
+          </div>
+
+          {/* Size Selection */}
+          <div className="my-3">
+            <h3 className="text-base font-semibold text-black mb-4">Select Size</h3>
+            <div className="flex flex-wrap gap-3">
+              {data.sizeQuantity?.map((item) => (
+                <button
+                  key={item.size}
+                  className={`min-w-[60px] h-[50px] px-5 border-[1.5px] rounded bg-white text-[15px] font-medium text-gray-800 cursor-pointer transition-all hover:border-black ${size === item.size.toString()
+                    ? "bg-black text-white border-black"
+                    : "border-gray-300"
+                    }`}
+                  onClick={() => setSize(item.size.toString())}
+                >
+                  {item.size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Add to Cart */}
+          <button
+            className="w-full h-[55px] bg-black text-white border-none rounded text-base font-semibold uppercase tracking-wide cursor-pointer transition-colors my-2.5 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </button>
+
+          {/* Product Details Accordion */}
+          {/* Product Details Accordion */}
+          <div className="my-8 ">
+            <div className="border-b border-gray-200">
+              <button
+                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+                onClick={() => toggleSection("details")}
+              >
+                <span>Product details and description</span>
+                <span className="text-2xl font-light text-gray-600">
+                  {expandedSection === "details" ? "−" : "+"}
+                </span>
+              </button>
+              {expandedSection === "details" && (
+                <div className="pb-5 animate-slideDown">
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="border-b border-gray-200">
+              <button
+                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+                onClick={() => toggleSection("details")}
+              >
+                <span>SHIPPING POLICY & FREE RETURNS POLICY</span>
+                <span className="text-2xl font-light text-gray-600">
+                  {expandedSection === "details" ? "−" : "+"}
+                </span>
+              </button>
+              {expandedSection === "details" && (
+                <div className="pb-5 animate-slideDown">
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="border-b border-gray-200">
+              <button
+                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+                onClick={() => toggleSection("details")}
+              >
+                <span>Manufacturer/Importer Details</span>
+                <span className="text-2xl font-light text-gray-600">
+                  {expandedSection === "details" ? "−" : "+"}
+                </span>
+              </button>
+              {expandedSection === "details" && (
+                <div className="pb-5 animate-slideDown">
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="border-b border-gray-200">
+              <button
+                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+                onClick={() => toggleSection("details")}
+              >
+                <span>Product Care</span>
+                <span className="text-2xl font-light text-gray-600">
+                  {expandedSection === "details" ? "−" : "+"}
+                </span>
+              </button>
+              {expandedSection === "details" && (
+                <div className="pb-5 animate-slideDown">
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Color:</strong> {data.color}</p>
+                  <p className="my-2.5 leading-relaxed text-gray-600 text-sm"><strong>Material:</strong> {data.material}</p>
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
       </div>
-    </section>
+
+      {/* ===== CUSTOMER REVIEWS SECTION ===== */}
+      <div className="mt-[80px] w-full">
+        <div className="border border-gray-300 p-6 rounded-lg bg-white shadow-sm flex flex-col items-start gap-5">
+          {/* Title */}
+          <h3 className="text-[34px] font-semibold text-black">Customer Reviews</h3>
+
+          {/* Stars + Text + Button in one row */}
+          <div className="flex flex-row justify-start items-center w-full flex-wrap gap-10">
+            <div className="flex items-center gap-20 ">
+              <div className="flex flex-row scale-290 ml-[60px] ">  {/* Increase to 125% size */}
+                <Star rating={0} />
+              </div>
+              <span className="text-gray-800 text-[36px]">
+                Be the first to write a review
+              </span>
+            </div>
+
+            <button className="bg-gray-100 border-none py-4 px-32 font-medium text-gray-800 rounded cursor-pointer transition-colors hover:bg-gray-200 ml-[200px]">
+              Write a review
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+
+      {/* ===== SIMILAR PRODUCTS SECTION (Below Reviews) ===== */}
+      <div className="mt-[60px] w-full">
+        <h3 className="text-base font-semibold text-black mb-4">Similar Products</h3>
+
+        {/* Grid: 4 columns on desktop, 2 on tablet, 1 on mobile */}
+        <div className="grid grid-cols-4 md:grid-cols-4 sm:grid-cols-1 gap-5 mt-5">
+          {[
+            {
+              image:
+                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+              brand: "Tiara Steps",
+              name: "Women Open Toe Flats",
+              price: 3199,
+            },
+            {
+              image:
+                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+              brand: "Tiara Steps",
+              name: "Women Open Toe Flats",
+              price: 3199,
+            },
+            {
+              image:
+                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+              brand: "Tiara Steps",
+              name: "Women Party Heels",
+              price: 3199,
+            },
+            {
+              image:
+                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
+              brand: "Tiara Steps",
+              name: "Women Open Toe Flats",
+              price: 3199,
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="text-left cursor-pointer relative transition-transform hover:-translate-y-1"
+            >
+              <div className="relative overflow-hidden rounded-lg shadow-sm">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-[240px] object-cover block transition-transform duration-300 ease-in-out hover:scale-105"
+                />
+                <button className="absolute top-2.5 right-2.5 bg-white border-none text-xl rounded-full w-[32px] h-[32px] cursor-pointer text-black">
+                  ♡
+                </button>
+              </div>
+
+              <div className="mt-2">
+                <h4 className="text-sm text-gray-800 font-semibold">{item.brand}</h4>
+                <p className="text-[13px] text-gray-600 my-1 truncate">{item.name}</p>
+                <p className="text-sm text-black font-medium">₹{item.price}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
   );
 };
+
 export default ProductDetails;
+

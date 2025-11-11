@@ -102,19 +102,19 @@ const Dashboard = () => {
   };
   if (loading) return <TriangleLoader height="500px" />;
   return (
-    <div className="dashboardMain">
-      <h1>Dashboard</h1>
-      <div className="dashOverview">
+    <div className="py-4 px-8 max-h-full max-[600px]:py-5 max-[600px]:px-4">
+      <h1 className="text-2xl font-bold text-[#1a1a1a] mb-3">Dashboard</h1>
+      <div className="flex flex-row gap-4 max-[600px]:flex-col">
         <DashCard title="Total Users" amount={data.totalUsers} />
         <DashCard title="Total Orders" amount={data.totalOrders} />
         <DashCard title="Total Products" amount={data.totalProducts} />
         <DashCard title="Total Products" amount={`₹${data.totalSales}`} />
       </div>
-      <div className="graphBox">
-        <div className="graph-box box-1">
+      <div className="flex flex-row gap-4 w-full min-h-[400px] max-[1100px]:flex-col max-[1100px]:mt-4">
+        <div className="relative bg-[#f3f4f6] py-6 px-5 my-4 rounded-lg w-full flex justify-center items-center h-[28rem] object-cover max-[1100px]:h-auto max-[1100px]:m-0">
           <Doughnut data={data2} options={options2} />
         </div>
-        <div className="graph-box box-2">
+        <div className="relative bg-[#f3f4f6] py-6 px-5 my-4 rounded-lg w-full flex justify-center items-center h-[28rem] object-cover max-[1100px]:h-auto max-[1100px]:m-0">
           <Bar data={data1} options={options1} />
         </div>
       </div>

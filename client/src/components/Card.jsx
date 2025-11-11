@@ -31,7 +31,7 @@ const Card = (data) => {
   };
 
   return (
-    <div className="card-container">
+    <div className="relative w-[clamp(250px,20vw,310px)] py-3.5 px-3.5 pb-5 border border-[#cce7d0] rounded-[25px] shadow-[20px_20px_30px_rgba(0,0,0,0.06)] transition-all duration-200 ease-in-out hover:shadow-[20px_20px_30px_rgba(0,0,0,0.2)] max-[1000px]:w-[99%] max-[700px]:py-2.5 max-[700px]:px-2.5 max-[700px]:rounded-[18px] max-[700px]:shadow-none max-[700px]:hover:shadow-none max-[415px]:w-[99%]">
       {showModal && (
         <SizeModal
           id={data._id}
@@ -39,26 +39,26 @@ const Card = (data) => {
           onClose={() => setShowModal((prev) => !prev)}
         />
       )}
-      <Link to={`/product/${data.slug}`} style={{ textDecoration: "none" }}>
-        <div className="image-div">
-          <img src={data.image} alt="image"  height="240px" loading="lazy" />
+      <Link to={`/product/${data.slug}`} className="no-underline">
+        <div className="w-full bg-[#e5e5e5] rounded-[20px] cursor-pointer overflow-hidden flex justify-center items-center border border-[#d9eadc] max-[700px]:rounded-[13px]">
+          <img src={data.image} alt="image" height="240px" loading="lazy" className="object-cover w-full aspect-square" />
         </div>
       </Link>
-      <div className="desc">
-        <Link to={`/product/${data.slug}`} style={{ textDecoration: "none" }}>
-          <h5>{data.brand}</h5>
-          <h6>{toTitleCase(data.name)}</h6>
+      <div className="text-left pt-2.5 pb-0 font-['League_Spartan',sans-serif,'Poppins'] max-[700px]:pt-4 max-[700px]:pb-0.5">
+        <Link to={`/product/${data.slug}`} className="no-underline">
+          <h5 className="font-black whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(18px,3vw,24px)] text-[#1a1a1a] pt-[0.5vw] leading-none">{data.brand}</h5>
+          <h6 className="whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(14px,2vw,18px)] font-normal text-gray-600">{toTitleCase(data.name)}</h6>
         </Link>
-        <div className="star">
+        <div className="text-[rgb(243,181,25)] text-[clamp(13px,2.5vw,17px)] flex gap-0.5 py-0.5">
           {<Star rating={data.ratingScore / data.ratings.length || 0} />}
         </div>
-        <h4>₹ {data.price}</h4>
+        <h4 className="font-extrabold text-[clamp(15px,2.5vw,19px)] text-[#54bab9] pt-2.5 pb-0">₹ {data.price}</h4>
       </div>
       <button
-        className="btn-cart"
+        className="h-[clamp(30px,3.5vw,40px)] w-[clamp(30px,3.5vw,40px)] rounded-[40px] items-center flex justify-center bg-[#e8f6ea] text-[#54bab9] border border-[#cce7d0] absolute bottom-[clamp(12px,1.5vw,20px)] right-[clamp(14px,1.5vw,20px)] cursor-pointer"
         onClick={() => handleAddToCart(data.sizeQuantity.length)}
       >
-        <span className="add-to-cart">
+        <span className="text-[clamp(15px,2.5vw,21px)] flex mr-[0.28vw] justify-center items-center">
           <FaShoppingCart />
         </span>
       </button>
