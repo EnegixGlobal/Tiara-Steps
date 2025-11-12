@@ -3,6 +3,7 @@ import logo from "../Images/Tiara-logo2.png";
 import { FiSearch } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
 import { LuUserRound } from "react-icons/lu";
+import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 
@@ -10,39 +11,76 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    setAuth(null);
+    navigate("/");
+  };
 
   return (
     <div className="sticky top-0 left-0 right-0 z-[9999] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
-      <div className="flex items-center justify-between px-19 h-[90px] font-[Poppins] max-[768px]:px-6">
+      <div className="flex items-center justify-between px-8 md:px-14 lg:px-20 h-[85px] font-[Poppins]">
+        
+        {/* Left Section - Logo + Hamburger */}
+        <div className="flex items-center gap-4">
+          {/* Hamburger Icon - mobile only */}
+          <div
+            className="md:hidden text-3xl text-[#4b3f3f] cursor-pointer hover:text-[#d81b60] transition-colors"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <HiX /> : <HiOutlineMenuAlt3 />}
+          </div>
 
-        {/* Left Section - Links (moved closer to logo) */}
-        <div className="flex items-center gap-13 text-[18px] font-medium text-gray-500 max-[992px]:hidden">
-          <NavLink to="/" className="hover:text-[#d81b60] transition-colors">Home</NavLink>
-          <NavLink to="/trending" className="hover:text-[#d81b60] transition-colors">Best Sellers</NavLink>
-          <NavLink to="/products" className="hover:text-[#d81b60] transition-colors">Products</NavLink>
-          <NavLink to="/about" className="hover:text-[#d81b60] transition-colors">About</NavLink>
-          <NavLink to="/contact" className="hover:text-[#d81b60] transition-colors">Contact</NavLink>
+          {/* Logo */}
+          <div className="flex items-center">
+            <img
+              src={logo}
+              alt="Tiara Steps"
+              onClick={() => navigate("/")}
+              className="h-[60px] w-auto cursor-pointer hover:scale-[1.03] transition-transform"
+            />
+          </div>
         </div>
 
-        {/* Center Section - Logo (slightly moved left) */}
-        <div className="flex justify-center items-center">
-          <img
-            src={logo}
-            alt="Tiara Steps"
-            className="h-[95px] w-auto cursor-pointer hover:scale-[1.03] transition-transform"
-          />
+        {/* Center Section - Nav Links (hidden in mobile) */}
+        <div className="hidden md:flex items-center gap-10 text-[17px] font-medium text-gray-500">
+          <NavLink to="/" className="hover:text-[#d81b60] transition-colors">
+            Home
+          </NavLink>
+          <NavLink to="/trending" className="hover:text-[#d81b60] transition-colors">
+            Best Sellers
+          </NavLink>
+          <NavLink to="/products" className="hover:text-[#d81b60] transition-colors">
+            Products
+          </NavLink>
+          <NavLink to="/about" className="hover:text-[#d81b60] transition-colors">
+            About
+          </NavLink>
+          <NavLink to="/contact" className="hover:text-[#d81b60] transition-colors">
+            Contact
+          </NavLink>
         </div>
 
         {/* Right Section - Search + Icons */}
-        <div className="flex items-center gap-7">
-          {/* Search Bar */}
-          <div className="flex items-center border border-gray-300 rounded-full px-5 py-3 bg-white shadow-sm w-[310px] max-[992px]:hidden">
+        <div className="flex items-center gap-6">
+          {/* Search Bar - desktop only */}
+          <div className="hidden lg:flex items-center border border-gray-300 rounded-full px-5 py-2 bg-white shadow-sm w-[300px]">
             <input
               type="text"
               placeholder="Search for product"
-              className="w-full border-none outline-none text-[17px] text-gray-700 placeholder-gray-400 bg-transparent"
+              className="w-full border-none outline-none text-[16px] text-gray-700 placeholder-gray-400 bg-transparent"
             />
             <FiSearch className="text-gray-500 text-2xl cursor-pointer hover:text-[#d81b60] transition-colors" />
+          </div>
+
+          {/* Mobile Search Icon */}
+          <div
+            className="lg:hidden text-2xl text-gray-700 cursor-pointer hover:text-[#d81b60]"
+            onClick={() => setMobileSearch(!mobileSearch)}
+          >
+            <FiSearch />
           </div>
 
           {/* Cart Icon */}
@@ -92,11 +130,7 @@ const Navbar = () => {
                   <li>
                     <button
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
-                      onClick={() => {
-                        localStorage.removeItem("jwt");
-                        setAuth(null);
-                        navigate("/");
-                      }}
+                      onClick={handleLogout}
                     >
                       Logout
                     </button>
@@ -111,6 +145,29 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
+          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Home</NavLink>
+          <NavLink to="/trending" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Best Sellers</NavLink>
+          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Products</NavLink>
+          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">About</NavLink>
+          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Contact</NavLink>
+        </div>
+      )}
+
+      {/* Mobile Search Bar */}
+      {mobileSearch && (
+        <div className="lg:hidden flex items-center gap-3 px-6 py-3 border-t border-gray-200 bg-white shadow-sm animate-fadeIn">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="flex-1 border border-gray-300 rounded-full px-4 py-2 outline-none text-gray-700"
+          />
+          <FiSearch className="text-2xl text-gray-600 cursor-pointer hover:text-[#d81b60]" />
+        </div>
+      )}
     </div>
   );
 };
