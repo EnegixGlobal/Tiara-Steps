@@ -20,13 +20,13 @@ const Footer = () => {
             <div>
               <h3 className="font-semibold text-gray-800 text-sm mb-3">KEEP IN TOUCH</h3>
               <div className="flex gap-4">
-                <a href="#" className="text-gray-800 hover:text-pink-500 transition-colors">
+                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
                   <Facebook size={20} />
                 </a>
-                <a href="#" className="text-gray-800 hover:text-pink-500 transition-colors">
+                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
                   <Instagram size={20} />
                 </a>
-                <a href="#" className="text-gray-800 hover:text-pink-500 transition-colors">
+                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
                   <Twitter size={20} />
                 </a>
               </div>
@@ -38,22 +38,22 @@ const Footer = () => {
             <h3 className="font-semibold text-gray-800 mb-4">Usefull links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/about" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/contact" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/products" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   Products
                 </Link>
               </li>
@@ -65,17 +65,17 @@ const Footer = () => {
             <h3 className="font-semibold text-gray-800 mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy-policy" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/privacy-policy" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   Privacy policy
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/faq" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="text-gray-700 hover:text-pink-500 transition-colors text-sm">
+                <Link to="/help" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                   Help
                 </Link>
               </li>
@@ -86,11 +86,11 @@ const Footer = () => {
           <div className='mt-[20px]'>
             <h3 className="font-semibold text-gray-800 mb-4">Contact</h3>
             <div className="space-y-3">
-              <a href="tel:+12345678900" className="flex items-center gap-3 text-gray-700 hover:text-pink-500 transition-colors text-sm">
+              <a href="tel:+12345678900" className="flex items-center gap-3 text-gray-700 hover:text-[#b89396] transition-colors text-sm">
                 <Phone size={18} />
                 <span>+1 234 567 8900</span>
               </a>
-              <a href="mailto:knowmore@tiarasteps.in" className="flex items-center gap-3 text-gray-700 hover:text-pink-500 transition-colors text-sm break-all">
+              <a href="mailto:knowmore@tiarasteps.in" className="flex items-center gap-3 text-gray-700 hover:text-[#b89396] transition-colors text-sm break-all">
                 <Mail size={18} />
                 <span>knowmore@tiarasteps.in</span>
               </a>

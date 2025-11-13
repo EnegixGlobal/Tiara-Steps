@@ -41,7 +41,7 @@ const Bestsellers = () => (
               alt={p.name}
               className="
                 w-full object-cover transition-all duration-300 
-                h-[260px] sm:h-[220px] md:h-60 lg:h-[280px] xl:h-80
+                h-[300px] sm:h-[220px] md:h-60 lg:h-[280px] xl:h-80
                 group-hover:scale-[1.03]
               "
             />
