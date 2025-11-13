@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Heart, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
 
 // demo images
-import partyWear from "../Images/demoCategory/party-wear.jpg";
-import premiumEdit from "../Images/demoCategory/premium-edit.jpg";
-import sparkleEdit from "../Images/demoCategory/sparkle-edit.jpg";
-import weddingReady from "../Images/demoCategory/wedding-ready.jpg";
-import dailyBling from "../Images/demoCategory/daily-bling.jpg";
-import pearlTouch from "../Images/demoCategory/pearl-touch.jpg";
+import partyWear from "../assets/images/A-Casual.png"
+import premiumEdit from "../assets/images/A-Party Wear.png";
+import sparkleEdit from "../assets/images/A-Formal Wear.png";
+import weddingReady from "../assets/images/A-Daily Comfort.png";
+import dailyBling from "../assets/images/A-Travel Essentials.png";
+import pearlTouch from "../assets/images/A-Dr sole.png";
 
 // demo products
 import product1 from "../Images/demoCategory/category1.jpg";
@@ -36,12 +36,12 @@ const CategoryPage = () => {
   const [showHeelsOptions, setShowHeelsOptions] = useState(false);
 
   const categories = [
-    { name: 'Party Wear', image: partyWear },
-    { name: 'Premium Edit', image: premiumEdit },
-    { name: 'Sparkle Edit', image: sparkleEdit },
-    { name: 'Wedding Ready', image: weddingReady },
-    { name: 'Daily Bling', image: dailyBling },
-    { name: 'Pearl Touch', image: pearlTouch }
+    { name: 'Casual Wear', image: partyWear },
+    { name: 'Party Wear', image: premiumEdit },
+    { name: 'Formal Wear', image: sparkleEdit },
+    { name: 'Daily Comfort', image: weddingReady },
+    { name: 'Travel Essentials', image: dailyBling },
+    { name: 'Dr sole', image: pearlTouch }
   ];
 
   const products = [
@@ -126,7 +126,7 @@ const CategoryPage = () => {
                       />
                       <div
                         className={`w-[18px] h-[18px] border-2 rounded border-gray-300 flex items-center justify-center transition-all ${
-                          filters.categories.includes(cat) ? 'bg-pink-600 border-pink-600' : ''
+                          filters.categories.includes(cat) ? 'bg-[#A37478] border-pink-[#A37478]' : ''
                         }`}
                       >
                         {filters.categories.includes(cat) && <span className="text-white text-xs">✓</span>}
@@ -150,7 +150,7 @@ const CategoryPage = () => {
                               value={option}
                               checked={filters.heelsType === option}
                               onChange={(e) => setFilters({ ...filters, heelsType: e.target.value })}
-                              className="accent-pink-600"
+                              className="accent-[#A37478]"
                             />
                             <span>{option}</span>
                           </label>
@@ -172,7 +172,7 @@ const CategoryPage = () => {
                     key={size}
                     className={`p-2 border rounded text-center text-[13px] cursor-pointer transition-all ${
                       filters.sizes.includes(size)
-                        ? 'bg-pink-600 text-white border-pink-600'
+                        ? 'bg-[#A37478] text-white border-[#A37478]'
                         : 'border-gray-300'
                     }`}
                     onClick={() => toggleFilter('sizes', size)}
@@ -245,7 +245,7 @@ const CategoryPage = () => {
                   <button
                     className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${
                       favorites[product.id]
-                        ? "bg-pink-600 text-white"
+                        ? "bg-[#A37478] text-white"
                         : "bg-white/85 hover:bg-white hover:scale-110"
                     }`}
                     onClick={() => toggleFavorite(product.id)}
@@ -256,7 +256,7 @@ const CategoryPage = () => {
                 <div className="p-4">
                   <div className="text-[13px] text-gray-600 uppercase tracking-wide mb-1">{product.brand}</div>
                   <div className="text-[15px] text-gray-800 mb-2.5 font-medium">{product.name}</div>
-                  <div className="text-base font-semibold text-pink-600">Rs. {product.price}</div>
+                  <div className="text-base font-semibold text-[#A37478]">Rs. {product.price}</div>
                 </div>
               </div>
             ))}
@@ -272,7 +272,7 @@ const CategoryPage = () => {
                 key={num}
                 className={`w-10 h-10 border rounded flex items-center justify-center cursor-pointer transition-all text-sm ${
                   currentPage === num
-                    ? 'bg-pink-600 text-white border-pink-600'
+                    ? 'bg-[#A37478] text-white border-[#8b686b]'
                     : 'border-gray-300 bg-white hover:bg-gray-100'
                 }`}
                 onClick={() => setCurrentPage(num)}
