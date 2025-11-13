@@ -26,7 +26,7 @@ const ReelsSection = () => (
         playsInline
         className="
           w-full rounded-lg object-cover 
-          h-[360px] sm:h-80 lg:h-[360px] xl:h-[420px]
+          h-[400px] sm:h-80 lg:h-[360px] xl:h-[420px]
         "
       />
     ))}

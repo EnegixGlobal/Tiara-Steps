@@ -4,15 +4,15 @@ import cat2 from "../../assets/images/A-Party Wear.png";
 import cat3 from "../../assets/images/A-Formal Wear.png";
 import cat4 from "../../assets/images/A-Daily Comfort.png";
 import cat5 from "../../assets/images/A-Travel Essentials.png";
-import cat6 from "../../assets/images/A-Dr sole.png";
+import cat6 from "../../assets/images/A-Dr Sole.png";
 
 const categories = [
   { name: "Casual Wear", img: cat1 },
   { name: "Party Wear", img: cat2 },
   { name: "Formal Wear", img: cat3 },
-  { name: "Daily Cpmfort", img: cat4 },
+  { name: "Daily Comfort", img: cat4 },
   { name: "Travel Essentials", img: cat5 },
-  { name: "Dr.Sole", img: cat6 },
+  { name: "Dr. Sole", img: cat6 },
 ];
 
 const CategoryStrip = () => (
@@ -29,8 +29,6 @@ const CategoryStrip = () => (
         max-w-[1200px] w-full
       "
     >
-
-
       {categories.map((c, i) => (
         <div
           key={i}
