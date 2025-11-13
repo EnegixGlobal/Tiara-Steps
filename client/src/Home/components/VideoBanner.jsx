@@ -1,5 +1,5 @@
 import React from "react";
-import videoBanner from "../../assets/images/videoBanner.mp4";
+import videoBanner from "../../assets/images/videobanner-1.mp4";
 
 const VideoBanner = () => (
   <section

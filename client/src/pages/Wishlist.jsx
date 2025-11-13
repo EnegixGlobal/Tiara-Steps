@@ -226,7 +226,7 @@ const WishlistCard = ({ product, onMoveToCart, onShowSimilar }) => {
           {/* Action Buttons */}
           <button
             onClick={isOutOfStock ? onShowSimilar : onMoveToCart}
-            className="w-full py-2.5 bg-black text-white rounded font-semibold text-sm uppercase hover:bg-gray-800 transition-colors"
+            className="w-full py-2.5  bg-[#b89396] text-white rounded font-semibold text-sm uppercase hover:bg-gray-800 transition-colors"
           >
             {isOutOfStock ? 'Show Similar' : 'Move to Bag'}
           </button>
@@ -237,3 +237,4 @@ const WishlistCard = ({ product, onMoveToCart, onShowSimilar }) => {
   
 
 export default WishlistPage;
+
