@@ -1,143 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-// Demo data
-const DEMO_WISHLIST = [
-  {
-    _id: '1',
-    product: {
-      _id: 'p1',
-      slug: 'women-open-toe-flats',
-      brand: 'MODARE',
-      name: 'Women Open Toe Flats',
-      price: 3199,
-      stock: 10,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '2',
-    product: {
-      _id: 'p2',
-      slug: 'tiara-luxe-slides',
-      brand: 'TIARA',
-      name: 'Tiara Luxe Slides - Trendy ankle style',
-      price: 1299,
-      stock: 5,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '3',
-    product: {
-      _id: 'p3',
-      slug: 'bella-charm-heels',
-      brand: 'BELLA',
-      name: 'Bella Charm Heels - Elegant party wear',
-      price: 999,
-      stock: 0,
-      inStock: false,
-      image: 'https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '4',
-    product: {
-      _id: 'p4',
-      slug: 'classic-comfort-loafers',
-      brand: 'COMFORT',
-      name: 'Classic Comfort Loafers - Lightweight everyday wear',
-      price: 799,
-      stock: 0,
-      inStock: false,
-      image: 'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '5',
-    product: {
-      _id: 'p5',
-      slug: 'crystal-bloom-heels',
-      brand: 'CRYSTAL',
-      name: 'Crystal Bloom Heels - Sparkling evening charm',
-      price: 890,
-      stock: 0,
-      inStock: false,
-      image: 'https://images.unsplash.com/photo-1596702062351-8c2c14d1fdd0?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '6',
-    product: {
-      _id: 'p6',
-      slug: 'midnight-glam-sandals',
-      brand: 'MIDNIGHT',
-      name: 'Midnight Glam Sandals - Chic black design',
-      price: 745,
-      stock: 8,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1562183241-b937e95585b6?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '7',
-    product: {
-      _id: 'p7',
-      slug: 'rust-aura-flats',
-      brand: 'AURA',
-      name: 'Rust Aura Flats - Trendy daily comfort',
-      price: 599,
-      stock: 12,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '8',
-    product: {
-      _id: 'p8',
-      slug: 'silver-bow-slides',
-      brand: 'SILVER',
-      name: 'Silver Bow Slides - Graceful wedding style',
-      price: 845,
-      stock: 6,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '9',
-    product: {
-      _id: 'p9',
-      slug: 'pearl-elegance-heels',
-      brand: 'PEARL',
-      name: 'Pearl Elegance Heels - Sophisticated design',
-      price: 1199,
-      stock: 4,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=400&h=400&fit=crop'
-    }
-  },
-  {
-    _id: '10',
-    product: {
-      _id: 'p10',
-      slug: 'rose-gold-sandals',
-      brand: 'ROSE',
-      name: 'Rose Gold Sandals - Shimmering party footwear',
-      price: 950,
-      stock: 7,
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1549298222-1cacd8d2c90f?w=400&h=400&fit=crop'
-    }
-  }
-];
+import { toast } from 'react-toastify';
+import useWishlist from '../../hooks/useWishlist';
 
 const WishlistPage = () => {
-  const [wishlistItems, setWishlistItems] = useState(DEMO_WISHLIST);
-  const [loading, setLoading] = useState(false);
+  const { wishlistItems, loading, error, fetchWishlist, removeFromWishlist } = useWishlist();
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      return;
+    }
+    fetchWishlist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleRemoveFromWishlist = async (productId) => {
+    try {
+      await removeFromWishlist(productId);
+      toast.success("Removed from wishlist", {
+        position: "bottom-right",
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || "Failed to remove from wishlist", {
+        position: "bottom-right",
+      });
+    }
+  };
 
   const moveToCart = (productId) => {
     alert(`Moving product ${productId} to cart!`);
@@ -147,7 +36,50 @@ const WishlistPage = () => {
     alert(`Showing similar products for ${productId}`);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-6 px-4 flex items-center justify-center">
+        <div className="text-lg text-gray-600">Loading wishlist...</div>
+      </div>
+    );
+  }
+
+  const token = localStorage.getItem("jwt");
+  if (!token && !loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-6 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-16">
+            <p className="text-xl text-red-600 mb-4">Please login to view your wishlist</p>
+            <Link
+              to="/products"
+              className="mt-4 inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-6 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-16">
+            <p className="text-xl text-red-600 mb-4">{error}</p>
+            <Link
+              to="/products"
+              className="mt-4 inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-6 px-4">
@@ -162,14 +94,19 @@ const WishlistPage = () => {
 
         {/* Wishlist Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ">
-          {wishlistItems.map((item) => (
-            <WishlistCard
-              key={item._id}
-              product={item.product}
-              onMoveToCart={() => moveToCart(item.product._id)}
-              onShowSimilar={() => showSimilar(item.product._id)}
-            />
-          ))}
+          {wishlistItems.map((item) => {
+            const product = item.product || item;
+            const productId = product._id || product.id;
+            return (
+              <WishlistCard
+                key={item._id || productId}
+                product={product}
+                onMoveToCart={() => moveToCart(productId)}
+                onShowSimilar={() => showSimilar(productId)}
+                onRemove={() => handleRemoveFromWishlist(productId)}
+              />
+            );
+          })}
         </div>
 
         {/* Empty State */}
@@ -189,11 +126,22 @@ const WishlistPage = () => {
   );
 };
 
-const WishlistCard = ({ product, onMoveToCart, onShowSimilar }) => {
+const WishlistCard = ({ product, onMoveToCart, onShowSimilar, onRemove }) => {
     const isOutOfStock = product.stock === 0 || !product.inStock;
+    const productId = product._id || product.id;
   
     return (
-      <div className="bg-[#F2E6E1] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="bg-[#F2E6E1] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
+        {/* Remove Button */}
+        <button
+          onClick={onRemove}
+          className="absolute top-2 right-2 z-10 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110"
+          type="button"
+          title="Remove from wishlist"
+        >
+          <span className="text-gray-700 text-lg">×</span>
+        </button>
+
         {/* Product Image */}
         <div className="relative aspect-square bg-[#F2E6E1] overflow-hidden group p-3 rounded-lg">
           <img
@@ -220,7 +168,7 @@ const WishlistCard = ({ product, onMoveToCart, onShowSimilar }) => {
           </p>
   
           <p className="text-gray-900 font-semibold mb-3">
-            Rs. {product.price}
+            Rs. {product.price != null ? Number(product.price).toLocaleString("en-IN") : "--"}
           </p>
   
           {/* Action Buttons */}

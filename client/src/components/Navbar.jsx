@@ -22,7 +22,6 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 left-0 right-0 z-[9999] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
       <div className="flex items-center justify-between px-8 md:px-14 lg:px-20 h-[85px] font-[Poppins]">
-        
         {/* Left Section - Logo + Hamburger */}
         <div className="flex items-center gap-4">
           {/* Hamburger Icon - mobile only */}
@@ -49,16 +48,28 @@ const Navbar = () => {
           <NavLink to="/" className="hover:text-[#b89396] transition-colors">
             Home
           </NavLink>
-          <NavLink to="/trending" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/trending"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Best Sellers
           </NavLink>
-          <NavLink to="/products" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/products"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Products
           </NavLink>
-          <NavLink to="/about" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/about"
+            className="hover:text-[#b89396] transition-colors"
+          >
             About
           </NavLink>
-          <NavLink to="/contact" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/contact"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Contact
           </NavLink>
         </div>
@@ -149,11 +160,41 @@ const Navbar = () => {
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
-          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Home</NavLink>
-          <NavLink to="/trending" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Best Sellers</NavLink>
-          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Products</NavLink>
-          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">About</NavLink>
-          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Contact</NavLink>
+          <NavLink
+            to="/"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/trending"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Best Sellers
+          </NavLink>
+          <NavLink
+            to="/products"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Products
+          </NavLink>
+          <NavLink
+            to="/about"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Contact
+          </NavLink>
         </div>
       )}
 

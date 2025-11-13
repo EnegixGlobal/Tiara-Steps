@@ -19,6 +19,7 @@ const UpdateProducts = () => {
     featured: "false",
   });
   const [link, setLink] = useState(null);
+  const [imageLinks, setImageLinks] = useState([]);
   const [fields, setFields] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,10 @@ const UpdateProducts = () => {
       try {
         const response = await Axios.get(`/product/${slug}`);
         setLink(response.data.data.image);
+        // Set multiple images if available, otherwise empty array
+        setImageLinks(response.data.data.images && Array.isArray(response.data.data.images) 
+          ? response.data.data.images 
+          : []);
         const newFields = [...fields];
         response.data.data.sizeQuantity.forEach((field) => {
           newFields[field.size - 3] = {
@@ -65,6 +70,10 @@ const UpdateProducts = () => {
   const changeLink = (e) => {
     setLink(e);
   };
+
+  const changeImageLinks = (e) => {
+    setImageLinks(e);
+  };
   const changeCategory = (e) => {
     setData({ ...data, category: e });
   };
@@ -97,7 +106,12 @@ const UpdateProducts = () => {
 
       const response = await Axios.put(
         `/product/update/${slug}`,
-        { ...data, sizeQuantity: validFields, image: link },
+        { 
+          ...data, 
+          sizeQuantity: validFields, 
+          image: link,
+          images: imageLinks && imageLinks.length > 0 ? imageLinks : []
+        },
         {
           headers: {
             Authorization: token,
@@ -124,6 +138,8 @@ const UpdateProducts = () => {
         <ProductForm
           link={link}
           changeLink={changeLink}
+          imageLinks={imageLinks}
+          changeImageLinks={changeImageLinks}
           data={data}
           handleInputChange={handleInputChange}
           fields={fields}
