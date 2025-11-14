@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import Axios from "../Axios";
 import useAuth from "../../hooks/useAuth";
 import TriangleLoader from "../components/TriangleLoader";
+import FormReviews from "../components/FormReviews";
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -16,36 +18,39 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [expandedSection, setExpandedSection] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [editingReviewIndex, setEditingReviewIndex] = useState(null);
+  const [deletingReviewIndex, setDeletingReviewIndex] = useState(null);
 
   // ✅ Fetch Product Data from API
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await Axios.get(`/product/${slug}`);
-        
-        if (response.data.success && response.data.data) {
-          setData(response.data.data);
-        } else {
-          setError("Product not found");
-        }
-      } catch (err) {
-        console.error("Error fetching product:", err);
-        const errorMessage = err.response?.data?.message || "Failed to load product";
-        setError(errorMessage);
-        toast.error(errorMessage, {
-          position: "bottom-right",
-        });
-        // Navigate back to products page after 2 seconds
-        setTimeout(() => {
-          navigate("/products");
-        }, 2000);
-      } finally {
-        setLoading(false);
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await Axios.get(`/product/${slug}`);
+      
+      if (response.data.success && response.data.data) {
+        setData(response.data.data);
+      } else {
+        setError("Product not found");
       }
-    };
+    } catch (err) {
+      console.error("Error fetching product:", err);
+      const errorMessage = err.response?.data?.message || "Failed to load product";
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: "bottom-right",
+      });
+      // Navigate back to products page after 2 seconds
+      setTimeout(() => {
+        navigate("/products");
+      }, 2000);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (slug) {
       fetchProduct();
     }
@@ -144,6 +149,142 @@ const ProductDetails = () => {
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  // Handle review submission (new or edit)
+  const handleSubmitReview = async (reviewData) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Please login to submit a review", {
+        position: "bottom-right",
+      });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      // If editing, use edit endpoint
+      if (editingReviewIndex !== null) {
+        const response = await Axios.put(
+          "/product/review/edit",
+          {
+            productId: data._id,
+            reviewIndex: editingReviewIndex,
+            rating: reviewData.rating,
+            review: reviewData.opinion,
+          },
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          toast.success(response.data.message || "Review updated successfully", {
+            position: "bottom-right",
+          });
+          setShowReviewModal(false);
+          setEditingReviewIndex(null);
+          // Refresh product data to show updated review
+          await fetchProduct();
+        }
+      } else {
+        // New review
+        const response = await Axios.put(
+          "/product/review",
+          {
+            rating: reviewData.rating,
+            review: reviewData.opinion,
+            productId: data._id,
+            // orderId is optional now - can be omitted for direct product reviews
+          },
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          toast.success(response.data.message || "Review submitted successfully", {
+            position: "bottom-right",
+          });
+          setShowReviewModal(false);
+          // Refresh product data to show new review
+          await fetchProduct();
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      const errorMessage = error.response?.data?.message || "Failed to submit review";
+      toast.error(errorMessage, {
+        position: "bottom-right",
+      });
+    }
+  };
+
+  // Handle edit review
+  const handleEditReview = (reviewIndex) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Please login to edit a review", {
+        position: "bottom-right",
+      });
+      navigate("/login");
+      return;
+    }
+    setEditingReviewIndex(reviewIndex);
+    setShowReviewModal(true);
+  };
+
+  // Handle delete review
+  const handleDeleteReview = async (reviewIndex) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Please login to delete a review", {
+        position: "bottom-right",
+      });
+      navigate("/login");
+      return;
+    }
+
+    // Confirm deletion
+    if (!window.confirm("Are you sure you want to delete this review?")) {
+      return;
+    }
+
+    try {
+      setDeletingReviewIndex(reviewIndex);
+      const response = await Axios.delete(
+        "/product/review/delete",
+        {
+          data: {
+            productId: data._id,
+            reviewIndex: reviewIndex,
+          },
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message || "Review deleted successfully", {
+          position: "bottom-right",
+        });
+        // Refresh product data to show updated reviews
+        await fetchProduct();
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      const errorMessage = error.response?.data?.message || "Failed to delete review";
+      toast.error(errorMessage, {
+        position: "bottom-right",
+      });
+    } finally {
+      setDeletingReviewIndex(null);
+    }
   };
 
   // Calculate average rating
@@ -404,23 +545,135 @@ const ProductDetails = () => {
               {/* Stars Section */}
               <div className="flex items-center text-yellow-400 text-xl sm:text-2xl">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i}>★</span>
+                  <span key={i} className={i < Math.floor(averageRating) ? "text-yellow-400" : "text-gray-300"}>
+                    ★
+                  </span>
                 ))}
               </div>
 
               {/* Review Text */}
               <span className="text-gray-800 text-lg sm:text-[22px] font-medium">
-                Be the first to write a review
+                {data.ratings && data.ratings.length > 0
+                  ? `${data.ratings.length} Review${data.ratings.length > 1 ? "s" : ""}`
+                  : "Be the first to write a review"}
               </span>
             </div>
 
             {/* Review Button */}
-            <button className="bg-gray-100 py-3 px-6 sm:px-10 text-sm sm:text-base font-medium text-gray-800 rounded transition-colors hover:bg-gray-200">
+            <button
+              onClick={() => {
+                const token = localStorage.getItem("jwt");
+                if (!token) {
+                  toast.error("Please login to write a review", {
+                    position: "bottom-right",
+                  });
+                  navigate("/login");
+                  return;
+                }
+                setEditingReviewIndex(null);
+                setShowReviewModal(true);
+              }}
+              className="bg-gray-100 py-3 px-6 sm:px-10 text-sm sm:text-base font-medium text-gray-800 rounded transition-colors hover:bg-gray-200"
+            >
               Write a review
             </button>
           </div>
+
+          {/* Reviews List */}
+          {data.ratings && data.ratings.length > 0 && (
+            <div className="mt-6 space-y-6 border-t border-gray-200 pt-6">
+              {data.ratings.map((review, index) => {
+                const isUserReview = auth && auth.name && review.name === auth.name;
+                return (
+                  <div key={index} className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">
+                          {review.name ? review.name.charAt(0).toUpperCase() : "A"}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-800">{review.name || "Anonymous"}</p>
+                          <p className="text-xs text-gray-500">
+                            {review.date
+                              ? new Date(review.date).toLocaleDateString("en-IN", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })
+                              : "Recently"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center text-yellow-400">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-300"}>
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        {isUserReview && (
+                          <div className="flex items-center gap-3 ml-2">
+                            <button
+                              onClick={() => handleEditReview(index)}
+                              className="text-[#4b3f3f]  transition-colors p-1.5 rounded hover:bg-gray-100"
+                              title="Edit review"
+                            >
+                              <FiEdit2 size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(index)}
+                              disabled={deletingReviewIndex === index}
+                              className="text-[#4b3f3f]  transition-colors p-1.5 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Delete review"
+                            >
+                              {deletingReviewIndex === index ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-600 border-t-transparent"></div>
+                              ) : (
+                                <FiTrash2 size={18} />
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {review.review && (
+                      <p className="text-gray-700 text-sm leading-relaxed pl-[52px]">
+                        {review.review}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {(!data.ratings || data.ratings.length === 0) && (
+            <div className="mt-6 text-center py-8 text-gray-500">
+              <p>No reviews yet. Be the first to review this product!</p>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <FormReviews
+          onClose={() => {
+            setShowReviewModal(false);
+            setEditingReviewIndex(null);
+          }}
+          onSubmit={handleSubmitReview}
+          editData={
+            editingReviewIndex !== null && data.ratings && data.ratings[editingReviewIndex]
+              ? {
+                  rating: data.ratings[editingReviewIndex].rating,
+                  review: data.ratings[editingReviewIndex].review,
+                }
+              : null
+          }
+        />
+      )}
 
       {/* ===== SIMILAR PRODUCTS ===== */}
       <div className="mt-14 sm:mt-16">
