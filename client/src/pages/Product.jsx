@@ -119,11 +119,11 @@ const normalizeFilterValue = (key, value) => {
 
 // demo images (keep your imports)
 import partyWear from "../assets/images/A-Casual.png";
-import premiumEdit from "../assets/images/A-Party Wear.png";
-import sparkleEdit from "../assets/images/A-Formal Wear.png";
-import weddingReady from "../assets/images/A-Daily Comfort.png";
-import dailyBling from "../assets/images/A-Travel Essentials.png";
-import pearlTouch from "../assets/images/A-Dr sole.png";
+import premiumEdit from "../assets/images/A-Party-Wear.png";
+import sparkleEdit from "../assets/images/A-Formal-Wear.png";
+import weddingReady from "../assets/images/A-Daily-Comfort.png";
+import dailyBling from "../assets/images/A-Travel-Essentials.png";
+import pearlTouch from "../assets/images/A-Dr-sole.png";
 
 const CategoryPage = () => {
   const navigate = useNavigate();

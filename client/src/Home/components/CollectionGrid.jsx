@@ -1,11 +1,11 @@
 import React from "react";
 
 import collection1 from "../../assets/images/A-Casual.png";
-import collection2 from "../../assets/images/A-Party Wear.png";
-import collection3 from "../../assets/images/A-Formal Wear.png";
-import collection4 from "../../assets/images/A-Daily Comfort.png";
-import collection5 from "../../assets/images/A-Travel Essentials.png";
-import collection6 from "../../assets/images/A-Dr Sole.png";
+import collection2 from "../../assets/images/A-Party-Wear.png";
+import collection3 from "../../assets/images/A-Formal-Wear.png";
+import collection4 from "../../assets/images/A-Daily-Comfort.png";
+import collection5 from "../../assets/images/A-Travel-Essentials.png";
+import collection6 from "../../assets/images/A-Dr-Sole.png";
 
 const collections = [
   { title: "Casual Wear", img: collection1 },
