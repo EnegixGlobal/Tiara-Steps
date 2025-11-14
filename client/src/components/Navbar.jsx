@@ -22,11 +22,12 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 left-0 right-0 z-[9999] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
       <div className="flex items-center justify-between px-8 md:px-14 lg:px-20 h-[85px] font-[Poppins]">
+        
         {/* Left Section - Logo + Hamburger */}
         <div className="flex items-center gap-4">
           {/* Hamburger Icon - mobile only */}
           <div
-            className="md:hidden text-3xl text-[#4b3f3f] cursor-pointer hover:text-[#b89396] transition-colors"
+            className="md:hidden text-3xl text-[#4b3f3f] cursor-pointer hover:text-[#d81b60] transition-colors"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <HiX /> : <HiOutlineMenuAlt3 />}
@@ -45,31 +46,19 @@ const Navbar = () => {
 
         {/* Center Section - Nav Links (hidden in mobile) */}
         <div className="hidden md:flex items-center gap-10 text-[17px] font-medium text-gray-500">
-          <NavLink to="/" className="hover:text-[#b89396] transition-colors">
+          <NavLink to="/" className="hover:text-[#d81b60] transition-colors">
             Home
           </NavLink>
-          <NavLink
-            to="/trending"
-            className="hover:text-[#b89396] transition-colors"
-          >
+          <NavLink to="/trending" className="hover:text-[#d81b60] transition-colors">
             Best Sellers
           </NavLink>
-          <NavLink
-            to="/products"
-            className="hover:text-[#b89396] transition-colors"
-          >
+          <NavLink to="/products" className="hover:text-[#d81b60] transition-colors">
             Products
           </NavLink>
-          <NavLink
-            to="/about"
-            className="hover:text-[#b89396] transition-colors"
-          >
+          <NavLink to="/about" className="hover:text-[#d81b60] transition-colors">
             About
           </NavLink>
-          <NavLink
-            to="/contact"
-            className="hover:text-[#b89396] transition-colors"
-          >
+          <NavLink to="/contact" className="hover:text-[#d81b60] transition-colors">
             Contact
           </NavLink>
         </div>
@@ -83,29 +72,29 @@ const Navbar = () => {
               placeholder="Search for product"
               className="w-full border-none outline-none text-[16px] text-gray-700 placeholder-gray-400 bg-transparent"
             />
-            <FiSearch className="text-gray-500 text-2xl cursor-pointer hover:text-[#b89396] transition-colors" />
+            <FiSearch className="text-gray-500 text-2xl cursor-pointer hover:text-[#d81b60] transition-colors" />
           </div>
 
           {/* Mobile Search Icon */}
           <div
-            className="lg:hidden text-2xl text-gray-700 cursor-pointer hover:text-[#b89396]"
+            className="lg:hidden text-2xl text-gray-700 cursor-pointer hover:text-[#d81b60]"
             onClick={() => setMobileSearch(!mobileSearch)}
           >
             <FiSearch />
           </div>
 
           {/* Cart Icon */}
-          <div className="relative text-[26px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] transition-colors">
+          <div className="relative text-[26px] cursor-pointer text-[#4b3f3f] hover:text-[#d81b60] transition-colors">
             <Link to="/cart">
               <FaShoppingCart />
-              <div className="absolute -top-[7px] -right-3 text-[11px] bg-[#b89396] text-white rounded-full w-[18px] h-[18px] flex justify-center items-center font-semibold">
+              <div className="absolute -top-[7px] -right-3 text-[11px] bg-[#d81b60] text-white rounded-full w-[18px] h-[18px] flex justify-center items-center font-semibold">
                 {auth?.cartSize || 0}
               </div>
             </Link>
           </div>
 
           {/* Wishlist Icon */}
-          <div className="text-[26px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] transition-colors">
+          <div className="text-[26px] cursor-pointer text-[#4b3f3f] hover:text-[#d81b60] transition-colors">
             <Link to="/wishlist">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +114,7 @@ const Navbar = () => {
           </div>
 
           {/* Profile Icon */}
-          <div className="text-[28px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] relative group transition-colors">
+          <div className="text-[28px] cursor-pointer text-[#4b3f3f] hover:text-[#d81b60] relative group transition-colors">
             {auth ? (
               <>
                 <LuUserRound className="text-[30px]" />
@@ -160,41 +149,11 @@ const Navbar = () => {
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
-          <NavLink
-            to="/"
-            onClick={() => setIsOpen(false)}
-            className="block hover:text-[#b89396]"
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/trending"
-            onClick={() => setIsOpen(false)}
-            className="block hover:text-[#b89396]"
-          >
-            Best Sellers
-          </NavLink>
-          <NavLink
-            to="/products"
-            onClick={() => setIsOpen(false)}
-            className="block hover:text-[#b89396]"
-          >
-            Products
-          </NavLink>
-          <NavLink
-            to="/about"
-            onClick={() => setIsOpen(false)}
-            className="block hover:text-[#b89396]"
-          >
-            About
-          </NavLink>
-          <NavLink
-            to="/contact"
-            onClick={() => setIsOpen(false)}
-            className="block hover:text-[#b89396]"
-          >
-            Contact
-          </NavLink>
+          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Home</NavLink>
+          <NavLink to="/trending" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Best Sellers</NavLink>
+          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Products</NavLink>
+          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">About</NavLink>
+          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Contact</NavLink>
         </div>
       )}
 
@@ -206,7 +165,7 @@ const Navbar = () => {
             placeholder="Search products..."
             className="flex-1 border border-gray-300 rounded-full px-4 py-2 outline-none text-gray-700"
           />
-          <FiSearch className="text-2xl text-gray-600 cursor-pointer hover:text-[#b89396]" />
+          <FiSearch className="text-2xl text-gray-600 cursor-pointer hover:text-[#d81b60]" />
         </div>
       )}
     </div>
