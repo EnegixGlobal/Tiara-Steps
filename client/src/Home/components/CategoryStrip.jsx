@@ -1,10 +1,10 @@
 import React from "react";
 import cat1 from "../../assets/images/A-Casual.png";
-import cat2 from "../../assets/images/A-Party Wear.png";
-import cat3 from "../../assets/images/A-Formal Wear.png";
-import cat4 from "../../assets/images/A-Daily Comfort.png";
-import cat5 from "../../assets/images/A-Travel Essentials.png";
-import cat6 from "../../assets/images/A-Dr Sole.png";
+import cat2 from "../../assets/images/A-Party-Wear.png";
+import cat3 from "../../assets/images/A-Formal-Wear.png";
+import cat4 from "../../assets/images/A-Daily-Comfort.png";
+import cat5 from "../../assets/images/A-Travel-Essentials.png";
+import cat6 from "../../assets/images/A-Dr-Sole.png";
 
 const categories = [
   { name: "Casual Wear", img: cat1 },
