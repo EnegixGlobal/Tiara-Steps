@@ -467,7 +467,7 @@ const ProductDetails = () => {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-[220px] sm:h-[240px] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                  className="w-full h-[220px] sm:h-\[240px\] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                 />
                 <button className="absolute top-2 right-2 bg-white text-xl rounded-full w-[30px] h-[30px] cursor-pointer">
                   ♡
