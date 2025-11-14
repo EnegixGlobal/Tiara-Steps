@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import banner1 from "../../assets/images/hero-banner1.png";
-import banner2 from "../../assets/images/hero-banner2.png";
-import banner3 from "../../assets/images/hero-banner3.png";
+import banner1 from "../../assets/image/hero-banner1.png";
+import banner2 from "../../assets/image/hero-banner2.png";
+import banner3 from "../../assets/image/hero-banner3.png";
 
 const slides = [banner1, banner2, banner3];
 

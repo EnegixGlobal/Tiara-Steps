@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 // ✅ Import banner images
-import mid1 from "../../assets/images/ban-1.png";
-import mid2 from "../../assets/images/ban-2.png";
-import mid3 from "../../assets/images/ban-3.png";
-import mid4 from "../../assets/images/mid-ban4.png";
+import mid1 from "../../assets/image/ban-1.png";
+import mid2 from "../../assets/image/ban-2.png";
+import mid3 from "../../assets/image/ban-3.png";
+import mid4 from "../../assets/image/mid-ban4.png";
 
 const slides = [mid1, mid2, mid3, mid4];
 

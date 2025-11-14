@@ -1,6 +1,6 @@
 import React from "react";
-import dual1 from "../../assets/images/Dual-1.png";
-import dual2 from "../../assets/images/Dual-2.png";
+import dual1 from "../../assets/image/Dual-1.png";
+import dual2 from "../../assets/image/Dual-2.png";
 
 const DualBanner = () => {
   return (

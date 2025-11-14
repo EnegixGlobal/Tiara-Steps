@@ -1,10 +1,10 @@
 import React from "react";
 
 // ✅ Import local videos
-import insta1 from "../../assets/images/insta-4.mp4";
-import insta2 from "../../assets/images/insta-1.mp4";
-import insta3 from "../../assets/images/insta-2.mp4";
-import insta4 from "../../assets/images/insta-3.mp4";
+import insta1 from "../../assets/image/insta-4.mp4";
+import insta2 from "../../assets/image/insta-1.mp4";
+import insta3 from "../../assets/image/insta-2.mp4";
+import insta4 from "../../assets/image/insta-3.mp4";
 
 const videos = [insta1, insta2, insta3, insta4];
 

@@ -11,8 +11,8 @@ const categories = [
   { name: "Sparkle Edit", img: cat2 },
   { name: "Premium Edit", img: cat3 },
   { name: "Wedding Ready", img: cat4 },
-  { name: "Daily Bling", img: cat1 },
-  { name: "Pearl Touch", img: cat2 },
+  { name: "Daily Bling", img: cat5 },
+  { name: "Pearl Touch", img: cat6 },
 ];
 
 const CategoryStrip = () => (
