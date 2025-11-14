@@ -479,7 +479,7 @@ const CategoryPage = () => {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar Filters */}
-        <aside className={`md:w-[320px] shrink-0 ${showFilters ? "block" : "hidden"} md:block`}>
+        <aside className={`md:w-[320px] flex-shrink-0 ${showFilters ? "block" : "hidden"} md:block`}>
           <div className="space-y-5">
             {/* Categories */}
             <div className="bg-white p-5 rounded-lg shadow-sm">

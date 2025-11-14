@@ -69,6 +69,30 @@ const AdminProductList = () => {
       toast.error(error?.response?.data?.message);
     }
   };
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("jwtAdmin");
+      if (!token) {
+        return toast.error("Access denied.");
+      }
+      const response = await Axios.delete(`/admin/product/${id}`, {
+        headers: { Authorization: token },
+      });
+      if (response.data.success) {
+        const updatedData = data.filter((item) => item._id !== id);
+        setData(updatedData);
+        toast.success(response.data.message);
+        // Refresh data to update pagination
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to delete product.");
+    }
+  };
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebounce(searchTerm);
@@ -163,7 +187,7 @@ const AdminProductList = () => {
                       Edit
                     </button>
                     <button
-                      className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e]"
+                      className="w-24 py-2.5 mx-1.5 mb-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e]"
                       onClick={() =>
                         updateProductStatus(
                           item._id,
@@ -173,6 +197,14 @@ const AdminProductList = () => {
                     >
                       {item.status === "Active" ? "Deactivate" : "Activate"}
                     </button>
+                    {item.status === "Inactive" && (
+                      <button
+                        className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-red-600 border border-red-600 cursor-pointer hover:bg-red-700 hover:border-red-700"
+                        onClick={() => deleteProduct(item._id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

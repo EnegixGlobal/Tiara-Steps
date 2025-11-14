@@ -17,6 +17,7 @@ const AddProducts = () => {
     featured: "false",
   });
   const [link, setLink] = useState(null);
+  const [imageLinks, setImageLinks] = useState([]);
   const [fields, setFields] = useState([]);
   const navigate = useNavigate();
 
@@ -26,6 +27,10 @@ const AddProducts = () => {
 
   const changeLink = (e) => {
     setLink(e);
+  };
+
+  const changeImageLinks = (e) => {
+    setImageLinks(e);
   };
 
   const handleInputChange = (event) => {
@@ -60,7 +65,12 @@ const AddProducts = () => {
       }
       const response = await Axios.post(
         "/product/create",
-        { ...data, sizeQuantity: validFields, image: link },
+        { 
+          ...data, 
+          sizeQuantity: validFields, 
+          image: link,
+          images: imageLinks && imageLinks.length > 0 ? imageLinks : []
+        },
         {
           headers: {
             Authorization: token,
@@ -87,6 +97,8 @@ const AddProducts = () => {
         <ProductForm
           link={link}
           changeLink={changeLink}
+          imageLinks={imageLinks}
+          changeImageLinks={changeImageLinks}
           data={data}
           handleInputChange={handleInputChange}
           fields={fields}

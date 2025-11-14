@@ -1,16 +1,27 @@
-import { AiFillHeart } from "react-icons/ai";
+import { Heart } from "lucide-react";
 import { FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { memo, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Axios from "../Axios";
 import useAuth from "../../hooks/useAuth";
+import useWishlist from "../../hooks/useWishlist";
 
 const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
   const [currentQty, setCurrentQty] = useState(qty);
   const [debounceQty, setDebounceQty] = useState(null);
   const { auth, setAuth } = useAuth();
   const firstUpdate = useRef(true);
+  
+  // Wishlist functionality
+  const {
+    isInWishlist,
+    addToWishlist,
+    removeFromWishlist,
+  } = useWishlist();
+  
+  const productId = data._id || data.id;
+  const isFavorite = isInWishlist(productId);
   
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -51,6 +62,42 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
       changeQty();
     }
   }, [debounceQty]);
+
+  const toggleFavorite = async (e) => {
+    e.stopPropagation();
+    if (!auth) {
+      toast.error("Please login to add items to wishlist", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    const isInWishlistValue = isInWishlist(productId);
+
+    try {
+      if (isInWishlistValue) {
+        // Remove from wishlist
+        await removeFromWishlist(productId);
+        toast.success("Removed from wishlist", {
+          position: "bottom-right",
+        });
+      } else {
+        // Add to wishlist
+        await addToWishlist(productId);
+        toast.success("Added to wishlist", {
+          position: "bottom-right",
+        });
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err);
+      toast.error(
+        err.response?.data?.message || err.message || "Something went wrong",
+        {
+          position: "bottom-right",
+        }
+      );
+    }
+  };
   
   return (
     <div className="px-6 py-6">
@@ -94,10 +141,20 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
                 <FiTrash2 size={20} className="text-gray-600" />
               </button>
               <button
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                title="Move to favorite"
+                onClick={toggleFavorite}
+                className={`w-[38px] h-[38px] border-none rounded-full flex items-center justify-center cursor-pointer transition-all duration-250 ${
+                  isFavorite
+                    ? "bg-pink-600 text-white"
+                    : "bg-white/85 hover:bg-white hover:scale-110"
+                }`}
+                title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+                type="button"
               >
-                <AiFillHeart size={20} className="text-gray-600" />
+                <Heart
+                  size={18}
+                  fill={isFavorite ? "white" : "none"}
+                  color={isFavorite ? "white" : "#333"}
+                />
               </button>
             </div>
           </div>

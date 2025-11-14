@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import loginImage from "../Images/abc4.png";
+import loginImage from "../Images/pnghe.png";
 import { useState } from "react";
 import Axios from "../Axios";
 import { toast } from "react-toastify";
@@ -34,7 +34,7 @@ const AdminLogin = () => {
   };
   return (
     <div className="h-screen w-full flex bg-white flex-row-reverse">
-      <div className="w-1/2 lg:w-full flex justify-center items-center">
+      <div className="w-1/2  flex justify-center items-center">
         <div className="w-full p-[20%] lg:p-[8%] h-full flex justify-center flex-col">
           <h1 className="text-gray-900 text-[clamp(2rem,2.5vw,3rem)] leading-8 font-bold">Log in to your account</h1>
           <form onSubmit={handleSubmit} className="flex gap-3.5 flex-col my-7 mt-0 mb-4">
@@ -81,7 +81,7 @@ const AdminLogin = () => {
           </div>
         </div>
       </div>
-      <div className="w-1/2 lg:hidden flex justify-center items-center">
+      <div className="w-1/2 flex justify-center items-center">
         <img className="w-full h-full object-contain bg-[#d4b8b8]" src={loginImage} alt="image" />
       </div>
     </div>

@@ -20,6 +20,8 @@ import AdminRoute from "./utils/adminRoute";
 import TriangleLoader from "./components/TriangleLoader";
 import ResetPassword from "./pages/ResetPassword";
 import WishlistPage from "./pages/Wishlist";
+import Navbar from "./components/Navbar";
+import ProfilePage from "./pages/ProfilePage"; 
 
 const AdminLayout = lazy(() => import("./pages/AdminLayout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -95,6 +97,16 @@ const App = () => {
             }
           >
             <Route index element={<MyOrders />} />
+          </Route>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfileLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ProfilePage />} />
           </Route>
           <Route
             path="/admin"
