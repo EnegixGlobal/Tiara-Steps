@@ -24,6 +24,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AboutPage from "./About/About"
 import Navbar from "./components/Navbar";
 
+
 const AdminLayout = lazy(() => import("./pages/AdminLayout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CustomerList = lazy(() => import("./pages/CustomerList"));

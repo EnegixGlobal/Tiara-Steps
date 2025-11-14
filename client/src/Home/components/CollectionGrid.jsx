@@ -8,12 +8,12 @@ import collection5 from "../../assets/images/A-Travel-Essentials.png";
 import collection6 from "../../assets/images/A-Dr-Sole.png";
 
 const collections = [
-  { title: "The Wedding Edit", img: collection1 },
-  { title: "Festive Collection", img: collection2 },
-  { title: "Timeless Embroidery", img: collection3 },
-  { title: "Pearl Touch", img: collection4 },
-  { title: "Party Glam", img: collection1 },
-  { title: "Daily Bling", img: collection2 },
+  { title: "Casual Wear", img: collection1 },
+  { title: "Party Wear", img: collection2 },
+  { title: "Formal Wear", img: collection3 },
+  { title: "Daily Comfort", img: collection4 },
+  { title: "Travel Essentials", img: collection5 },
+  { title: "Dr Sole ", img: collection6},
 ];
 
 const CollectionGrid = () => (
