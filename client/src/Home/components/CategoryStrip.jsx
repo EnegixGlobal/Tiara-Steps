@@ -7,57 +7,59 @@ import cat5 from "../../assets/images/A-Travel-Essentials.png";
 import cat6 from "../../assets/images/A-Dr-Sole.png";
 
 const categories = [
-  { name: "Party Wear", img: cat1 },
-  { name: "Sparkle Edit", img: cat2 },
-  { name: "Premium Edit", img: cat3 },
-  { name: "Wedding Ready", img: cat4 },
-  { name: "Daily Bling", img: cat5 },
-  { name: "Pearl Touch", img: cat6 },
+  { name: "Casual Wear", img: cat1 },
+  { name: "Party wear", img: cat2 },
+  { name: "Formal Wear", img: cat3 },
+  { name: "Daily Comfort", img: cat4 },
+  { name: "Travel Essentials", img: cat5 },
+  { name: "Dr Sole", img: cat6 },
 ];
 
 const CategoryStrip = () => (
   <section
+  className="
+    bg-white flex justify-center 
+    px-8 sm:px-12 md:px-16 lg:px-20 xl:px-24 
+    py-8 sm:py-12 md:py-16
+  "
+>
+  <div
     className="
-      bg-white flex justify-center 
-      px-8 sm:px-12 md:px-16 lg:px-20 xl:px-24 
-      py-8 sm:py-12 md:py-16
+      flex flex-nowrap overflow-x-auto no-scrollbar gap-6 
+      max-w-[1200px] w-full px-2
+
+      md:flex-wrap md:overflow-visible md:justify-between md:gap-10
     "
   >
-    <div
-      className="
-        flex flex-wrap justify-between items-center gap-6 sm:gap-8 md:gap-10 
-        max-w-[1200px] w-full
-      "
-    >
-      {categories.map((c, i) => (
-        <div
-          key={i}
-          className="text-center flex-1 min-w-[140px]"
+    {categories.map((c, i) => (
+      <div
+        key={i}
+        className="text-center flex-none md:flex-1 md:min-w-[140px]"
+      >
+        <img
+          src={c.img}
+          alt={c.name}
+          className="
+            w-[85px] h-[85px] sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px]
+            object-cover rounded-full border-[3px] border-[#b89396]
+            transition-all duration-300 
+            hover:scale-[1.05] hover:shadow-[0_6px_15px_rgba(0,0,0,0.1)]
+            mx-auto
+          "
+        />
+        <p
+          className="
+            mt-2 sm:mt-3 
+            text-[14px] sm:text-[15px] md:text-[16px] 
+            font-medium text-[#333]
+          "
         >
-          <img
-            src={c.img}
-            alt={c.name}
-            className="
-              w-[85px] h-[85px] sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px]
-              object-cover rounded-full border-[3px] border-[#b89396]
-              transition-all duration-300 
-              hover:scale-[1.05] hover:shadow-[0_6px_15px_rgba(0,0,0,0.1)]
-              mx-auto
-            "
-          />
-          <p
-            className="
-              mt-2 sm:mt-3 
-              text-[14px] sm:text-[15px] md:text-[16px] 
-              font-medium text-[#333]
-            "
-          >
-            {c.name}
-          </p>
-        </div>
-      ))}
-    </div>
-  </section>
+          {c.name}
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
 );
 
 export default CategoryStrip;
