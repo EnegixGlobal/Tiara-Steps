@@ -7,12 +7,12 @@ import cat5 from "../../assets/images/A-Travel-Essentials.png";
 import cat6 from "../../assets/images/A-Dr-Sole.png";
 
 const categories = [
-  { name: "Casual Wear", img: cat1 },
-  { name: "Party Wear", img: cat2 },
-  { name: "Formal Wear", img: cat3 },
-  { name: "Daily Comfort", img: cat4 },
-  { name: "Travel Essentials", img: cat5 },
-  { name: "Dr. Sole", img: cat6 },
+  { name: "Party Wear", img: cat1 },
+  { name: "Sparkle Edit", img: cat2 },
+  { name: "Premium Edit", img: cat3 },
+  { name: "Wedding Ready", img: cat4 },
+  { name: "Daily Bling", img: cat1 },
+  { name: "Pearl Touch", img: cat2 },
 ];
 
 const CategoryStrip = () => (

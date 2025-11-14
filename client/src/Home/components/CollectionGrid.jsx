@@ -8,12 +8,12 @@ import collection5 from "../../assets/images/A-Travel-Essentials.png";
 import collection6 from "../../assets/images/A-Dr-Sole.png";
 
 const collections = [
-  { title: "Casual Wear", img: collection1 },
-  { title: "Paty Wear", img: collection2 },
-  { title: "Formal Wear", img: collection3 },
-  { title: "Daily Comfort", img: collection4 },
-  { title: "Travel Essentials", img: collection5 },
-  { title: "Dr Sole", img: collection6 },
+  { title: "The Wedding Edit", img: collection1 },
+  { title: "Festive Collection", img: collection2 },
+  { title: "Timeless Embroidery", img: collection3 },
+  { title: "Pearl Touch", img: collection4 },
+  { title: "Party Glam", img: collection1 },
+  { title: "Daily Bling", img: collection2 },
 ];
 
 const CollectionGrid = () => (
@@ -35,7 +35,7 @@ const CollectionGrid = () => (
           alt={item.title}
           className="
             w-full object-cover rounded-lg sm:rounded-[10px]
-            h-[300px] sm:h-[220px] md:h-[300px] lg:h-80 2xl:h-[360px]
+            h-[200px] sm:h-[220px] md:h-[300px] lg:h-80 2xl:h-[360px]
             transition-transform duration-300 hover:scale-[1.02]
           "
         />

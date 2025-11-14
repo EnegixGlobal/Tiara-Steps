@@ -1,12 +1,12 @@
 import React from "react";
 import { FiHeart } from "react-icons/fi";
 
-import product1 from "../../assets/images/Bestsel-1.jpg";
-import product2 from "../../assets/images/Bestsel-2.jpg";
-import product3 from "../../assets/images/Bestsel-3.jpg";
-import product4 from "../../assets/images/Bestsel-4.jpg";
-import product5 from "../../assets/images/Bestsel-5.jpg";
-import product6 from "../../assets/images/Bestsel-6.jpg";
+import product1 from "../../assets/image/Bestsel-1.jpg";
+import product2 from "../../assets/image/Bestsel-2.jpg";
+import product3 from "../../assets/image/Bestsel-3.jpg";
+import product4 from "../../assets/image/Bestsel-4.jpg";
+import product5 from "../../assets/image/Bestsel-5.jpg";
+import product6 from "../../assets/image/Bestsel-6.jpg";
 
 const products = [
   { img: product1, name: "Crystal Heel Sandal", price: "₹3,499" },
@@ -41,7 +41,7 @@ const Bestsellers = () => (
               alt={p.name}
               className="
                 w-full object-cover transition-all duration-300 
-                h-[300px] sm:h-[220px] md:h-60 lg:h-[280px] xl:h-80
+                h-[260px] sm:h-[220px] md:h-60 lg:h-[280px] xl:h-80
                 group-hover:scale-[1.03]
               "
             />
