@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Axios from '../Axios';
 import useWishlist from '../../hooks/useWishlist';
+import useAuth from '../../hooks/useAuth';
+import SizeModal from '../components/SizeModal';
 
 const WishlistPage = () => {
   const { wishlistItems, loading, error, fetchWishlist, removeFromWishlist } = useWishlist();
+  const { auth, setAuth } = useAuth();
+  const [showSizeModal, setShowSizeModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -28,12 +34,95 @@ const WishlistPage = () => {
     }
   };
 
-  const moveToCart = (productId) => {
-    alert(`Moving product ${productId} to cart!`);
+  const moveToCart = (product) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Please login to add items to cart", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    // Check if product has sizeQuantity
+    if (!product.sizeQuantity || product.sizeQuantity.length === 0) {
+      toast.error("Product size information not available", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    // Check if product has any available sizes
+    const availableSizes = product.sizeQuantity.filter(sq => sq.quantity > 0);
+    if (availableSizes.length === 0) {
+      toast.error("This product is out of stock", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    // If only one size available, add directly to cart
+    if (availableSizes.length === 1) {
+      handleAddToCartDirect(product._id || product.id, availableSizes[0].size);
+    } else {
+      // Show size modal for multiple sizes
+      setSelectedProduct(product);
+      setShowSizeModal(true);
+    }
+  };
+
+  const handleAddToCartDirect = async (productId, size) => {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Please login to add items to cart", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    try {
+      const response = await Axios.post(
+        "/cart/add",
+        {
+          productId: productId,
+          size: parseInt(size),
+          qty: 1,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      if (response.data.message) {
+        toast.success(response.data.message || "Product added to cart successfully", {
+          position: "bottom-right",
+        });
+        // Update cart size in auth context
+        if (auth && setAuth) {
+          setAuth({ ...auth, cartSize: (auth.cartSize || 0) + 1 });
+        }
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      const errorMessage = error.response?.data?.message || "Failed to add product to cart";
+      toast.error(errorMessage, {
+        position: "bottom-right",
+      });
+    }
+  };
+
+  const handleSizeModalClose = () => {
+    setShowSizeModal(false);
+    setSelectedProduct(null);
   };
 
   const showSimilar = (productId) => {
-    alert(`Showing similar products for ${productId}`);
+    // Navigate to products page or show similar products
+    // For now, just show a message
+    toast.info("Similar products feature coming soon", {
+      position: "bottom-right",
+    });
   };
 
   if (loading) {
@@ -101,7 +190,7 @@ const WishlistPage = () => {
               <WishlistCard
                 key={item._id || productId}
                 product={product}
-                onMoveToCart={() => moveToCart(productId)}
+                onMoveToCart={() => moveToCart(product)}
                 onShowSimilar={() => showSimilar(productId)}
                 onRemove={() => handleRemoveFromWishlist(productId)}
               />
@@ -122,6 +211,19 @@ const WishlistPage = () => {
           </div>
         )}
       </div>
+
+      {/* Size Modal */}
+      {showSizeModal && selectedProduct && (
+        <SizeModal
+          id={selectedProduct._id || selectedProduct.id}
+          size={selectedProduct.sizeQuantity || []}
+          onClose={() => {
+            handleSizeModalClose();
+            // Refresh wishlist after adding to cart (in case user wants to remove from wishlist)
+            fetchWishlist();
+          }}
+        />
+      )}
     </div>
   );
 };
