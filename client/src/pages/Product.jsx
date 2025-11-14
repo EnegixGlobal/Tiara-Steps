@@ -4,6 +4,16 @@ import { Heart, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-reac
 // demo images
 import partyWear from "../Images/demoCategory/party-wear.jpg";
 import premiumEdit from "../Images/demoCategory/premium-edit.jpg";
+const PRICE_MARKS = [0, 499, 999, 1999, 2999, 3999, 4999];
+const MIN_INDEX_GAP = 1;
+const DEFAULT_SWATCH_COLOR = "#E5E7EB";
+const COLOR_TEST_ELEMENT =
+  typeof document !== "undefined" && document.createElement
+    ? document.createElement("span")
+    : null;
+// demo images
+import CasualWear from "../assets/images/A-Casual.png";
+import PartyWear from "../assets/images/A-Party Wear.png";
 import sparkleEdit from "../Images/demoCategory/sparkle-edit.jpg";
 import weddingReady from "../Images/demoCategory/wedding-ready.jpg";
 import dailyBling from "../Images/demoCategory/daily-bling.jpg";
@@ -108,7 +118,7 @@ const CategoryPage = () => {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar Filters */}
-        <aside className={`md:w-[320px] flex-shrink-0 ${showFilters ? 'block' : 'hidden'} md:block`}>
+        <aside className={`md:w-[320px] shrink-0 ${showFilters ? 'block' : 'hidden'} md:block`}>
           <div className="space-y-5">
             
             {/* Categories */}
