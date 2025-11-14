@@ -12,7 +12,7 @@ const ReelsSection = () => (
   <section
     className="
       grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 
-      gap-4 sm:gap-5 
+      gap-10 sm:gap-5 
       p-4 sm:p-8 lg:p-10 xl:p-20
       bg-[#f8f8f8]
     "
