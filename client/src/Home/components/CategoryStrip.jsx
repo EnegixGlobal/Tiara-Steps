@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import cat1 from "../../assets/images/A-Casual.png";
 import cat2 from "../../assets/images/A-Party-Wear.png";
 import cat3 from "../../assets/images/A-Formal-Wear.png";
@@ -15,7 +16,15 @@ const categories = [
   { name: "Dr Sole", img: cat6 },
 ];
 
-const CategoryStrip = () => (
+const CategoryStrip = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryName) => {
+    // Navigate to products page with category as URL parameter
+    navigate(`/products?category=${encodeURIComponent(categoryName)}`);
+  };
+
+  return (
   <section
   className="
     bg-white flex justify-center 
@@ -34,7 +43,16 @@ const CategoryStrip = () => (
     {categories.map((c, i) => (
       <div
         key={i}
-        className="text-center flex-none md:flex-1 md:min-w-[140px]"
+        className="text-center flex-none md:flex-1 md:min-w-[140px] cursor-pointer"
+        onClick={() => handleCategoryClick(c.name)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCategoryClick(c.name);
+          }
+        }}
       >
         <img
           src={c.img}
@@ -52,6 +70,7 @@ const CategoryStrip = () => (
             mt-2 sm:mt-3 
             text-[14px] sm:text-[15px] md:text-[16px] 
             font-medium text-[#333]
+            transition-colors hover:text-[#A37478]
           "
         >
           {c.name}
@@ -60,6 +79,7 @@ const CategoryStrip = () => (
     ))}
   </div>
 </section>
-);
+  );
+};
 
 export default CategoryStrip;

@@ -124,8 +124,9 @@ const CartLayout = () => {
 
   const handleCheckout = async () => {
     try {
+      // Create Razorpay order
       const response = await Axios.post(
-        "/payment/create-checkout-session",
+        "/payment/create-order",
         { 
           coupon: appliedCoupon ? couponCode.toUpperCase() : "",
           addressId: selectedAddress,
@@ -133,11 +134,142 @@ const CartLayout = () => {
         { headers: { Authorization: localStorage.getItem("jwt") } }
       );
 
-      if (response.data.url) {
-        window.location.href = response.data.url;
+      if (response.data.success && response.data.orderId) {
+        console.log("Payment response:", response.data); // Debug log
+        
+        // Format product description for Razorpay modal
+        const formatProductDescription = () => {
+          // Fallback if no product data
+          if (!response.data.products || response.data.products.length === 0) {
+            const total = response.data.total || (response.data.amount / 100);
+            return `Order Payment - Total: ₹${total}`;
+          }
+          
+          const products = response.data.products;
+          const totalItems = products.reduce((sum, p) => sum + (p.quantity || 1), 0);
+          
+          // Build a detailed single-line description (Razorpay displays this in the modal)
+          let description = `${totalItems} item${totalItems > 1 ? 's' : ''}: `;
+          
+          // List products with quantity, name, size, and price
+          products.forEach((product, index) => {
+            if (index < 2) { // Show first 2 products in detail
+              const qty = product.quantity || 1;
+              const name = product.name.length > 25 
+                ? product.name.substring(0, 25) + '...' 
+                : product.name;
+              const size = product.size ? `Size ${product.size}` : '';
+              const price = product.total ? `₹${product.total}` : '';
+              
+              description += `${qty}x ${name}`;
+              if (size) description += ` (${size})`;
+              if (price && products.length === 1) description += ` - ${price}`;
+              if (index < Math.min(products.length, 2) - 1) description += ', ';
+            }
+          });
+          
+          if (products.length > 2) {
+            description += ` +${products.length - 2} more`;
+          }
+          
+          // Add pricing breakdown
+          description += ` | Subtotal: ₹${response.data.subtotal || (response.data.amount / 100)}`;
+          if (response.data.discount > 0) {
+            description += ` | Discount: -₹${response.data.discount}`;
+          }
+          description += ` | Total: ₹${response.data.total || (response.data.amount / 100)}`;
+          
+          console.log("Payment Description:", description);
+          console.log("Products data:", products);
+          return description;
+        };
+
+        // Check if Razorpay script is already loaded
+        const loadRazorpayScript = (callback) => {
+          if (window.Razorpay) {
+            callback();
+            return;
+          }
+
+          // Check if script already exists
+          const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+          if (existingScript) {
+            existingScript.onload = callback;
+            return;
+          }
+
+          // Load Razorpay script dynamically
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = callback;
+          script.onerror = () => {
+            toast.error("Failed to load payment gateway");
+          };
+          document.body.appendChild(script);
+        };
+
+        loadRazorpayScript(() => {
+          const productImage = response.data.products && response.data.products.length > 0 
+            ? response.data.products[0].image 
+            : undefined;
+
+          const options = {
+            key: response.data.keyId,
+            amount: response.data.amount,
+            currency: response.data.currency,
+            name: "Tiara Steps",
+            description: formatProductDescription(),
+            order_id: response.data.orderId,
+            image: productImage,
+            handler: async function (response) {
+              // Verify payment on server
+              try {
+                const verifyResponse = await Axios.post(
+                  "/payment/verify-payment",
+                  {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  },
+                  { headers: { Authorization: localStorage.getItem("jwt") } }
+                );
+
+                if (verifyResponse.data.success) {
+                  toast.success("Payment successful!");
+                  window.location.href = "/checkout-success";
+                } else {
+                  toast.error("Payment verification failed");
+                }
+              } catch (error) {
+                console.error("Payment verification error:", error);
+                toast.error(error?.response?.data?.message || "Payment verification failed");
+              }
+            },
+            prefill: {
+              name: auth?.name || "",
+              email: auth?.email || "",
+            },
+            theme: {
+              color: "#000000",
+            },
+            modal: {
+              ondismiss: function() {
+                toast.info("Payment cancelled");
+              },
+            },
+          };
+
+          console.log("Razorpay options:", options); // Debug log
+          const razorpay = new window.Razorpay(options);
+          razorpay.open();
+        });
+      } else {
+        console.error("Invalid response:", response.data);
+        toast.error("Failed to create payment order");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Checkout error:", error);
+      toast.error(error?.response?.data?.message || "Failed to initiate payment");
     }
   };
 
@@ -212,9 +344,12 @@ const CartLayout = () => {
   });
 
   const discount = appliedCoupon ? 200 : 0;
-  const subtotal = data?.totalPrice ? (data.totalPrice - data.totalPrice * 0.12) : 0;
+  // Calculate subtotal from cart items using real product prices
+  const subtotal = data?.items?.reduce((sum, item) => {
+    return sum + (item.productId?.price || 0) * (item.qty || 0);
+  }, 0) || data?.totalPrice || 0;
   const tax = 0;
-  const shipping = 60;
+  const shipping = 0;
   const total = subtotal - discount + tax + shipping;
 
   return (

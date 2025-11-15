@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { Heart } from "lucide-react";
 import Axios from "../Axios";
 import useAuth from "../../hooks/useAuth";
+import useWishlist from "../../hooks/useWishlist";
 import TriangleLoader from "../components/TriangleLoader";
 import FormReviews from "../components/FormReviews";
 
@@ -11,6 +13,13 @@ const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
+  const {
+    wishlistIds,
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    isInWishlist,
+  } = useWishlist();
   const [data, setData] = useState({});
   const [size, setSize] = useState("");
   const [loading, setLoading] = useState(true);
@@ -21,6 +30,8 @@ const ProductDetails = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [editingReviewIndex, setEditingReviewIndex] = useState(null);
   const [deletingReviewIndex, setDeletingReviewIndex] = useState(null);
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
 
   // ✅ Fetch Product Data from API
   const fetchProduct = async () => {
@@ -55,6 +66,117 @@ const ProductDetails = () => {
       fetchProduct();
     }
   }, [slug, navigate]);
+
+  // ✅ Fetch Similar Products based on category
+  const fetchSimilarProducts = async (productCategory, currentProductId) => {
+    if (!productCategory) {
+      setSimilarProducts([]);
+      return;
+    }
+
+    try {
+      setLoadingSimilar(true);
+      
+      // Parse category - it can be a comma-separated string or array
+      let categories = [];
+      if (typeof productCategory === 'string') {
+        // Split by comma and clean up
+        categories = productCategory.split(',').map(cat => cat.trim()).filter(Boolean);
+      } else if (Array.isArray(productCategory)) {
+        categories = productCategory;
+      } else {
+        setSimilarProducts([]);
+        return;
+      }
+
+      if (categories.length === 0) {
+        setSimilarProducts([]);
+        return;
+      }
+
+      // Use the first category for filtering (or you can use all)
+      const categoryToFilter = categories[0];
+      
+      // Fetch products with the same category, excluding current product
+      const response = await Axios.get("/product/filter", {
+        params: {
+          page: 1,
+          limit: 8, // Fetch more to randomize
+          category: [categoryToFilter], // Pass as array for consistency with API
+        },
+      });
+
+      if (response.data.success && response.data.products) {
+        // Filter out current product and get random 4 products
+        let filtered = response.data.products.filter(
+          (p) => p._id !== currentProductId && p.slug !== slug
+        );
+        
+        // Shuffle and take first 4
+        const shuffled = filtered.sort(() => 0.5 - Math.random());
+        setSimilarProducts(shuffled.slice(0, 4));
+      } else {
+        setSimilarProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching similar products:", error);
+      setSimilarProducts([]);
+    } finally {
+      setLoadingSimilar(false);
+    }
+  };
+
+  // Fetch similar products when product data is loaded
+  useEffect(() => {
+    if (data && data._id && data.category) {
+      fetchSimilarProducts(data.category, data._id);
+    }
+  }, [data?._id, data?.category, slug]);
+
+  // Fetch wishlist items when user is authenticated
+  useEffect(() => {
+    if (auth) fetchWishlist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
+
+  // Toggle wishlist for similar products
+  const toggleFavorite = async (productId, event) => {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (!productId) {
+      toast.error("Unable to update wishlist for this product", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    if (!auth) {
+      toast.error("Please login to add items to wishlist", {
+        position: "bottom-right",
+      });
+      navigate("/login");
+      return;
+    }
+
+    const inList = isInWishlist(productId);
+
+    try {
+      if (inList) {
+        await removeFromWishlist(productId);
+        toast.success("Removed from wishlist", { position: "bottom-right" });
+      } else {
+        await addToWishlist(productId);
+        toast.success("Added to wishlist", { position: "bottom-right" });
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err);
+      toast.error(err?.response?.data?.message || err.message || "Something went wrong", {
+        position: "bottom-right",
+      });
+    }
+  };
 
   // ✅ Mock Data (for frontend testing) - COMMENTED OUT
   // useEffect(() => {
@@ -676,72 +798,87 @@ const ProductDetails = () => {
       )}
 
       {/* ===== SIMILAR PRODUCTS ===== */}
-      <div className="mt-14 sm:mt-16">
-        <h3 className="text-base sm:text-lg font-semibold text-black mb-4">
-          Similar Products
-        </h3>
+      {similarProducts.length > 0 && (
+        <div className="mt-14 sm:mt-16">
+          <h3 className="text-base sm:text-lg font-semibold text-black mb-4">
+            Similar Products
+          </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-5">
-          {[
-            {
-              image:
-                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
-              brand: "Tiara Steps",
-              name: "Women Open Toe Flats",
-              price: 3199,
-            },
-            {
-              image:
-                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
-              brand: "Tiara Steps",
-              name: "Women Open Toe Flats",
-              price: 3199,
-            },
-            {
-              image:
-                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
-              brand: "Tiara Steps",
-              name: "Women Party Heels",
-              price: 3199,
-            },
-            {
-              image:
-                "https://img2.junaroad.com/uiproducts/21930405/pri_175_p-1746711615.jpg",
-              brand: "Tiara Steps",
-              name: "Women Open Toe Flats",
-              price: 3199,
-            },
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="text-left cursor-pointer transition-transform hover:-translate-y-1"
-            >
-              <div className="relative overflow-hidden rounded-lg shadow-sm">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-[220px] sm:h-\[240px\] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
-                />
-                <button className="absolute top-2 right-2 bg-white text-xl rounded-full w-[30px] h-[30px] cursor-pointer">
-                  ♡
-                </button>
-                
-              </div>
-              <div className="mt-2">
-                <h4 className="text-sm sm:text-base text-gray-800 font-semibold">
-                  {item.brand}
-                </h4>
-                <p className="text-xs sm:text-[13px] text-gray-600 my-1 truncate">
-                  {item.name}
-                </p>
-                <p className="text-sm sm:text-base font-medium text-black">
-                  ₹{item.price}
-                </p>
-              </div>
+          {loadingSimilar ? (
+            <div className="flex justify-center items-center py-8">
+              <TriangleLoader height="100px" />
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-5">
+              {similarProducts.map((product) => {
+                const productId = product._id || product.id;
+                const productImage = 
+                  (Array.isArray(product.images) && product.images.length > 0)
+                    ? product.images[0]
+                    : product.image || "";
+                const productSlug = product.slug || productId;
+                const productBrand = product.brand?.name || product.brand || "Tiara Steps";
+                const productName = product.name || "Untitled Product";
+                const productPrice = product.price != null ? Number(product.price).toLocaleString("en-IN") : "--";
+                const isFavorite = productId ? isInWishlist(productId) : false;
+
+                return (
+                  <div
+                    key={productId || productSlug}
+                    className="text-left cursor-pointer transition-transform hover:-translate-y-1"
+                    onClick={() => navigate(`/product/${productSlug}`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        navigate(`/product/${productSlug}`);
+                      }
+                    }}
+                  >
+                    <div className="relative overflow-hidden rounded-lg shadow-sm">
+                      {productImage ? (
+                        <img
+                          src={productImage}
+                          alt={productName}
+                          className="w-full h-[220px] sm:h-[240px] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full h-[220px] sm:h-[240px] bg-gray-100 flex items-center justify-center text-sm text-gray-400">
+                          No Image
+                        </div>
+                      )}
+                      <button
+                        className={`absolute top-2 right-2 w-[30px] h-[30px] rounded-full flex items-center justify-center transition-all duration-250 ${
+                          isFavorite 
+                            ? "bg-[#A37478] text-white" 
+                            : "bg-white/85 hover:bg-white hover:scale-110"
+                        }`}
+                        onClick={(event) => toggleFavorite(productId, event)}
+                        type="button"
+                        title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+                      >
+                        <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
+                      </button>
+                    </div>
+                    <div className="mt-2">
+                      <h4 className="text-sm sm:text-base text-gray-800 font-semibold">
+                        {productBrand}
+                      </h4>
+                      <p className="text-xs sm:text-[13px] text-gray-600 my-1 truncate">
+                        {productName}
+                      </p>
+                      <p className="text-sm sm:text-base font-medium text-black">
+                        ₹{productPrice}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

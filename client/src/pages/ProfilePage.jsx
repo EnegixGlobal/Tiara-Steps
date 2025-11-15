@@ -3,15 +3,21 @@ import { toast } from "react-toastify";
 import Axios from "../Axios";
 import useAuth from "../../hooks/useAuth";
 import AddressForm from "../components/AddressForm";
-import { MapPin, Plus, Edit2, Trash2, User } from "lucide-react";
+import { MapPin, Plus, Edit2, Trash2, User, Save, X } from "lucide-react";
 import TriangleLoader from "../components/TriangleLoader";
 
 const ProfilePage = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: auth?.name || "",
+    email: auth?.email || "",
+  });
+  const [updatingProfile, setUpdatingProfile] = useState(false);
 
   const token = localStorage.getItem("jwt");
 
@@ -63,6 +69,61 @@ const ProfilePage = () => {
     }
   };
 
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    if (!profileData.name.trim() || !profileData.email.trim()) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    setUpdatingProfile(true);
+    try {
+      const response = await Axios.put(
+        "/profile",
+        {
+          name: profileData.name.trim(),
+          email: profileData.email.trim(),
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Profile updated successfully");
+        // Update auth context
+        setAuth({
+          ...auth,
+          name: response.data.user.name,
+          email: response.data.user.email,
+        });
+        setIsEditingProfile(false);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setUpdatingProfile(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setProfileData({
+      name: auth?.name || "",
+      email: auth?.email || "",
+    });
+    setIsEditingProfile(false);
+  };
+
+  // Update profileData when auth changes
+  useEffect(() => {
+    if (auth) {
+      setProfileData({
+        name: auth.name || "",
+        email: auth.email || "",
+      });
+    }
+  }, [auth]);
+
   if (!token) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -90,15 +151,82 @@ const ProfilePage = () => {
 
       {/* User Info Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center">
-            <User size={32} className="text-pink-600" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">{auth?.name || "User"}</h2>
-            <p className="text-gray-600">{auth?.email || ""}</p>
-          </div>
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
+          {!isEditingProfile && (
+            <button
+              onClick={() => setIsEditingProfile(true)}
+              className="flex items-center gap-2 px-4 py-2 text-[#A37478] border border-[#A37478] rounded-md hover:bg-[#A37478] hover:text-white transition-colors"
+            >
+              <Edit2 size={18} />
+              Edit Profile
+            </button>
+          )}
         </div>
+
+        {isEditingProfile ? (
+          <form onSubmit={handleProfileUpdate} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                value={profileData.name}
+                onChange={(e) =>
+                  setProfileData({ ...profileData, name: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A37478] focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={profileData.email}
+                onChange={(e) =>
+                  setProfileData({ ...profileData, email: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A37478] focus:border-transparent"
+                required
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={updatingProfile}
+                className="flex items-center gap-2 px-4 py-2 bg-[#A37478] text-white rounded-md hover:bg-[#8b686b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save size={18} />
+                {updatingProfile ? "Saving..." : "Save Changes"}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                disabled={updatingProfile}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <X size={18} />
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-[#A37478]/10 rounded-full flex items-center justify-center">
+              <User size={32} className="text-[#A37478]" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {auth?.name || "User"}
+              </h3>
+              <p className="text-gray-600">{auth?.email || ""}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Addresses Section */}
@@ -110,7 +238,7 @@ const ProfilePage = () => {
               setShowAddressForm(true);
               setEditingAddress(null);
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[#A37478] text-white rounded-md hover:bg-[#8b686b] transition-colors"
           >
             <Plus size={18} />
             Add New Address
@@ -136,16 +264,16 @@ const ProfilePage = () => {
                 {addresses.map((address) => (
                   <div
                     key={address._id}
-                    className="border-2 border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-colors"
+                    className="border-2 border-gray-200 rounded-lg p-4 hover:border-[#A37478]/30 transition-colors"
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-2">
-                        <MapPin size={18} className="text-pink-600" />
+                        <MapPin size={18} className="text-[#A37478]" />
                         <span className="font-semibold text-gray-900">
                           {address.fullName}
                         </span>
                         {address.isDefault && (
-                          <span className="px-2 py-1 text-xs bg-pink-100 text-pink-700 rounded">
+                          <span className="px-2 py-1 text-xs bg-[#A37478]/10 text-[#A37478] rounded">
                             DEFAULT
                           </span>
                         )}
@@ -203,7 +331,7 @@ const ProfilePage = () => {
                 <p className="text-gray-600 mb-4">No addresses saved yet</p>
                 <button
                   onClick={() => setShowAddressForm(true)}
-                  className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
+                  className="px-4 py-2 bg-[#A37478] text-white rounded-md hover:bg-[#8b686b] transition-colors"
                 >
                   Add New Address
                 </button>
