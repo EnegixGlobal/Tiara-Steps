@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../Images/Tiara-logo2.png";
 import { FiSearch } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
@@ -9,9 +9,41 @@ import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { auth, setAuth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
+
+  const handleBestsellerClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      // If already on home page, scroll to section
+      const bestsellerSection = document.getElementById("bestsellers");
+      if (bestsellerSection) {
+        bestsellerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      // If not on home page, navigate to home and then scroll
+      navigate("/");
+      // Wait for page to render, then scroll
+      setTimeout(() => {
+        let retryCount = 0;
+        const maxRetries = 10;
+        const scrollToBestseller = () => {
+          const bestsellerSection = document.getElementById("bestsellers");
+          if (bestsellerSection) {
+            bestsellerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else if (retryCount < maxRetries) {
+            // Retry if element not found yet
+            retryCount++;
+            setTimeout(scrollToBestseller, 100);
+          }
+        };
+        scrollToBestseller();
+      }, 300);
+    }
+    setIsOpen(false); // Close mobile menu if open
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
@@ -49,9 +81,13 @@ const Navbar = () => {
           <NavLink to="/" className="hover:text-[#b89396] transition-colors">
             Home
           </NavLink>
-          <NavLink to="/trending" className="hover:text-[#b89396] transition-colors">
+          <a 
+            href="#bestsellers" 
+            onClick={handleBestsellerClick}
+            className="hover:text-[#b89396] transition-colors cursor-pointer"
+          >
             Best Sellers
-          </NavLink>
+          </a>
           <NavLink to="/products" className="hover:text-[#b89396] transition-colors">
             Products
           </NavLink>
@@ -150,7 +186,13 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
           <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Home</NavLink>
-          <NavLink to="/trending" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Best Sellers</NavLink>
+          <a 
+            href="#bestsellers" 
+            onClick={handleBestsellerClick}
+            className="block hover:text-[#d81b60]"
+          >
+            Best Sellers
+          </a>
           <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Products</NavLink>
           <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">About</NavLink>
           <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Contact</NavLink>
