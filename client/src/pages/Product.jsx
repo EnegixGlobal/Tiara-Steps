@@ -185,7 +185,7 @@ const CategoryPage = () => {
     if (Array.isArray(filterOptions.sizes) && filterOptions.sizes.length > 0) {
       return filterOptions.sizes.map((size) => String(size));
     }
-    return ["35", "36", "37", "38", "39", "40", "41", "42"];
+    return ["4", "5", "6", "7", "8", "9", "10", "11"];
   }, [filterOptions.sizes]);
 
   // favorites map for quick lookup & UI

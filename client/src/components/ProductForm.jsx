@@ -18,53 +18,11 @@ const ProductForm = ({
   handleCancel,
   changeCategory,
 }) => {
-  const uploadImageToCloudinary = async (file, skipRemoveBg = false) => {
+  const uploadImageToCloudinary = async (file) => {
     try {
-      let fileToUpload = file;
-      
-      // Try to remove background first (unless skipRemoveBg is true)
-      if (!skipRemoveBg) {
-        try {
-          let formData = new FormData();
-          formData.append("size", "auto");
-          formData.append("image_file", file);
-          
-          const response = await axios({
-            method: "post",
-            url: "https://api.remove.bg/v1.0/removebg",
-            data: formData,
-            responseType: "arraybuffer",
-            headers: {
-              "X-Api-Key": `${import.meta.env.VITE_REACT_APP_REMOVEBG_KEY}`,
-            },
-            timeout: 30000, // 30 second timeout
-          });
-
-          if (response.status === 200 && response.data) {
-            // Create a Blob from the response data
-            const blob = new Blob([response.data], { type: "image/png" });
-            fileToUpload = blob;
-          } else {
-            // If remove.bg fails, use original file
-            console.warn("Background removal failed, uploading original image");
-          }
-        } catch (removeBgError) {
-          // If remove.bg fails, upload original file directly
-          console.warn("Background removal error, uploading original image:", removeBgError.message);
-          fileToUpload = file;
-        }
-      }
-
-      // Upload to Cloudinary (either processed or original)
+      // Upload directly to Cloudinary
       const formData = new FormData();
-      
-      // If it's a Blob, use it directly, otherwise append the file
-      if (fileToUpload instanceof Blob) {
-        formData.append("file", fileToUpload, "photo.png");
-      } else {
-        formData.append("file", fileToUpload);
-      }
-      
+      formData.append("file", file);
       formData.append("upload_preset", "tiarasteps");
       formData.append("folder", "image");
 

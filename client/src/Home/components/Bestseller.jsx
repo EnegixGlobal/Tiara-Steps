@@ -18,7 +18,7 @@ const products = [
 ];
 
 const Bestsellers = () => (
-  <section className="text-center px-4 sm:px-6 md:px-10 lg:px-20 xl:px-24 py-16 bg-[#fdfdfd] font-poppins">
+  <section id="bestsellers" className="text-center px-4 sm:px-6 md:px-10 lg:px-20 xl:px-24 py-16 bg-[#fdfdfd] font-poppins">
     <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
       Bestsellers to light up your Party wardrobe.
     </h2>
