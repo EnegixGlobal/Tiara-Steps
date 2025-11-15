@@ -17,6 +17,7 @@ const ProductForm = ({
   handleSubmit,
   handleCancel,
   changeCategory,
+  changeColor,
 }) => {
   const uploadImageToCloudinary = async (file) => {
     try {
@@ -367,19 +368,22 @@ const ProductForm = ({
           <label htmlFor="color" className="text-sm font-medium text-[#1a1a1a] mb-2 block">
             Product Color
           </label>
-          <select
-            className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded w-full outline-none focus:border-[#54bab9] transition-colors"
-            id="color"
-            onChange={handleInputChange}
-            value={data.color}
-          >
-            <option value="">Select a color</option>
-            {colors.map((color, index) => (
-              <option key={index} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
+          <MultiSelectBox
+            customWidth={true}
+            multiple={true}
+            options={
+              colors && colors.length > 0
+                ? colors.map((color) => ({
+                    value: color,
+                    label: color,
+                  }))
+                : []
+            }
+            value={data.color === "" ? [] : data.color.split(",")}
+            onChange={(e) => {
+              changeColor(e.join(","));
+            }}
+          />
         </div>
         <div className="w-full">
           <label htmlFor="brand" className="text-sm font-medium text-[#1a1a1a] mb-2 block">

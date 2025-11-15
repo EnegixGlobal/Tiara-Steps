@@ -40,10 +40,15 @@ const UpdateProducts = () => {
           };
         });
         setFields(newFields);
+        // Handle color - if it's an array, join it; if it's a string, use it as is
+        const productColor = Array.isArray(response.data.data.color) 
+          ? response.data.data.color.join(",") 
+          : response.data.data.color || "";
+        
         setData({
           ...data,
           brand: response.data.data.brand,
-          color: response.data.data.color,
+          color: productColor,
           desc: response.data.data.description,
           featured: response.data.data.isFeatured,
           material: response.data.data.material,
@@ -76,6 +81,10 @@ const UpdateProducts = () => {
   };
   const changeCategory = (e) => {
     setData({ ...data, category: e });
+  };
+
+  const changeColor = (e) => {
+    setData({ ...data, color: e });
   };
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.id]: event.target.value });
@@ -146,6 +155,7 @@ const UpdateProducts = () => {
           changeFields={changeFields}
           name="Update Product"
           changeCategory={changeCategory}
+          changeColor={changeColor}
           handleSubmit={handleSubmit}
           handleCancel={() => navigate("/admin/products")}
         />

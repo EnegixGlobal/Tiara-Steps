@@ -445,7 +445,7 @@ const ProductDetails = () => {
                     <strong>Description:</strong> {data.description || "No description available"}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    <strong>Color:</strong> {data.color || "N/A"}
+                    <strong>Color:</strong> {Array.isArray(data.color) ? data.color.join(", ") : (data.color || "N/A")}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
                     <strong>Material:</strong> {data.material || "N/A"}
