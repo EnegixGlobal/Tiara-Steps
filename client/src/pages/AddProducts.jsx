@@ -41,6 +41,10 @@ const AddProducts = () => {
     setData({ ...data, category: e });
   };
 
+  const changeColor = (e) => {
+    setData({ ...data, color: e });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -105,6 +109,7 @@ const AddProducts = () => {
           changeFields={changeFields}
           name="Add Product"
           changeCategory={changeCategory}
+          changeColor={changeColor}
           handleSubmit={handleSubmit}
           handleCancel={() => navigate("/admin/products")}
         />
