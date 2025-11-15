@@ -4,7 +4,7 @@ import { FiSearch } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
 import { LuUserRound } from "react-icons/lu";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
@@ -13,6 +13,8 @@ const Navbar = () => {
   const { auth, setAuth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const profileDropdownRef = useRef(null);
 
   const handleBestsellerClick = (e) => {
     e.preventDefault();
@@ -48,8 +50,26 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     setAuth(null);
+    setShowProfileDropdown(false);
     navigate("/");
   };
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    if (showProfileDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showProfileDropdown]);
 
   return (
     <div className="sticky top-0 left-0 right-0 z-[9999] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
@@ -150,28 +170,45 @@ const Navbar = () => {
           </div>
 
           {/* Profile Icon */}
-          <div className="text-[28px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] relative group transition-colors">
+          <div 
+            ref={profileDropdownRef}
+            className="text-[28px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] relative transition-colors"
+          >
             {auth ? (
               <>
-                <LuUserRound className="text-[30px]" />
-                <ul className="hidden group-hover:block absolute right-0 top-[38px] bg-white border border-gray-100 rounded-lg shadow-md w-[140px] py-2">
-                  <li>
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
-                    >
-                      Orders
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
+                <div onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                  <LuUserRound className="text-[30px]" />
+                </div>
+                {showProfileDropdown && (
+                  <ul className="absolute right-0 top-[38px] bg-white border border-gray-100 rounded-lg shadow-md w-[140px] py-2 z-50">
+                    <li>
+                      <Link
+                        to="/profile"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/orders"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
+                      >
+                        Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-[15px]"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
               </>
             ) : (
               <Link to="/login" className="text-[30px]">

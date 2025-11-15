@@ -6,14 +6,14 @@ import {
   SlidersHorizontal,
   ChevronDown,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Axios from "../Axios";
 import useAuth from "../../hooks/useAuth";
 import useWishlist from "../../hooks/useWishlist";
 import { toast } from "react-toastify";
 import TriangleLoader from "../components/TriangleLoader";
 
-const PRICE_MARKS = [0, 499, 999, 1999, 2999, 3999, 4999];
+const PRICE_MARKS = [0, 499, 699, 799, 999, 1599, 1999];
 const MIN_INDEX_GAP = 1;
 const DEFAULT_SWATCH_COLOR = "#E5E7EB";
 const COLOR_TEST_ELEMENT =
@@ -27,10 +27,10 @@ const QUICK_PRICE_OPTIONS = [
     min: PRICE_MARKS[0],
     max: PRICE_MARKS[PRICE_MARKS.length - 1],
   },
-  { label: "499 - 999", min: 499, max: 999 },
-  { label: "1999 - 2999", min: 1999, max: 2999 },
-  { label: "2999 - 3999", min: 2999, max: 3999 },
-  { label: "3999 - 4999", min: 3999, max: 4999 },
+  { label: "499 - 799", min: 499, max: 799 },
+  { label: "699 - 999", min: 699, max: 999 },
+  { label: "999 - 1599", min: 999, max: 1599 },
+  { label: "1599 - 1999", min: 1599, max: 1999 },
 ];
 
 const resolveSwatchColor = (candidate) => {
@@ -127,6 +127,7 @@ import pearlTouch from "../assets/images/A-Dr-Sole.png";
 
 const CategoryPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { auth } = useAuth();
   const {
     wishlistIds,
@@ -163,7 +164,7 @@ const CategoryPage = () => {
   const [minPriceIndex, setMinPriceIndex] = useState(0);
   const [maxPriceIndex, setMaxPriceIndex] = useState(PRICE_MARKS.length - 1);
 
-  const PRODUCTS_PER_PAGE = 9;
+  const PRODUCTS_PER_PAGE = 12;
 
   const categories = [
     { name: "Casual Wear", image: partyWear },
@@ -245,6 +246,24 @@ const CategoryPage = () => {
       const nextValues = exists
         ? currentValues.filter((item) => item !== normalizedValue)
         : [...currentValues, normalizedValue];
+
+      // Update URL params when category filter changes
+      if (key === "categories") {
+        const newSearchParams = new URLSearchParams(searchParams);
+        if (nextValues.length === 0) {
+          // Remove from URL if no categories selected
+          newSearchParams.delete("category");
+        } else {
+          // Update URL with the selected category (use the newly toggled one or first one)
+          const categoryToSet = exists ? (nextValues[0] || "") : normalizedValue;
+          if (categoryToSet) {
+            newSearchParams.set("category", categoryToSet);
+          } else {
+            newSearchParams.delete("category");
+          }
+        }
+        setSearchParams(newSearchParams, { replace: true });
+      }
 
       return {
         ...prev,
@@ -381,6 +400,28 @@ const CategoryPage = () => {
     return () => controller.abort();
   }, []);
 
+  // Read category from URL params and apply to filters
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      const decodedCategory = decodeURIComponent(categoryParam);
+      // Only set if it's not already in filters to avoid unnecessary updates
+      setFilters((prev) => {
+        const isAlreadySelected = prev.categories.some(
+          (cat) => cat.toLowerCase().trim() === decodedCategory.toLowerCase().trim()
+        );
+        if (!isAlreadySelected) {
+          return {
+            ...prev,
+            categories: [decodedCategory],
+          };
+        }
+        return prev;
+      });
+      setCurrentPage(1);
+    }
+  }, [searchParams]);
+
   // Fetch wishlist items when user is authenticated
   useEffect(() => {
     if (auth) fetchWishlist();
@@ -451,19 +492,78 @@ const CategoryPage = () => {
   const goToPrevPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
   const goToNextPage = () => setCurrentPage((prev) => Math.min(totalPages, prev + 1));
 
+  // Helper function to check if a category is selected (case-insensitive comparison)
+  const isCategorySelected = (categoryName) => {
+    return filters.categories.some(
+      (cat) => cat.toLowerCase().trim() === categoryName.toLowerCase().trim()
+    );
+  };
+
+  // Helper function to find the exact category name from filters (for removal)
+  const findCategoryInFilters = (categoryName) => {
+    return filters.categories.find(
+      (cat) => cat.toLowerCase().trim() === categoryName.toLowerCase().trim()
+    );
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    // Use case-insensitive matching to ensure consistency with sidebar
+    const existingCategory = findCategoryInFilters(categoryName);
+    const isSelected = !!existingCategory;
+    
+    if (isSelected) {
+      // If already selected, remove it (show all products)
+      setFilters((prev) => ({
+        ...prev,
+        categories: prev.categories.filter((cat) => cat !== existingCategory),
+      }));
+      // Remove category from URL params
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete("category");
+      setSearchParams(newSearchParams, { replace: true });
+    } else {
+      // If not selected, replace all categories with this one (single selection behavior)
+      // You can change this to [...prev.categories, categoryName] if you want multiple selection
+      setFilters((prev) => ({
+        ...prev,
+        categories: [categoryName],
+      }));
+      // Update URL params with selected category
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("category", categoryName);
+      setSearchParams(newSearchParams, { replace: true });
+    }
+    setCurrentPage(1); // Reset to first page
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
 
-<div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
+      <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
         <div className="flex flex-wrap justify-center items-center gap-5 py-2.5 overflow-x-auto">
-          {categories.map((cat, idx) => (
-            <div key={idx} className="flex flex-col items-center gap-3 min-w-[180px] cursor-pointer transition-transform hover:-translate-y-1">
-              <div className="w-[140px] h-[140px] rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md">
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+          {categories.map((cat, idx) => {
+            const isSelected = isCategorySelected(cat.name);
+            return (
+              <div 
+                key={idx} 
+                className={`flex flex-col items-center gap-3 min-w-[180px] cursor-pointer transition-all duration-300 hover:-translate-y-1 ${isSelected ? 'opacity-100' : 'opacity-90 hover:opacity-100'}`}
+                onClick={() => handleCategoryClick(cat.name)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCategoryClick(cat.name);
+                  }
+                }}
+              >
+                <div className={`w-[140px] h-[140px] rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md transition-all duration-300 ${isSelected ? 'ring-4 ring-[#A37478] ring-offset-2' : ''}`}>
+                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                </div>
+                <div className={`text-base font-semibold transition-colors ${isSelected ? 'text-[#A37478]' : 'text-gray-800'}`}>{cat.name}</div>
               </div>
-              <div className="text-base font-semibold text-gray-800">{cat.name}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       {/* Mobile Filter Toggle */}
@@ -485,21 +585,22 @@ const CategoryPage = () => {
             <div className="bg-white p-5 rounded-lg shadow-sm">
               <div className="text-base font-semibold mb-4">Categories</div>
               <div className="flex flex-col gap-3">
-                  {categoryOptions.map((cat) => (
+                {categoryOptions.map((cat) => {
+                  const isSelected = isCategorySelected(cat);
+                  return (
                   <div key={cat}>
                     <label className="flex items-center gap-2.5 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={filters.categories.includes(cat)}
+                        checked={isSelected}
                         onChange={() => toggleFilter("categories", cat)}
                         className="hidden"
                       />
                       <div
-                        className={`w-[18px] h-[18px] border-2 rounded border-gray-300 flex items-center justify-center transition-all ${
-                          filters.categories.includes(cat) ? "bg-[#A37478] border-pink-[#A37478]" : ""
-                        }`}
+                        className={`w-[18px] h-[18px] border-2 rounded border-gray-300 flex items-center justify-center transition-all ${isSelected ? "bg-[#A37478] border-pink-[#A37478]" : ""
+                          }`}
                       >
-                        {filters.categories.includes(cat) && <span className="text-white text-xs">✓</span>}
+                        {isSelected && <span className="text-white text-xs">✓</span>}
                       </div>
                       <span
                         className="text-sm text-gray-600"
@@ -530,7 +631,8 @@ const CategoryPage = () => {
                       </div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -546,14 +648,13 @@ const CategoryPage = () => {
                       key={size}
                       type="button"
                       onClick={() => toggleFilter("sizes", size)}
-                      className={`relative flex flex-col items-center justify-center gap-1 rounded-xl border px-3 py-3 text-xs font-semibold uppercase tracking-wide transition-all ${
-                        isActive
+                      className={`relative flex flex-col items-center justify-center gap-1 rounded-xl border px-3 py-3 text-xs font-semibold uppercase tracking-wide transition-all ${isActive
                           ? "border-transparent bg-[#A37478] text-white shadow-md shadow-[#A37478]/40"
                           : "border-gray-200 bg-gray-50 text-gray-600 hover:border-[#A37478] hover:bg-white hover:text-[#A37478]"
-                      }`}
+                        }`}
                     >
                       <span className="text-sm">{size}</span>
-                    
+
                     </button>
                   );
                 })}
@@ -571,11 +672,10 @@ const CategoryPage = () => {
                       <button
                         key={value}
                         type="button"
-                        className={`flex items-center gap-2 px-3 py-2 border rounded-full text-sm transition-all ${
-                          isActive
+                        className={`flex items-center gap-2 px-3 py-2 border rounded-full text-sm transition-all ${isActive
                             ? "border-[#A37478] text-[#A37478] bg-[#FDF2F8]"
                             : "border-gray-200 text-gray-600 hover:border-[#A37478]"
-                        }`}
+                          }`}
                         onClick={() => toggleFilter("colors", value)}
                       >
                         <span
@@ -605,11 +705,10 @@ const CategoryPage = () => {
                   type="button"
                   onClick={resetPriceFilters}
                   disabled={isDefaultPriceRange}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all ${
-                    isDefaultPriceRange
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all ${isDefaultPriceRange
                       ? "border-gray-200 text-gray-300 cursor-not-allowed"
                       : "border-[#A37478] text-[#A37478] hover:bg-[#A37478] hover:text-white"
-                  }`}
+                    }`}
                 >
                   Reset
                 </button>
@@ -689,16 +788,14 @@ const CategoryPage = () => {
                         key={optionKey}
                         type="button"
                         onClick={() => applyPriceRange(min, max)}
-                        className={`group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${
-                          isActive
+                        className={`group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${isActive
                             ? "border-transparent bg-gradient-to-r from-[#A37478] to-[#7B5195] text-white shadow-md"
                             : "border-gray-200 text-gray-600 hover:border-[#A37478] hover:text-[#A37478] hover:shadow-sm"
-                        }`}
+                          }`}
                       >
                         <span
-                          className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                            isActive ? "bg-white" : "bg-[#A37478]/30 group-hover:bg-[#A37478]"
-                          }`}
+                          className={`h-2.5 w-2.5 rounded-full transition-colors ${isActive ? "bg-white" : "bg-[#A37478]/30 group-hover:bg-[#A37478]"
+                            }`}
                         />
                         {label}
                       </button>
@@ -768,9 +865,8 @@ const CategoryPage = () => {
                           </div>
                         )}
                         <button
-                          className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${
-                            isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
-                          }`}
+                          className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
+                            }`}
                           onClick={(event) => {
                             event.stopPropagation();
                             if (productId) toggleFavorite(productId);
@@ -807,9 +903,8 @@ const CategoryPage = () => {
                 {pageNumbers.map((num) => (
                   <div
                     key={num}
-                    className={`w-10 h-10 border rounded flex items-center justify-center cursor-pointer transition-all text-sm ${
-                      currentPage === num ? "bg-[#A37478] text-white border-[#8b686b]" : "border-gray-300 bg-white hover:bg-gray-100"
-                    }`}
+                    className={`w-10 h-10 border rounded flex items-center justify-center cursor-pointer transition-all text-sm ${currentPage === num ? "bg-[#A37478] text-white border-[#8b686b]" : "border-gray-300 bg-white hover:bg-gray-100"
+                      }`}
                     onClick={() => setCurrentPage(num)}
                   >
                     {num}
