@@ -61,6 +61,21 @@ const MyOrders = () => {
       console.log(error);
     }
   };
+  const getStatusChip = (status) => {
+    const s = status.toLowerCase();
+  
+    let styles =
+      "px-3 py-1 rounded-full text-xs font-semibold inline-block text-white";
+  
+    if (s === "delivered") styles += " bg-green-500";
+    else if (s === "pending") styles += " bg-yellow-500";
+    else if (s === "cancelled") styles += " bg-red-500";
+    else if (s === "shipped") styles += " bg-blue-500";
+    else styles += " bg-gray-400";
+  
+    return <span className={styles}>{status}</span>;
+  };
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -99,14 +114,14 @@ const MyOrders = () => {
                             {product.name}
                           </p>
                           <p className="text-sm ml-3">
-                            {product.color}, UK {product.size}, {product.qty}{" "}
+                            {product.color}, size: {product.size}, {product.qty}{" "}
                             unit
                           </p>
                         </div>
                       </div>
                       <div className="flex justify-center items-center">
                         <button
-                          className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#A37478] border border-[#A37478] cursor-pointer hover:bg-[#8b686b] hover:border-[#8b686b] disabled:cursor-not-allowed disabled:opacity-50"
                           disabled={product.isReviewed}
                           onClick={() =>
                             openReviewModal(item.delivered, product.id, item.id)
@@ -115,7 +130,7 @@ const MyOrders = () => {
                           {product.isReviewed ? "Reviewed" : "Review"}
                         </button>
                         <button
-                          className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e]"
+                          className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#A37478] border border-[#A37478] cursor-pointer hover:bg-[#8b686b] hover:border-[#8b686b]"
                           onClick={() => navigate(`/product/${product.slug}`)}
                         >
                           Buy Again
@@ -127,7 +142,10 @@ const MyOrders = () => {
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   {new Date(item.createdAt).toDateString()}
                 </td>
-                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.delivered}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  {getStatusChip(item.delivered)}
+                </td>
+
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">₹{item.totalPrice}</td>
               </tr>
             ))}
