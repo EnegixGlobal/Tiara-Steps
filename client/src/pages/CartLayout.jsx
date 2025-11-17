@@ -122,6 +122,25 @@ const CartLayout = () => {
     handleCheckout();
   };
 
+  const handleStepClick = (step) => {
+    // Only allow navigation between cart and address
+    if (step === "cart") {
+      setCurrentStep("cart");
+    } else if (step === "address") {
+      // Only allow going to address if cart has items
+      if (data && data.items && data.items.length > 0) {
+        setCurrentStep("address");
+        // Fetch addresses if not already loaded
+        if (addresses.length === 0) {
+          fetchAddresses();
+        }
+      } else {
+        toast.error("Cart is empty");
+      }
+    }
+    // Payment step is not clickable as it's handled by Razorpay
+  };
+
   const handleCheckout = async () => {
     try {
       // Create Razorpay order
@@ -239,10 +258,14 @@ const CartLayout = () => {
                   window.location.href = "/checkout-success";
                 } else {
                   toast.error("Payment verification failed");
+                  // Fall back to address section on payment verification failure
+                  setCurrentStep("address");
                 }
               } catch (error) {
                 console.error("Payment verification error:", error);
                 toast.error(error?.response?.data?.message || "Payment verification failed");
+                // Fall back to address section on payment verification failure
+                setCurrentStep("address");
               }
             },
             prefill: {
@@ -255,6 +278,8 @@ const CartLayout = () => {
             modal: {
               ondismiss: function() {
                 toast.info("Payment cancelled");
+                // Fall back to address section when payment is cancelled
+                setCurrentStep("address");
               },
             },
           };
@@ -266,10 +291,14 @@ const CartLayout = () => {
       } else {
         console.error("Invalid response:", response.data);
         toast.error("Failed to create payment order");
+        // Fall back to address section on payment order creation failure
+        setCurrentStep("address");
       }
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error(error?.response?.data?.message || "Failed to initiate payment");
+      // Fall back to address section on checkout error
+      setCurrentStep("address");
     }
   };
 
@@ -336,7 +365,7 @@ const CartLayout = () => {
 
   // Calculate delivery date (15 days from now)
   const deliveryDate = new Date();
-  deliveryDate.setDate(deliveryDate.getDate() + 15);
+  deliveryDate.setDate(deliveryDate.getDate() + 7);
   const formattedDate = deliveryDate.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -357,13 +386,35 @@ const CartLayout = () => {
       {/* Progress Steps */}
       <div className="flex items-center justify-center mb-12">
         <div className="flex items-center gap-4">
-          <span className={`font-semibold ${currentStep === "cart" ? "text-gray-900" : "text-gray-400"}`}>
+          <button
+            onClick={() => handleStepClick("cart")}
+            className={`font-semibold transition-colors ${
+              currentStep === "cart"
+                ? "text-gray-900 cursor-default"
+                : currentStep === "address" || currentStep === "payment"
+                ? "text-gray-600 hover:text-gray-900 cursor-pointer"
+                : "text-gray-400 cursor-default"
+            }`}
+            disabled={currentStep === "cart"}
+          >
             CART
-          </span>
+          </button>
           <div className={`w-16 h-0.5 ${currentStep === "address" || currentStep === "payment" ? "bg-pink-600" : "bg-gray-300"}`}></div>
-          <span className={`font-semibold ${currentStep === "address" ? "text-gray-900" : currentStep === "payment" ? "text-pink-600" : "text-gray-400"}`}>
+          <button
+            onClick={() => handleStepClick("address")}
+            className={`font-semibold transition-colors ${
+              currentStep === "address"
+                ? "text-gray-900"
+                : currentStep === "payment"
+                ? "text-pink-600 hover:text-gray-900 cursor-pointer"
+                : currentStep === "cart" && data?.items?.length > 0
+                ? "text-gray-600 hover:text-gray-900 cursor-pointer"
+                : "text-gray-400 cursor-not-allowed"
+            }`}
+            disabled={!data || data?.items?.length <= 0}
+          >
             ADDRESS
-          </span>
+          </button>
           <div className={`w-16 h-0.5 ${currentStep === "payment" ? "bg-pink-600" : "bg-gray-300"}`}></div>
           <span className={`font-semibold ${currentStep === "payment" ? "text-gray-900" : "text-gray-400"}`}>
             PAYMENT
@@ -503,7 +554,7 @@ const CartLayout = () => {
                     setShowAddressForm(true);
                     setEditingAddress(null);
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#A37478] text-white rounded-md hover:bg-[#8b686b] transition-colors"
                 >
                   <Plus size={18} />
                   Add New Address
@@ -609,7 +660,7 @@ const CartLayout = () => {
                       <p className="text-gray-600 mb-4">No addresses saved yet</p>
                       <button
                         onClick={() => setShowAddressForm(true)}
-                        className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
+                        className="px-4 py-2 bg-[#A37478] text-white rounded-md hover:bg-[#8b686b] transition-colors"
                       >
                         Add New Address
                       </button>

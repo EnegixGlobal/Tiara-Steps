@@ -67,6 +67,39 @@ const AdminOrders = () => {
       toast.error(error?.response?.data?.message);
     }
   };
+
+  // Order status flow: pending → order confirmed → order packed → order shipped → order Delivered
+  const orderStatusFlow = [
+    { value: "pending", label: "Pending", color: "bg-yellow-500" },
+    { value: "order confirmed", label: "Order Confirmed", color: "bg-blue-500" },
+    { value: "order packed", label: "Order Packed", color: "bg-purple-500" },
+    { value: "order shipped", label: "Order Shipped", color: "bg-indigo-500" },
+    { value: "order Delivered", label: "Order Delivered", color: "bg-green-500" },
+  ];
+
+  const getCurrentStatusIndex = (status) => {
+    const index = orderStatusFlow.findIndex(
+      (s) => s.value.toLowerCase() === status?.toLowerCase()
+    );
+    return index === -1 ? 0 : index;
+  };
+
+  const getNextStatus = (currentStatus) => {
+    const currentIndex = getCurrentStatusIndex(currentStatus);
+    if (currentIndex < orderStatusFlow.length - 1) {
+      return orderStatusFlow[currentIndex + 1];
+    }
+    return null;
+  };
+
+  const canCancelOrder = (status) => {
+    const statusLower = status?.toLowerCase();
+    return (
+      statusLower === "pending" ||
+      statusLower === "order confirmed" ||
+      statusLower === "order packed"
+    );
+  };
   useEffect(() => {
     fetchData();
   }, [page]);
@@ -115,28 +148,82 @@ const AdminOrders = () => {
                 </td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.user}</td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.createdAt}</td>
-                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">{item.delivered}</td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    {/* Current Status Badge */}
+                    {item.delivered?.toLowerCase() === "cancelled" ? (
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-red-500">
+                        Cancelled
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
+                            orderStatusFlow[getCurrentStatusIndex(item.delivered)]?.color || "bg-gray-500"
+                          }`}
+                        >
+                          {orderStatusFlow[getCurrentStatusIndex(item.delivered)]?.label || item.delivered}
+                        </span>
+                        {/* Status Progress Indicator */}
+                        <div className="flex items-center gap-1 mt-1">
+                          {orderStatusFlow.map((status, idx) => {
+                            const currentIdx = getCurrentStatusIndex(item.delivered);
+                            const isCompleted = idx <= currentIdx;
+                            return (
+                              <div
+                                key={idx}
+                                className={`w-2 h-2 rounded-full ${
+                                  isCompleted
+                                    ? status.color
+                                    : "bg-gray-300"
+                                }`}
+                                title={status.label}
+                              />
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">₹{item.total}</td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
-                  <div className="flex justify-center items-center flex-col">
-                    <button
-                      className="w-24 py-2.5 mx-1.5 mb-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={item.delivered !== "pending"}
-                      onClick={() =>
-                        updateOrderStatus(item._id, "Delivered", item.paymentId)
-                      }
-                    >
-                      Delivered
-                    </button>
-                    <button
-                      className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={item.delivered !== "pending"}
-                      onClick={() =>
-                        updateOrderStatus(item._id, "Cancelled", item.paymentId)
-                      }
-                    >
-                      Cancel
-                    </button>
+                  <div className="flex justify-center items-center flex-col gap-2">
+                    {/* Next Status Button */}
+                    {getNextStatus(item.delivered) && (
+                      <button
+                        className="w-32 py-2 text-white font-semibold rounded text-sm bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] transition-colors"
+                        onClick={() =>
+                          updateOrderStatus(
+                            item._id,
+                            getNextStatus(item.delivered).value,
+                            item.paymentId
+                          )
+                        }
+                      >
+                        {getNextStatus(item.delivered).label}
+                      </button>
+                    )}
+                    {/* Cancel Button - Only show for early stages */}
+                    {canCancelOrder(item.delivered) && (
+                      <button
+                        className="w-24 py-2 text-white font-semibold rounded text-sm bg-red-500 border border-red-500 cursor-pointer hover:bg-red-600 hover:border-red-600 transition-colors"
+                        onClick={() => {
+                          if (window.confirm("Are you sure you want to cancel this order?")) {
+                            updateOrderStatus(item._id, "Cancelled", item.paymentId);
+                          }
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                    {/* Show message if order is completed or cancelled */}
+                    {item.delivered?.toLowerCase() === "order delivered" && (
+                      <span className="text-xs text-green-600 font-medium">Completed</span>
+                    )}
+                    {item.delivered?.toLowerCase() === "cancelled" && (
+                      <span className="text-xs text-red-600 font-medium">Cancelled</span>
+                    )}
                   </div>
                 </td>
               </tr>
