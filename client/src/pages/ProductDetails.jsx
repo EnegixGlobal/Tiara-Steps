@@ -39,7 +39,7 @@ const ProductDetails = () => {
       setLoading(true);
       setError(null);
       const response = await Axios.get(`/product/${slug}`);
-      
+
       if (response.data.success && response.data.data) {
         setData(response.data.data);
       } else {
@@ -76,7 +76,7 @@ const ProductDetails = () => {
 
     try {
       setLoadingSimilar(true);
-      
+
       // Parse category - it can be a comma-separated string or array
       let categories = [];
       if (typeof productCategory === 'string') {
@@ -96,7 +96,7 @@ const ProductDetails = () => {
 
       // Use the first category for filtering (or you can use all)
       const categoryToFilter = categories[0];
-      
+
       // Fetch products with the same category, excluding current product
       const response = await Axios.get("/product/filter", {
         params: {
@@ -111,7 +111,7 @@ const ProductDetails = () => {
         let filtered = response.data.products.filter(
           (p) => p._id !== currentProductId && p.slug !== slug
         );
-        
+
         // Shuffle and take first 4
         const shuffled = filtered.sort(() => 0.5 - Math.random());
         setSimilarProducts(shuffled.slice(0, 4));
@@ -414,30 +414,92 @@ const ProductDetails = () => {
     ? (data.ratingScore / data.ratings.length).toFixed(1)
     : 4.5;
 
-  // Get available images - support both single image and multiple images
-  // Option 1: If product has 'images' array, use that
-  // Option 2: If product has only 'image' (single), use that and repeat
-  // Option 3: Always show 4 thumbnails (fill with available images or repeat)
-  const getProductImages = () => {
-    // Check if product has multiple images array
-    if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-      // If we have multiple images, use them and fill remaining slots if needed
-      const images = [...data.images];
-      // If we have less than 4 images, fill with the last image
-      while (images.length < 4 && images.length > 0) {
-        images.push(images[images.length - 1]);
-      }
-      // Return first 4 images
-      return images.slice(0, 4);
+  // Helper function to extract image URL from various formats
+  const extractImageUrl = (img) => {
+    if (!img) return null;
+    if (typeof img === 'string') return img;
+    if (typeof img === 'object') {
+      return img.url || img.src || img.image || img.thumbnail || null;
     }
-    // Fallback to single image field (backward compatibility)
-    if (data.image) {
-      return [data.image, data.image, data.image, data.image];
-    }
-    return [];
+    return null;
   };
 
-  const productImages = getProductImages();
+  // Get main image - same logic as Product.jsx card image
+  // Priority: data.image -> data.thumbnail -> data.images[0]
+  const getMainImageUrl = () => {
+    // First priority: data.image
+    if (data.image) {
+      const extracted = extractImageUrl(data.image);
+      if (extracted) return extracted;
+    }
+
+    // Second priority: data.thumbnail
+    if (data.thumbnail) {
+      const extracted = extractImageUrl(data.thumbnail);
+      if (extracted) return extracted;
+    }
+
+    // Third priority: first image from images array (same as Product.jsx)
+    if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+      const firstImage = data.images[0];
+      const extracted = extractImageUrl(firstImage);
+      if (extracted) return extracted;
+    }
+
+    return null;
+  };
+
+  const mainImageUrl = getMainImageUrl();
+
+  // Get 4 thumbnail images from images array (excluding main image if it's in the array)
+  const getThumbnailImages = () => {
+    if (!data.images || !Array.isArray(data.images) || data.images.length === 0) {
+      // If no images array, return empty (will show only main image)
+      return [];
+    }
+
+    // Extract all image URLs from images array
+    const allImages = data.images
+      .map(extractImageUrl)
+      .filter(Boolean); // Remove null/undefined values
+
+    if (allImages.length === 0) {
+      return [];
+    }
+
+    // Remove main image from the array if it exists
+    const thumbnails = allImages.filter(img => img !== mainImageUrl);
+
+    // If we removed the main image and have less than 4, we can add it back at the end if needed
+    // But first, let's try to get 4 different images
+    if (thumbnails.length >= 4) {
+      return thumbnails.slice(0, 4);
+    }
+
+    // If we have less than 4 unique thumbnails, fill with remaining images
+    // If main image was removed and we need more, we can add it back
+    const result = [...thumbnails];
+
+    // If main image exists and we need more images, add it back
+    if (mainImageUrl && result.length < 4) {
+      result.push(mainImageUrl);
+    }
+
+    // Fill remaining slots with the last available image
+    while (result.length < 4 && result.length > 0) {
+      result.push(result[result.length - 1]);
+    }
+
+    return result.slice(0, 4);
+  };
+
+  const thumbnailImages = getThumbnailImages();
+
+  // Total 5 images: 1 main + 4 thumbnails
+  // For display, we'll show main image separately and 4 thumbnails below
+  const allProductImages = mainImageUrl
+    ? [mainImageUrl, ...thumbnailImages]
+    : thumbnailImages;
 
   if (loading) {
     return (
@@ -470,30 +532,50 @@ const ProductDetails = () => {
         {/* Left Side - Images */}
         <div className="flex flex-col gap-5 lg:max-w-[570px] lg:mx-auto">
           <div className="w-full aspect-square overflow-hidden bg-gray-100">
-            <img 
-              src={productImages[selectedImage] || data.image} 
-              alt={data.name} 
-              className="w-full h-full object-cover" 
+            <img
+              src={allProductImages[selectedImage] || mainImageUrl || ""}
+              alt={data.name}
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="grid grid-cols-4 gap-4">
-            {productImages.map((img, index) => (
-              <div
-                key={index}
-                className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${
-                  selectedImage === index
-                    ? "border-[#b89396]"
-                    : "border-transparent hover:border-[#b89396]"
-                }`}
-                onClick={() => setSelectedImage(index)}
-              >
-                <img
-                  src={img}
-                  alt={`Product ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+            {/* Show 4 different thumbnail images (excluding main image) */}
+            {thumbnailImages.length > 0 ? (
+              thumbnailImages.map((img, index) => (
+                <div
+                  key={index}
+                  className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index + 1
+                      ? "border-[#b89396]"
+                      : "border-transparent hover:border-[#b89396]"
+                    }`}
+                  onClick={() => setSelectedImage(index + 1)}
+                >
+                  <img
+                    src={img}
+                    alt={`Product view ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))
+            ) : (
+              // If no thumbnails, show main image 4 times as fallback
+              Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index
+                      ? "border-[#b89396]"
+                      : "border-transparent hover:border-[#b89396]"
+                    }`}
+                  onClick={() => setSelectedImage(index)}
+                >
+                  <img
+                    src={mainImageUrl || ""}
+                    alt={`Product view ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -549,25 +631,29 @@ const ProductDetails = () => {
           </button>
 
           {/* Product Details Accordion */}
-          {/* Product Details Accordion */}
-          <div className="my-8 ">
-            <div className="border-b border-gray-200">
-              <button
-                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+          <div className="my-10 bg-gray-100 rounded-2xl p-6 md:p-7">
+
+            {/* Product Details */}
+            <div className="border-b border-gray-300 py-3">
+              <div
+                className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center justify-between transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${expandedSection === "details" ? "bg-gray-50" : ""
+                  }`}
                 onClick={() => toggleSection("details")}
               >
                 <span>Product details and description</span>
-                <span className="text-2xl font-light text-gray-600">
+                <span className="text-[1.5rem] text-[#b89396]">
                   {expandedSection === "details" ? "−" : "+"}
                 </span>
-              </button>
+              </div>
+
               {expandedSection === "details" && (
-                <div className="pb-5 animate-slideDown">
+                <div className="bg-gray-100 rounded-lg mt-2 px-4 py-3 transition-all duration-300">
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
                     <strong>Description:</strong> {data.description || "No description available"}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    <strong>Color:</strong> {Array.isArray(data.color) ? data.color.join(", ") : (data.color || "N/A")}
+                    <strong>Color:</strong>{" "}
+                    {Array.isArray(data.color) ? data.color.join(", ") : (data.color || "N/A")}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
                     <strong>Material:</strong> {data.material || "N/A"}
@@ -582,69 +668,81 @@ const ProductDetails = () => {
               )}
             </div>
 
-            <div className="border-b border-gray-200">
-              <button
-                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+            {/* Shipping Policy */}
+            <div className="border-b border-gray-300 py-3">
+              <div
+                className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center justify-between transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${expandedSection === "shipping" ? "bg-gray-50" : ""
+                  }`}
                 onClick={() => toggleSection("shipping")}
               >
                 <span>SHIPPING POLICY & FREE RETURNS POLICY</span>
-                <span className="text-2xl font-light text-gray-600">
+                <span className="text-[1.5rem] text-[#b89396]">
                   {expandedSection === "shipping" ? "−" : "+"}
                 </span>
-              </button>
+              </div>
+
               {expandedSection === "shipping" && (
-                <div className="pb-5 animate-slideDown">
+                <div className="bg-gray-100 rounded-lg mt-2 px-4 py-3 transition-all duration-300">
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    We offer free shipping on all orders above Rs. 999. Standard delivery takes 3-5 business days. 
-                    Express delivery (1-2 business days) is available for an additional charge.
+                    We offer free shipping on all orders above Rs. 999. Standard delivery takes
+                    3-5 business days. Express delivery (1-2 business days) is available for an
+                    additional charge.
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    <strong>Free Returns:</strong> You can return any item within 7 days of delivery for a full refund. 
-                    Items must be in original condition with tags attached.
+                    <strong>Free Returns:</strong> You can return any item within 7 days of
+                    delivery for a full refund. Items must be in original condition with tags
+                    attached.
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="border-b border-gray-200">
-              <button
-                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+            {/* Manufacturer Details */}
+            <div className="border-b border-gray-300 py-3">
+              <div
+                className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center justify-between transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${expandedSection === "manufacturer" ? "bg-gray-50" : ""
+                  }`}
                 onClick={() => toggleSection("manufacturer")}
               >
                 <span>Manufacturer/Importer Details</span>
-                <span className="text-2xl font-light text-gray-600">
+                <span className="text-[1.5rem] text-[#b89396]">
                   {expandedSection === "manufacturer" ? "−" : "+"}
                 </span>
-              </button>
+              </div>
+
               {expandedSection === "manufacturer" && (
-                <div className="pb-5 animate-slideDown">
+                <div className="bg-gray-100 rounded-lg mt-2 px-4 py-3 transition-all duration-300">
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
                     <strong>Brand:</strong> {data.brand || "N/A"}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    For more information about the manufacturer, please contact our customer service.
+                    For more information about the manufacturer, please contact our customer
+                    service.
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="border-b border-gray-200">
-              <button
-                className="w-full flex justify-between items-center py-2 bg-transparent border-none text-sm font-medium text-black text-left cursor-pointer transition-colors hover:text-gray-600"
+            {/* Product Care */}
+            <div className="border-b border-gray-300 py-3">
+              <div
+                className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center justify-between transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${expandedSection === "care" ? "bg-gray-50" : ""
+                  }`}
                 onClick={() => toggleSection("care")}
               >
                 <span>Product Care</span>
-                <span className="text-2xl font-light text-gray-600">
+                <span className="text-[1.5rem] text-[#b89396]">
                   {expandedSection === "care" ? "−" : "+"}
                 </span>
-              </button>
+              </div>
+
               {expandedSection === "care" && (
-                <div className="pb-5 animate-slideDown">
+                <div className="bg-gray-100 rounded-lg mt-2 px-4 py-3 transition-all duration-300">
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
                     <strong>Material:</strong> {data.material || "N/A"}
                   </p>
                   <p className="my-2.5 leading-relaxed text-gray-600 text-sm">
-                    Clean with a soft, dry cloth. Avoid exposure to water and direct sunlight. 
+                    Clean with a soft, dry cloth. Avoid exposure to water and direct sunlight.
                     Store in a cool, dry place when not in use.
                   </p>
                 </div>
@@ -652,6 +750,7 @@ const ProductDetails = () => {
             </div>
 
           </div>
+
         </div>
       </div>
 
@@ -718,10 +817,10 @@ const ProductDetails = () => {
                           <p className="text-xs text-gray-500">
                             {review.date
                               ? new Date(review.date).toLocaleDateString("en-IN", {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                })
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })
                               : "Recently"}
                           </p>
                         </div>
@@ -789,9 +888,9 @@ const ProductDetails = () => {
           editData={
             editingReviewIndex !== null && data.ratings && data.ratings[editingReviewIndex]
               ? {
-                  rating: data.ratings[editingReviewIndex].rating,
-                  review: data.ratings[editingReviewIndex].review,
-                }
+                rating: data.ratings[editingReviewIndex].rating,
+                review: data.ratings[editingReviewIndex].review,
+              }
               : null
           }
         />
@@ -812,7 +911,7 @@ const ProductDetails = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-5">
               {similarProducts.map((product) => {
                 const productId = product._id || product.id;
-                const productImage = 
+                const productImage =
                   (Array.isArray(product.images) && product.images.length > 0)
                     ? product.images[0]
                     : product.image || "";
@@ -849,11 +948,10 @@ const ProductDetails = () => {
                         </div>
                       )}
                       <button
-                        className={`absolute top-2 right-2 w-[30px] h-[30px] rounded-full flex items-center justify-center transition-all duration-250 ${
-                          isFavorite 
-                            ? "bg-[#A37478] text-white" 
+                        className={`absolute top-2 right-2 w-[30px] h-[30px] rounded-full flex items-center justify-center transition-all duration-250 ${isFavorite
+                            ? "bg-[#A37478] text-white"
                             : "bg-white/85 hover:bg-white hover:scale-110"
-                        }`}
+                          }`}
                         onClick={(event) => toggleFavorite(productId, event)}
                         type="button"
                         title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
