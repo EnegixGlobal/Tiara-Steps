@@ -4,7 +4,7 @@ import React from "react";
 import insta1 from "../../assets/image/insta-4.mp4";
 import insta2 from "../../assets/image/insta-1.mp4";
 import insta3 from "../../assets/image/insta-2.mp4";
-import insta4 from "../../assets/image/insta-3.mp4";
+import insta4 from "../../assets/image/about page video.mp4";
 
 const videos = [insta1, insta2, insta3, insta4];
 
