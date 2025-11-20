@@ -61,12 +61,12 @@ const ContactUs = () => {
               <div className="flex flex-col gap-4 text-[16px] text-gray-600">
                 <div className="flex items-start gap-3">
                   <FiMail className="text-[20px] text-[#a87171]" />
-                  <span>contactus@tiarasteps.com</span>
+                  <span>tiarasteps4you@gmail.com</span>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <FiPhone className="text-[20px] text-[#a87171]" />
-                  <span>+91 1234567890</span>
+                  <span>+91 9304978001</span>
                 </div>
 
                 <div className="flex items-start gap-3">
@@ -76,7 +76,7 @@ const ContactUs = () => {
 
                 <div className="flex items-start gap-3">
                   <FiMapPin className="text-[20px] text-[#a87171]" />
-                  <span>Linking Road, Mumbai, Maharashtra</span>
+                  <span>India</span>
                 </div>
               </div>
             </div>
