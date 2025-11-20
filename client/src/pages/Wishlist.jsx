@@ -139,7 +139,7 @@ const WishlistPage = () => {
       <div className="min-h-screen bg-gray-50 py-6 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-16">
-            <p className="text-xl text-red-600 mb-4">Please login to view your wishlist</p>
+            <p className="text-xl text-[#b89396] mb-4">Please login to view your wishlist</p>
             <Link
               to="/products"
               className="mt-4 inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
@@ -157,7 +157,7 @@ const WishlistPage = () => {
       <div className="min-h-screen bg-gray-50 py-6 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-16">
-            <p className="text-xl text-red-600 mb-4">{error}</p>
+            <p className="text-xl text-[#b89396] mb-4">{error}</p>
             <Link
               to="/products"
               className="mt-4 inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"

@@ -22,7 +22,7 @@ const CheckoutSuccess = () => {
 
           {/* Title */}
           <h1 className="text-[clamp(1.8rem,4vw,2.5rem)] font-semibold text-gray-900 mb-3">
-            Payment Successful 🎉
+            Payment Successful 
           </h1>
 
           {/* Subtitle */}

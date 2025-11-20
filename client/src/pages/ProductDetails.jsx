@@ -513,10 +513,10 @@ const ProductDetails = () => {
     return (
       <div className="max-w-[1400px] mx-auto p-10 lg:p-[30px] bg-white">
         <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-lg text-red-600 mb-4">{error || "Product not found"}</p>
+          <p className="text-lg text-[#b89396] mb-4">{error || "Product not found"}</p>
           <button
             onClick={() => navigate("/products")}
-            className="px-6 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 transition-colors"
+            className="px-6 py-2 bg-[#b89396] text-white rounded hover:bg-[#b89396] transition-colors"
           >
             Back to Products
           </button>
@@ -849,7 +849,7 @@ const ProductDetails = () => {
                               title="Delete review"
                             >
                               {deletingReviewIndex === index ? (
-                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-600 border-t-transparent"></div>
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#b89396] border-t-transparent"></div>
                               ) : (
                                 <FiTrash2 size={18} />
                               )}

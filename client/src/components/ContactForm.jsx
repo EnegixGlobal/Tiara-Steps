@@ -70,7 +70,7 @@ const ContactForm = () => {
           onChange={handleChange}
           className="font-['League_Spartan','Poppins',sans-serif] text-sm w-full py-3 px-4 mb-5 outline-none border border-[#e1e1e1]"
         ></textarea>
-        <button type="submit" className="font-['League_Spartan','Poppins',sans-serif] text-lg font-semibold border border-red-600 text-white bg-red-600 outline-none cursor-pointer py-2.5 px-5">Submit</button>
+        <button type="submit" className="font-['League_Spartan','Poppins',sans-serif] text-lg font-semibold border border-[#b89396] text-white bg-[#b89396] outline-none cursor-pointer py-2.5 px-5">Submit</button>
       </form>
       <div className="font-['Poppins',sans-serif] mt-7 w-[25%] flex justify-center items-start flex-col max-[1024px]:hidden">
         <div className="py-5 flex items-start">
