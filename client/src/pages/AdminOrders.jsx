@@ -68,6 +68,33 @@ const AdminOrders = () => {
     }
   };
 
+  const markPaymentAsPaid = async (id) => {
+    try {
+      const token = localStorage.getItem("jwtAdmin");
+      if (!token) {
+        return toast.error("Access denied.");
+      }
+      const response = await Axios.put(
+        "/admin/order",
+        { id, paymentStatus: "paid" },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      if (response.data.success) {
+        const updatedData = data.map((item) =>
+          item._id === id ? { ...item, paymentStatus: "paid" } : item
+        );
+        setData(updatedData);
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   // Order status flow: pending → order confirmed → order packed → order shipped → order Delivered
   const orderStatusFlow = [
     { value: "pending", label: "Pending", color: "bg-yellow-500" },
@@ -118,6 +145,7 @@ const AdminOrders = () => {
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Customer</th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Order Date</th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Status</th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Payment</th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Total Price</th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">Action</th>
             </tr>
@@ -186,6 +214,34 @@ const AdminOrders = () => {
                     )}
                   </div>
                 </td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <div className="flex flex-col items-center gap-1">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        item.paymentMethod?.toLowerCase() === "cod"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {item.paymentMethod?.toLowerCase() === "cod"
+                        ? "Cash on Delivery"
+                        : "Online Payment"}
+                    </span>
+                    {item.paymentStatus && (
+                      <span
+                        className={`text-[11px] font-medium ${
+                          item.paymentStatus?.toLowerCase() === "paid"
+                            ? "text-emerald-600"
+                            : item.paymentStatus?.toLowerCase().includes("pending")
+                            ? "text-amber-600"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {item.paymentStatus.replace(/_/g, " ")}
+                      </span>
+                    )}
+                  </div>
+                </td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">₹{item.total}</td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   <div className="flex justify-center items-center flex-col gap-2">
@@ -207,7 +263,7 @@ const AdminOrders = () => {
                     {/* Cancel Button - Only show for early stages */}
                     {canCancelOrder(item.delivered) && (
                       <button
-                        className="w-24 py-2 text-white font-semibold rounded text-sm bg-[#b893960] border border-[#b89396] cursor-pointer hover:bg-[#b89396] hover:border-[#b89396] transition-colors"
+                        className="w-24 py-2 text-white font-semibold rounded text-sm bg-[#54bab9] border border-[#54bab9] cursor-pointer hover:bg-[#3f8f8e] hover:border-[#3f8f8e] transition-colors"
                         onClick={() => {
                           if (window.confirm("Are you sure you want to cancel this order?")) {
                             updateOrderStatus(item._id, "Cancelled", item.paymentId);
@@ -217,6 +273,23 @@ const AdminOrders = () => {
                         Cancel
                       </button>
                     )}
+                    {item.paymentMethod?.toLowerCase() === "cod" &&
+                      item.paymentStatus?.toLowerCase() !== "paid" && (
+                        <button
+                          className="w-32 py-2 text-white font-semibold rounded text-sm bg-emerald-500 border border-emerald-500 cursor-pointer hover:bg-emerald-600 hover:border-emerald-600 transition-colors"
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Mark this Cash on Delivery order as paid?"
+                              )
+                            ) {
+                              markPaymentAsPaid(item._id);
+                            }
+                          }}
+                        >
+                          Mark COD Paid
+                        </button>
+                      )}
                     {/* Show message if order is completed or cancelled */}
                     {item.delivered?.toLowerCase() === "order delivered" && (
                       <span className="text-xs text-green-600 font-medium">Completed</span>

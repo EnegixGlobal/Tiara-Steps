@@ -495,6 +495,27 @@ const ProductDetails = () => {
 
   const thumbnailImages = getThumbnailImages();
 
+  const getPriceMeta = (priceValue, mrpValue) => {
+    const fallbackPrice = priceValue ?? mrpValue ?? null;
+    const priceNumber = Number(fallbackPrice);
+    const hasPriceNumber = !Number.isNaN(priceNumber) && priceNumber >= 0;
+    const mrpBase = mrpValue ?? fallbackPrice;
+    const mrpNumber = Number(mrpBase);
+    const hasMrpNumber = !Number.isNaN(mrpNumber) && mrpNumber > 0;
+    const hasDiscount = hasPriceNumber && hasMrpNumber && mrpNumber > priceNumber;
+    return {
+      saleLabel: hasPriceNumber
+        ? priceNumber.toLocaleString("en-IN")
+        : fallbackPrice ?? "--",
+      mrpLabel: hasDiscount ? mrpNumber.toLocaleString("en-IN") : null,
+      discountPercent: hasDiscount
+        ? Math.round(((mrpNumber - priceNumber) / mrpNumber) * 100)
+        : null,
+    };
+  };
+
+  const primaryPriceMeta = getPriceMeta(data?.price, data?.mrp);
+
   // Total 5 images: 1 main + 4 thumbnails
   // For display, we'll show main image separately and 4 thumbnails below
   const allProductImages = mainImageUrl
@@ -588,8 +609,22 @@ const ProductDetails = () => {
           <h2 className="text-xl sm:text-2xl md:text-3xl font-normal text-gray-800 leading-tight">
             {data.name}
           </h2>
-          <div className="text-[28px] font-bold text-black">
-            Rs. {data.price != null ? Number(data.price).toLocaleString("en-IN") : "--"}
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <div className="text-[28px] font-bold text-black">
+              Rs. {primaryPriceMeta.saleLabel}
+            </div>
+            {primaryPriceMeta.mrpLabel && (
+              <>
+               <div className="text-[20px] text-gray-400 line-through">
+  MRP ₹{primaryPriceMeta.mrpLabel}
+</div>
+
+<div className="text-[20px] font-bold text-green-600">
+  {primaryPriceMeta.discountPercent}% OFF
+</div>
+
+              </>
+            )}
           </div>
 
           {/* Rating */}
@@ -918,7 +953,7 @@ const ProductDetails = () => {
                 const productSlug = product.slug || productId;
                 const productBrand = product.brand?.name || product.brand || "Tiara Steps";
                 const productName = product.name || "Untitled Product";
-                const productPrice = product.price != null ? Number(product.price).toLocaleString("en-IN") : "--";
+                const priceMeta = getPriceMeta(product.price, product.mrp);
                 const isFavorite = productId ? isInWishlist(productId) : false;
 
                 return (
@@ -966,8 +1001,18 @@ const ProductDetails = () => {
                       <p className="text-xs sm:text-[13px] text-gray-600 my-1 truncate">
                         {productName}
                       </p>
-                      <p className="text-sm sm:text-base font-medium text-black">
-                        ₹{productPrice}
+                      <p className="text-sm sm:text-base font-medium text-black flex items-center gap-2">
+                        ₹{priceMeta.saleLabel}
+                        {priceMeta.mrpLabel && (
+                          <>
+                            <span className="text-[11px] text-gray-500 line-through">
+                              ₹{priceMeta.mrpLabel}
+                            </span>
+                            <span className="text-[11px] font-semibold text-green-600">
+                              {priceMeta.discountPercent}% OFF
+                            </span>
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
