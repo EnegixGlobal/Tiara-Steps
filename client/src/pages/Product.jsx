@@ -539,33 +539,74 @@ const CategoryPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
 
-      <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
-        <div className="flex flex-wrap justify-center items-center gap-5 py-2.5 overflow-x-auto">
-          {categories.map((cat, idx) => {
-            const isSelected = isCategorySelected(cat.name);
-            return (
-              <div 
-                key={idx} 
-                className={`flex flex-col items-center gap-3 min-w-[180px] cursor-pointer transition-all duration-300 hover:-translate-y-1 ${isSelected ? 'opacity-100' : 'opacity-90 hover:opacity-100'}`}
-                onClick={() => handleCategoryClick(cat.name)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCategoryClick(cat.name);
-                  }
-                }}
-              >
-                <div className={`w-[140px] h-[140px] rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md transition-all duration-300 ${isSelected ? 'ring-4 ring-[#A37478] ring-offset-2' : ''}`}>
-                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                </div>
-                <div className={`text-base font-semibold transition-colors ${isSelected ? 'text-[#A37478]' : 'text-gray-800'}`}>{cat.name}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+  <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6"> 
+    <div className="
+      flex 
+      overflow-x-auto 
+      whitespace-nowrap 
+      md:overflow-visible 
+      md:whitespace-normal 
+      md:flex-wrap 
+      md:justify-center 
+      items-center 
+      gap-5 
+      py-2.5 
+      scrollbar-hide
+    ">
+
+      {categories.map((cat, idx) => {
+        const isSelected = isCategorySelected(cat.name);
+        return (
+          <div 
+            key={idx} 
+            className={`
+              flex flex-col items-center gap-3 
+              min-w-[120px] md:min-w-[180px] 
+              cursor-pointer 
+              transition-all duration-300 
+              hover:-translate-y-1 
+              ${isSelected ? 'opacity-100' : 'opacity-90 hover:opacity-100'}
+            `}
+            onClick={() => handleCategoryClick(cat.name)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCategoryClick(cat.name);
+              }
+            }}
+          >
+            <div
+              className={`
+                w-[110px] h-[110px] 
+                md:w-[140px] md:h-[140px] 
+                rounded-full bg-white flex items-center justify-center 
+                overflow-hidden shadow-md 
+                transition-all duration-300 
+                ${isSelected ? 'ring-4 ring-[#A37478] ring-offset-2' : ''}
+              `}
+            >
+              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+            </div>
+
+            <div
+              className={`
+                text-base font-semibold transition-colors 
+                ${isSelected ? 'text-[#A37478]' : 'text-gray-800'}
+              `}
+            >
+              {cat.name}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  
+
+
+</div>
+
       {/* Mobile Filter Toggle */}
       <div className="flex justify-between items-center mb-5 md:hidden">
         <h2 className="text-lg font-semibold text-gray-800">All Products</h2>
@@ -715,24 +756,7 @@ const CategoryPage = () => {
               </div>
 
               <div className="mt-5 space-y-5">
-                {/* <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-gradient-to-r from-[#FDE8EB] to-[#F6EEF9] px-3 py-2.5 shadow-inner border border-[#F6D5DC]">
-                    <div className="text-[11px] uppercase tracking-wide text-[#9C5B63]">
-                      Minimum
-                    </div>
-                    <div className="text-base font-semibold text-[#7C3A41]">
-                      Rs {filters.minPrice}
-                    </div>
-                  </div>
-                  <div className="rounded-xl bg-gradient-to-r from-[#F6EEF9] to-[#E8F3FF] px-3 py-2.5 shadow-inner border border-[#DCDCF4]">
-                    <div className="text-[11px] uppercase tracking-wide text-[#5F5F9C]">
-                      Maximum
-                    </div>
-                    <div className="text-base font-semibold text-[#38386A]">
-                      Rs {filters.maxPrice}
-                    </div>
-                  </div>
-                </div> */}
+                
 
                 <div className="relative h-16 flex items-center px-1">
                   <div className="absolute inset-x-0 h-2 rounded-full bg-gray-100 shadow-inner mt-3" />
@@ -814,7 +838,7 @@ const CategoryPage = () => {
               <TriangleLoader height="200px" />
             </div>
           ) : error ? (
-            <div className="text-center py-8 text-red-500">{error}</div>
+            <div className="text-center py-8 text-[#b89396]">{error}</div>
           ) : products.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               No products found. Try adjusting your filters.

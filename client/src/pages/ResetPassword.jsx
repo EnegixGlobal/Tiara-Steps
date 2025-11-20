@@ -90,7 +90,7 @@ const ResetPassword = () => {
     return (
       <div className="h-screen w-full flex justify-center items-center">
         <div className="text-center">
-          <p className="text-red-600">Invalid or missing reset token. Redirecting...</p>
+          <p className="text-[#b89396]">Invalid or missing reset token. Redirecting...</p>
         </div>
       </div>
     );

@@ -152,7 +152,7 @@ const AdminOrders = () => {
                   <div className="flex flex-col items-center gap-2">
                     {/* Current Status Badge */}
                     {item.delivered?.toLowerCase() === "cancelled" ? (
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-red-500">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold text-white bg-[#b89396]">
                         Cancelled
                       </span>
                     ) : (
@@ -207,7 +207,7 @@ const AdminOrders = () => {
                     {/* Cancel Button - Only show for early stages */}
                     {canCancelOrder(item.delivered) && (
                       <button
-                        className="w-24 py-2 text-white font-semibold rounded text-sm bg-red-500 border border-red-500 cursor-pointer hover:bg-red-600 hover:border-red-600 transition-colors"
+                        className="w-24 py-2 text-white font-semibold rounded text-sm bg-[#b893960] border border-[#b89396] cursor-pointer hover:bg-[#b89396] hover:border-[#b89396] transition-colors"
                         onClick={() => {
                           if (window.confirm("Are you sure you want to cancel this order?")) {
                             updateOrderStatus(item._id, "Cancelled", item.paymentId);
@@ -222,7 +222,7 @@ const AdminOrders = () => {
                       <span className="text-xs text-green-600 font-medium">Completed</span>
                     )}
                     {item.delivered?.toLowerCase() === "cancelled" && (
-                      <span className="text-xs text-red-600 font-medium">Cancelled</span>
+                      <span className="text-xs text-[#b89396] font-medium">Cancelled</span>
                     )}
                   </div>
                 </td>

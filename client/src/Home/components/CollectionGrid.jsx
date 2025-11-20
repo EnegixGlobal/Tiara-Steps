@@ -13,18 +13,17 @@ const collections = [
   { title: "Formal Wear", img: collection3 },
   { title: "Daily Comfort", img: collection4 },
   { title: "Travel Essentials", img: collection5 },
-  { title: "Dr Sole ", img: collection6},
+  { title: "Dr Sole", img: collection6 },
 ];
 
 const CollectionGrid = () => (
   <section
     className="
       bg-white 
-      grid 
-      gap-5 md:gap-7 xl:gap-[30px] 
-      grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
-      px-4 sm:px-8 md:px-12 lg:px-20 xl:px-24 
-      py-8 sm:py-12 md:py-16
+      grid grid-cols-3
+      gap-3 sm:gap-5 md:gap-7 xl:gap-[30px]
+      px-2 sm:px-4 md:px-12 lg:px-20 xl:px-24 
+      py-6 sm:py-12 md:py-16
       font-poppins
     "
   >
@@ -34,12 +33,12 @@ const CollectionGrid = () => (
           src={item.img}
           alt={item.title}
           className="
-            w-full object-cover rounded-lg sm:rounded-[10px]
-            h-[200px] sm:h-[220px] md:h-[300px] lg:h-80 2xl:h-[360px]
+            w-full object-cover rounded-lg
+            h-[130px] xs:h-[160px] sm:h-[220px] md:h-[300px] lg:h-80 2xl:h-[360px]
             transition-transform duration-300 hover:scale-[1.02]
           "
         />
-        <h3 className="mt-2 text-[15px] sm:text-[16px] font-semibold text-[#333]">
+        <h3 className="mt-2 text-[14px] sm:text-[16px] font-semibold text-[#333]">
           {item.title}
         </h3>
       </div>

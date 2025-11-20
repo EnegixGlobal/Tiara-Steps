@@ -79,7 +79,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* Hamburger Icon - mobile only */}
           <div
-            className="md:hidden text-3xl text-[#4b3f3f] cursor-pointer hover:text-[#d81b60] transition-colors"
+            className="md:hidden text-3xl text-[#4b3f3f] cursor-pointer hover:text-[#b89396] transition-colors"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <HiX /> : <HiOutlineMenuAlt3 />}
@@ -222,17 +222,17 @@ const Navbar = () => {
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
-          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Home</NavLink>
+          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Home</NavLink>
           <a 
             href="#bestsellers" 
             onClick={handleBestsellerClick}
-            className="block hover:text-[#d81b60]"
+            className="block hover:text-[#b89396] cursor-pointer"
           >
             Best Sellers
           </a>
-          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Products</NavLink>
-          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">About</NavLink>
-          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#d81b60]">Contact</NavLink>
+          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Products</NavLink>
+          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">About</NavLink>
+          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Contact</NavLink>
         </div>
       )}
 
@@ -244,7 +244,7 @@ const Navbar = () => {
             placeholder="Search products..."
             className="flex-1 border border-gray-300 rounded-full px-4 py-2 outline-none text-gray-700"
           />
-          <FiSearch className="text-2xl text-gray-600 cursor-pointer hover:text-[#d81b60]" />
+          <FiSearch className="text-2xl text-gray-600 cursor-pointer hover:text-[#b89396]" />
         </div>
       )}
     </div>

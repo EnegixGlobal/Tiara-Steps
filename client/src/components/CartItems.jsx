@@ -144,7 +144,7 @@ const CartItems = ({ cartId, data, qty, size, deleteItem, updateData }) => {
                 onClick={toggleFavorite}
                 className={`w-[38px] h-[38px] border-none rounded-full flex items-center justify-center cursor-pointer transition-all duration-250 ${
                   isFavorite
-                    ? "bg-pink-600 text-white"
+                    ? "bg-[#b89396] text-white"
                     : "bg-white/85 hover:bg-white hover:scale-110"
                 }`}
                 title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}

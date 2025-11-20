@@ -92,7 +92,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name <span className="text-red-500">*</span>
+            Full Name <span className="text-[#b89396]">*</span>
           </label>
           <input
             type="text"
@@ -100,14 +100,14 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             value={formData.fullName}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
             placeholder="Enter full name"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number <span className="text-red-500">*</span>
+            Phone Number <span className="text-[#b89396]">*</span>
           </label>
           <input
             type="tel"
@@ -116,14 +116,14 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             onChange={handleChange}
             required
             maxLength={10}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
             placeholder="10 digit mobile number"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Pincode <span className="text-red-500">*</span>
+            Pincode <span className="text-[#b89396]">*</span>
           </label>
           <input
             type="text"
@@ -132,14 +132,14 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             onChange={handleChange}
             required
             maxLength={6}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
             placeholder="6 digit pincode"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            State <span className="text-red-500">*</span>
+            State <span className="text-[#b89396]">*</span>
           </label>
           <input
             type="text"
@@ -147,14 +147,14 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             value={formData.state}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
             placeholder="Enter state"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            City <span className="text-red-500">*</span>
+            City <span className="text-[#b89396]">*</span>
           </label>
           <input
             type="text"
@@ -162,7 +162,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             value={formData.city}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
             placeholder="Enter city"
           />
         </div>
@@ -175,7 +175,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
             name="addressType"
             value={formData.addressType}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
           >
             <option value="home">Home</option>
             <option value="work">Work</option>
@@ -186,7 +186,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Address Line 1 <span className="text-red-500">*</span>
+          Address Line 1 <span className="text-[#b89396[">*</span>
         </label>
         <input
           type="text"
@@ -194,7 +194,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
           value={formData.addressLine1}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
           placeholder="House/Flat No., Building Name"
         />
       </div>
@@ -208,7 +208,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
           name="addressLine2"
           value={formData.addressLine2}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
           placeholder="Street, Area, Colony"
         />
       </div>
@@ -222,7 +222,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
           name="landmark"
           value={formData.landmark}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b89396]"
           placeholder="Nearby landmark (optional)"
         />
       </div>
@@ -234,7 +234,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
           id="isDefault"
           checked={formData.isDefault}
           onChange={handleChange}
-          className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+          className="w-4 h-4 text-[#b89396] border-gray-300 rounded focus:ring-[#b89396]"
         />
         <label htmlFor="isDefault" className="ml-2 text-sm text-gray-700">
           Set as default address
@@ -245,7 +245,7 @@ const AddressForm = ({ address, onSave, onCancel, isEdit = false }) => {
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 bg-pink-600 text-white py-2 px-4 rounded-md hover:bg-pink-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="flex-1 bg-[#b89396] text-white py-2 px-4 rounded-md hover:bg-[#b89396] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? "Saving..." : isEdit ? "Update Address" : "Save Address"}
         </button>

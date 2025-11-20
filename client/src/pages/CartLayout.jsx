@@ -399,14 +399,14 @@ const CartLayout = () => {
           >
             CART
           </button>
-          <div className={`w-16 h-0.5 ${currentStep === "address" || currentStep === "payment" ? "bg-pink-600" : "bg-gray-300"}`}></div>
+          <div className={`w-16 h-0.5 ${currentStep === "address" || currentStep === "payment" ? "bg-[#b89396]" : "bg-gray-300"}`}></div>
           <button
             onClick={() => handleStepClick("address")}
             className={`font-semibold transition-colors ${
               currentStep === "address"
                 ? "text-gray-900"
                 : currentStep === "payment"
-                ? "text-pink-600 hover:text-gray-900 cursor-pointer"
+                ? "text-[#b89396] hover:text-gray-900 cursor-pointer"
                 : currentStep === "cart" && data?.items?.length > 0
                 ? "text-gray-600 hover:text-gray-900 cursor-pointer"
                 : "text-gray-400 cursor-not-allowed"
@@ -415,7 +415,7 @@ const CartLayout = () => {
           >
             ADDRESS
           </button>
-          <div className={`w-16 h-0.5 ${currentStep === "payment" ? "bg-pink-600" : "bg-gray-300"}`}></div>
+          <div className={`w-16 h-0.5 ${currentStep === "payment" ? "bg-[#b89396]" : "bg-gray-300"}`}></div>
           <span className={`font-semibold ${currentStep === "payment" ? "text-gray-900" : "text-gray-400"}`}>
             PAYMENT
           </span>
@@ -525,7 +525,7 @@ const CartLayout = () => {
                 disabled={!data || data?.items?.length <= 0 || !auth}
                 className={`w-full py-3 rounded-full font-semibold text-white ${!data || data?.items?.length <= 0 || !auth
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-black hover:bg-gray-800"
+                    : "bg-[#b89396] hover:bg-gray-800"
                   }`}
               >
                 Proceed to next
@@ -586,7 +586,7 @@ const CartLayout = () => {
                           key={address._id}
                           className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
                             selectedAddress === address._id
-                              ? "border-pink-600 bg-pink-50"
+                              ? "border-[#b89396] bg-[#ece1e1]"
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                           onClick={() => setSelectedAddress(address._id)}
@@ -594,12 +594,12 @@ const CartLayout = () => {
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <MapPin size={18} className="text-pink-600" />
-                                <span className="font-semibold text-gray-900">
+                                <MapPin size={18} className="text-[#b89396]" />
+                                <span className="font-semibold text-[#b89396]">
                                   {address.fullName}
                                 </span>
                                 {address.isDefault && (
-                                  <span className="px-2 py-1 text-xs bg-pink-100 text-pink-700 rounded">
+                                  <span className="px-2 py-1 text-xs bg-pink-100 text-[#b89396] rounded">
                                     DEFAULT
                                   </span>
                                 )}
@@ -647,7 +647,7 @@ const CartLayout = () => {
                                 className="p-2 hover:bg-red-50 rounded-full transition-colors"
                                 title="Delete address"
                               >
-                                <Trash2 size={18} className="text-red-600" />
+                                <Trash2 size={18} className="text-[#b89396]" />
                               </button>
                             </div>
                           </div>
@@ -714,7 +714,7 @@ const CartLayout = () => {
                   className={`w-full py-3 rounded-full font-semibold text-white ${
                     !selectedAddress
                       ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-black hover:bg-gray-800"
+                      : "bg-[#b89396] hover:bg-gray-800"
                   }`}
                 >
                   Continue to Payment

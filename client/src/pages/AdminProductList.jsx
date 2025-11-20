@@ -124,7 +124,7 @@ const AdminProductList = () => {
           </div>
         </div>
         <button
-          className="m-0 text-lg font-semibold border-none text-white bg-red-600 outline-none cursor-pointer py-1.5 px-5 h-9"
+          className="m-0 text-lg font-semibold border-none text-white bg-[#b89396] outline-none cursor-pointer py-1.5 px-5 h-9"
           onClick={() => navigate("/admin/product/add")}
           type="button"
         >
@@ -199,7 +199,7 @@ const AdminProductList = () => {
                     </button>
                     {item.status === "Inactive" && (
                       <button
-                        className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-red-600 border border-red-600 cursor-pointer hover:bg-red-700 hover:border-red-700"
+                        className="w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[15px] bg-[#b89396] border border-[#b89396] cursor-pointer hover:bg-[#b89396] hover:border-[#b89396]"
                         onClick={() => deleteProduct(item._id)}
                       >
                         Delete
