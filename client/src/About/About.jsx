@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import aboutImg from "../Images/demoCategory/aboutimg.png";
 import aboutVideo from "../Images/demoCategory/about page video.mp4";
 
@@ -42,11 +43,23 @@ const faqs = [
       "You can return or exchange unworn items within 7 days of delivery. Our process is simple and customer-friendly.",
   },
 ];
-
 const About = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const toggleFAQ = (index) =>
     setActiveIndex(activeIndex === index ? null : index);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#faq-section") {
+      const el = document.getElementById("faq-section");
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 200);
+      }
+    }
+  }, [location]);
 
   return (
     <div className="font-poppins text-gray-800">
@@ -118,45 +131,50 @@ const About = () => {
           />
         </div>
       </section>
+...
 
+{/* ---------- FAQ ---------- */}
+<section
+  id="faq-section"
+  className="flex flex-col lg:flex-row justify-between items-start gap-10 px-6 md:px-12 py-16 bg-white"
+>
+  {/* Left */}
+  <div className="flex-1 text-center lg:text-left">
+    <h2 className="font-playfair text-[2rem] md:text-[2.8rem] uppercase tracking-wider text-gray-900 leading-tight">
+      Frequently Asked Questions
+    </h2>
+  </div>
 
-      {/* ---------- FAQ ---------- */}
-      <section className="flex flex-col lg:flex-row justify-between items-start gap-10 px-6 md:px-12 py-16 bg-white">
-        {/* Left */}
-        <div className="flex-1 text-center lg:text-left">
-          <h2 className="font-playfair text-[2rem] md:text-[2.8rem] uppercase tracking-wider text-gray-900 leading-tight">
-            Frequently Asked Questions
-          </h2>
-        </div>
-
-        {/* Right */}
-        <div className="flex-[1.5]">
-          <div className="bg-gray-100 rounded-2xl p-6 md:p-10">
-            {faqs.map((faq, i) => (
-              <div key={i} className="border-b border-gray-300 py-3">
-                <div
-                  className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center gap-4 transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${
-                    activeIndex === i ? "bg-gray-50" : ""
-                  }`}
-                  onClick={() => toggleFAQ(i)}
-                >
-                  <span className="text-[1.5rem] text-[#b89396] w-6 text-center">
-                    {activeIndex === i ? "−" : "+"}
-                  </span>
-                  <span>{faq.question}</span>
-                </div>
-                {activeIndex === i && (
-                  <div className="bg-gray-100 rounded-lg mt-2 ml-0 lg:ml-12 px-4 py-3 transition-all duration-300">
-                    <p className="text-[0.95rem] text-gray-600 leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
+  {/* Right */}
+  <div className="flex-[1.5]">
+    <div className="bg-gray-100 rounded-2xl p-6 md:p-10">
+      {faqs.map((faq, i) => (
+        <div key={i} className="border-b border-gray-300 py-3">
+          <div
+            className={`bg-white px-4 py-3 rounded-lg cursor-pointer flex items-center gap-4 transition-all duration-300 text-[1.05rem] font-medium text-gray-800 shadow-sm hover:shadow-md ${
+              activeIndex === i ? "bg-gray-50" : ""
+            }`}
+            onClick={() => toggleFAQ(i)}
+          >
+            <span className="text-[1.5rem] text-[#b89396] w-6 text-center">
+              {activeIndex === i ? "−" : "+"}
+            </span>
+            <span>{faq.question}</span>
           </div>
+
+          {activeIndex === i && (
+            <div className="bg-gray-100 rounded-lg mt-2 ml-0 lg:ml-12 px-4 py-3 transition-all duration-300">
+              <p className="text-[0.95rem] text-gray-600 leading-relaxed">
+                {faq.answer}
+              </p>
+            </div>
+          )}
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
     </div>
   );
 };
