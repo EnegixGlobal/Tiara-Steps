@@ -20,6 +20,7 @@ const CartLayout = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("online");
 
   const token = localStorage.getItem("jwt");
 
@@ -118,6 +119,10 @@ const CartLayout = () => {
       toast.error("Please select an address");
       return;
     }
+    if (paymentMethod === "cod") {
+      handleCashOnDelivery();
+      return;
+    }
     setCurrentStep("payment");
     handleCheckout();
   };
@@ -139,6 +144,31 @@ const CartLayout = () => {
       }
     }
     // Payment step is not clickable as it's handled by Razorpay
+  };
+
+  const handleCashOnDelivery = async () => {
+    setCurrentStep("payment");
+    try {
+      const response = await Axios.post(
+        "/payment/cash-on-delivery",
+        {
+          coupon: appliedCoupon ? couponCode.toUpperCase() : "",
+          addressId: selectedAddress,
+        },
+        { headers: { Authorization: localStorage.getItem("jwt") } }
+      );
+
+      if (response.data.success) {
+        toast.success("Cash on Delivery order placed!");
+        window.location.href = "/checkout-success";
+      } else {
+        throw new Error(response.data.message || "Failed to place COD order");
+      }
+    } catch (error) {
+      console.error("COD order error:", error);
+      toast.error(error?.response?.data?.message || "Failed to place COD order");
+      setCurrentStep("address");
+    }
   };
 
   const handleCheckout = async () => {
@@ -707,7 +737,50 @@ const CartLayout = () => {
                 </div>
               </div>
 
-              <div className="px-6 pb-6">
+            <div className="px-6 pb-6 space-y-4">
+              <div className="border border-gray-200 rounded-xl p-4">
+                <p className="text-sm font-semibold text-gray-800 mb-3">
+                  Select Payment Method
+                </p>
+                <div className="space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      value="online"
+                      checked={paymentMethod === "online"}
+                      onChange={() => setPaymentMethod("online")}
+                      className="mt-1 accent-[#b89396]"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Online Payment
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Pay securely using UPI, cards or net banking
+                      </p>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      value="cod"
+                      checked={paymentMethod === "cod"}
+                      onChange={() => setPaymentMethod("cod")}
+                      className="mt-1 accent-[#b89396]"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Cash on Delivery
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Pay in cash when the order is delivered
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
                 <button
                   onClick={handleContinueToPayment}
                   disabled={!selectedAddress}

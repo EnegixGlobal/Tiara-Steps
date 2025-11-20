@@ -1,11 +1,12 @@
 import React from 'react'
 import Home from "../Home/Home.jsx";
-
+import WhatsAppButton from "../components/WhatsAppButton.jsx";
 
 const LandingPage = () => {
   return (
-    <div>
+    <div className="relative">
       <Home/>
+      <WhatsAppButton variant="floating" />
     </div>
   )
 }

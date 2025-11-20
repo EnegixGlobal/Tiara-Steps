@@ -251,6 +251,23 @@ const ProductForm = ({
               placeholder="Enter product price"
             />
           </div>
+          <div className="w-full">
+            <label htmlFor="mrp" className="text-sm font-medium text-[#1a1a1a] mb-2 block">
+              MRP (Original Price)
+            </label>
+            <input
+              type="number"
+              className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded w-full outline-none focus:border-[#54bab9] transition-colors"
+              id="mrp"
+              value={data.mrp}
+              onChange={handleInputChange}
+              min={0}
+              placeholder="Enter original price"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              This will appear as the struck-through MRP. Leave equal to selling price for no discount.
+            </p>
+          </div>
         </div>
         <div className="w-full max-[768px]:w-full">
           {/* Main Image Upload */}

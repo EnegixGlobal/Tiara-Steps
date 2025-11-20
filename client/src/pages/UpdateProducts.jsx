@@ -12,6 +12,7 @@ const UpdateProducts = () => {
     desc: "",
     sku: "",
     price: "",
+    mrp: "",
     color: "",
     brand: "",
     material: "",
@@ -54,6 +55,7 @@ const UpdateProducts = () => {
           material: response.data.data.material,
           name: response.data.data.name,
           price: response.data.data.price,
+          mrp: response.data.data.mrp ?? response.data.data.price,
           sku: response.data.data.sku,
           category: response.data.data.category,
         });
@@ -105,6 +107,7 @@ const UpdateProducts = () => {
         !data.desc ||
         !data.sku ||
         !data.price ||
+        !data.mrp ||
         !data.color ||
         !data.brand ||
         !data.material ||
@@ -112,15 +115,21 @@ const UpdateProducts = () => {
       ) {
         return toast.error("Please fill all the fields.");
       }
+      if (Number(data.mrp) < Number(data.price)) {
+        return toast.error("MRP should be greater than or equal to selling price.");
+      }
 
+      const payload = {
+        ...data,
+        price: Number(data.price),
+        mrp: Number(data.mrp),
+        sizeQuantity: validFields,
+        image: link,
+        images: imageLinks && imageLinks.length > 0 ? imageLinks : [],
+      };
       const response = await Axios.put(
         `/product/update/${slug}`,
-        { 
-          ...data, 
-          sizeQuantity: validFields, 
-          image: link,
-          images: imageLinks && imageLinks.length > 0 ? imageLinks : []
-        },
+        payload,
         {
           headers: {
             Authorization: token,

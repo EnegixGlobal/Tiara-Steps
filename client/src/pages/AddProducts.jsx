@@ -10,6 +10,7 @@ const AddProducts = () => {
     desc: "",
     sku: "",
     price: "",
+    mrp: "",
     color: "",
     brand: "",
     material: "",
@@ -59,6 +60,7 @@ const AddProducts = () => {
         !data.desc ||
         !data.sku ||
         !data.price ||
+        !data.mrp ||
         !data.color ||
         !data.brand ||
         !data.material ||
@@ -67,14 +69,20 @@ const AddProducts = () => {
       ) {
         return toast.error("Please fill all the fields.");
       }
+      if (Number(data.mrp) < Number(data.price)) {
+        return toast.error("MRP should be greater than or equal to selling price.");
+      }
+      const payload = {
+        ...data,
+        price: Number(data.price),
+        mrp: Number(data.mrp),
+        sizeQuantity: validFields,
+        image: link,
+        images: imageLinks && imageLinks.length > 0 ? imageLinks : [],
+      };
       const response = await Axios.post(
         "/product/create",
-        { 
-          ...data, 
-          sizeQuantity: validFields, 
-          image: link,
-          images: imageLinks && imageLinks.length > 0 ? imageLinks : []
-        },
+        payload,
         {
           headers: {
             Authorization: token,

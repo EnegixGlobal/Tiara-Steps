@@ -487,6 +487,15 @@ const CategoryPage = () => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [currentPage]);
+
   const pageNumbers = Array.from({ length: totalPages }, (_, idx) => idx + 1);
 
   const goToPrevPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
@@ -510,7 +519,7 @@ const CategoryPage = () => {
     // Use case-insensitive matching to ensure consistency with sidebar
     const existingCategory = findCategoryInFilters(categoryName);
     const isSelected = !!existingCategory;
-    
+
     if (isSelected) {
       // If already selected, remove it (show all products)
       setFilters((prev) => ({
@@ -539,8 +548,8 @@ const CategoryPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
 
-  <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6"> 
-    <div className="
+      <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
+        <div className="
       flex 
       overflow-x-auto 
       whitespace-nowrap 
@@ -554,12 +563,12 @@ const CategoryPage = () => {
       scrollbar-hide
     ">
 
-      {categories.map((cat, idx) => {
-        const isSelected = isCategorySelected(cat.name);
-        return (
-          <div 
-            key={idx} 
-            className={`
+          {categories.map((cat, idx) => {
+            const isSelected = isCategorySelected(cat.name);
+            return (
+              <div
+                key={idx}
+                className={`
               flex flex-col items-center gap-3 
               min-w-[120px] md:min-w-[180px] 
               cursor-pointer 
@@ -567,18 +576,18 @@ const CategoryPage = () => {
               hover:-translate-y-1 
               ${isSelected ? 'opacity-100' : 'opacity-90 hover:opacity-100'}
             `}
-            onClick={() => handleCategoryClick(cat.name)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleCategoryClick(cat.name);
-              }
-            }}
-          >
-            <div
-              className={`
+                onClick={() => handleCategoryClick(cat.name)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCategoryClick(cat.name);
+                  }
+                }}
+              >
+                <div
+                  className={`
                 w-[110px] h-[110px] 
                 md:w-[140px] md:h-[140px] 
                 rounded-full bg-white flex items-center justify-center 
@@ -586,26 +595,26 @@ const CategoryPage = () => {
                 transition-all duration-300 
                 ${isSelected ? 'ring-4 ring-[#A37478] ring-offset-2' : ''}
               `}
-            >
-              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-            </div>
+                >
+                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                </div>
 
-            <div
-              className={`
+                <div
+                  className={`
                 text-base font-semibold transition-colors 
                 ${isSelected ? 'text-[#A37478]' : 'text-gray-800'}
               `}
-            >
-              {cat.name}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  
+                >
+                  {cat.name}
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
 
-</div>
+
+      </div>
 
       {/* Mobile Filter Toggle */}
       <div className="flex justify-between items-center mb-5 md:hidden">
@@ -629,49 +638,49 @@ const CategoryPage = () => {
                 {categoryOptions.map((cat) => {
                   const isSelected = isCategorySelected(cat);
                   return (
-                  <div key={cat}>
-                    <label className="flex items-center gap-2.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => toggleFilter("categories", cat)}
-                        className="hidden"
-                      />
-                      <div
-                        className={`w-[18px] h-[18px] border-2 rounded border-gray-300 flex items-center justify-center transition-all ${isSelected ? "bg-[#A37478] border-pink-[#A37478]" : ""
-                          }`}
-                      >
-                        {isSelected && <span className="text-white text-xs">✓</span>}
-                      </div>
-                      <span
-                        className="text-sm text-gray-600"
-                        onClick={() => {
-                          if (cat === "Heels") setShowHeelsOptions((s) => !s);
-                        }}
-                      >
-                        {cat}
-                      </span>
-                    </label>
+                    <div key={cat}>
+                      <label className="flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleFilter("categories", cat)}
+                          className="hidden"
+                        />
+                        <div
+                          className={`w-[18px] h-[18px] border-2 rounded border-gray-300 flex items-center justify-center transition-all ${isSelected ? "bg-[#A37478] border-pink-[#A37478]" : ""
+                            }`}
+                        >
+                          {isSelected && <span className="text-white text-xs">✓</span>}
+                        </div>
+                        <span
+                          className="text-sm text-gray-600"
+                          onClick={() => {
+                            if (cat === "Heels") setShowHeelsOptions((s) => !s);
+                          }}
+                        >
+                          {cat}
+                        </span>
+                      </label>
 
-                    {/* Sub-options for Heels */}
-                    {cat === "Heels" && showHeelsOptions && (
-                      <div className="pl-7 mt-2 flex flex-col gap-2 text-sm text-gray-600">
-                        {["Block Heels", "Pencil Heels", "Wedge Heels"].map((option) => (
-                          <label key={option} className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="radio"
-                              name="heelsType"
-                              value={option}
-                              checked={filters.heelsType === option}
-                              onChange={(e) => setFilters((prev) => ({ ...prev, heelsType: e.target.value }))}
-                              className="accent-[#A37478]"
-                            />
-                            <span className="text-sm text-gray-600 capitalize">{option}</span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                      {/* Sub-options for Heels */}
+                      {cat === "Heels" && showHeelsOptions && (
+                        <div className="pl-7 mt-2 flex flex-col gap-2 text-sm text-gray-600">
+                          {["Block Heels", "Pencil Heels", "Wedge Heels"].map((option) => (
+                            <label key={option} className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="heelsType"
+                                value={option}
+                                checked={filters.heelsType === option}
+                                onChange={(e) => setFilters((prev) => ({ ...prev, heelsType: e.target.value }))}
+                                className="accent-[#A37478]"
+                              />
+                              <span className="text-sm text-gray-600 capitalize">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -690,8 +699,8 @@ const CategoryPage = () => {
                       type="button"
                       onClick={() => toggleFilter("sizes", size)}
                       className={`relative flex flex-col items-center justify-center gap-1 rounded-xl border px-3 py-3 text-xs font-semibold uppercase tracking-wide transition-all ${isActive
-                          ? "border-transparent bg-[#A37478] text-white shadow-md shadow-[#A37478]/40"
-                          : "border-gray-200 bg-gray-50 text-gray-600 hover:border-[#A37478] hover:bg-white hover:text-[#A37478]"
+                        ? "border-transparent bg-[#A37478] text-white shadow-md shadow-[#A37478]/40"
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-[#A37478] hover:bg-white hover:text-[#A37478]"
                         }`}
                     >
                       <span className="text-sm">{size}</span>
@@ -714,8 +723,8 @@ const CategoryPage = () => {
                         key={value}
                         type="button"
                         className={`flex items-center gap-2 px-3 py-2 border rounded-full text-sm transition-all ${isActive
-                            ? "border-[#A37478] text-[#A37478] bg-[#FDF2F8]"
-                            : "border-gray-200 text-gray-600 hover:border-[#A37478]"
+                          ? "border-[#A37478] text-[#A37478] bg-[#FDF2F8]"
+                          : "border-gray-200 text-gray-600 hover:border-[#A37478]"
                           }`}
                         onClick={() => toggleFilter("colors", value)}
                       >
@@ -747,8 +756,8 @@ const CategoryPage = () => {
                   onClick={resetPriceFilters}
                   disabled={isDefaultPriceRange}
                   className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all ${isDefaultPriceRange
-                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                      : "border-[#A37478] text-[#A37478] hover:bg-[#A37478] hover:text-white"
+                    ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                    : "border-[#A37478] text-[#A37478] hover:bg-[#A37478] hover:text-white"
                     }`}
                 >
                   Reset
@@ -756,7 +765,7 @@ const CategoryPage = () => {
               </div>
 
               <div className="mt-5 space-y-5">
-                
+
 
                 <div className="relative h-16 flex items-center px-1">
                   <div className="absolute inset-x-0 h-2 rounded-full bg-gray-100 shadow-inner mt-3" />
@@ -813,8 +822,8 @@ const CategoryPage = () => {
                         type="button"
                         onClick={() => applyPriceRange(min, max)}
                         className={`group inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${isActive
-                            ? "border-transparent bg-gradient-to-r from-[#A37478] to-[#7B5195] text-white shadow-md"
-                            : "border-gray-200 text-gray-600 hover:border-[#A37478] hover:text-[#A37478] hover:shadow-sm"
+                          ? "border-transparent bg-gradient-to-r from-[#A37478] to-[#7B5195] text-white shadow-md"
+                          : "border-gray-200 text-gray-600 hover:border-[#A37478] hover:text-[#A37478] hover:shadow-sm"
                           }`}
                       >
                         <span
@@ -855,7 +864,23 @@ const CategoryPage = () => {
                     (Array.isArray(product?.images) ? product.images[0]?.url || product.images[0] : null);
                   const brandLabel = product?.brand?.name || product?.brand || "Tiara Steps";
                   const productName = product?.name || product?.title || "Untitled product";
-                  const productPrice = product?.price ?? product?.salePrice ?? product?.mrp ?? "—";
+                  const rawSalePrice = product?.price ?? product?.salePrice ?? product?.mrp ?? null;
+                  const salePriceNumber = Number(rawSalePrice);
+                  const hasNumericSalePrice = !Number.isNaN(salePriceNumber) && salePriceNumber >= 0;
+                  const displaySalePrice = hasNumericSalePrice
+                    ? `Rs. ${salePriceNumber.toLocaleString("en-IN")}`
+                    : typeof rawSalePrice === "number"
+                      ? `Rs. ${rawSalePrice}`
+                      : rawSalePrice || "—";
+                  const mrpValue = Number(product?.mrp);
+                  const hasDiscount =
+                    hasNumericSalePrice && !Number.isNaN(mrpValue) && mrpValue > salePriceNumber;
+                  const formattedMrp = hasDiscount
+                    ? `MRP ₹${mrpValue.toLocaleString("en-IN")}`
+                    : null;
+                  const discountPercent = hasDiscount
+                    ? Math.round(((mrpValue - salePriceNumber) / mrpValue) * 100)
+                    : null;
                   const isFavorite = productId ? Boolean(favorites[productId]) : false;
 
                   const cardKey = productId || productSlug || `product-${index}`;
@@ -906,8 +931,18 @@ const CategoryPage = () => {
                           {brandLabel}
                         </div>
                         <div className="text-[15px] text-gray-800 mb-2.5 font-medium line-clamp-2">{productName}</div>
-                        <div className="text-base font-semibold text-[#A37478]">
-                          {typeof productPrice === "number" ? `Rs. ${productPrice}` : productPrice}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-base font-semibold text-[#A37478]">
+                            {displaySalePrice}
+                          </span>
+                          {hasDiscount && (
+                            <span className="text-sm text-gray-500 flex items-center gap-2">
+                              <span className="line-through">{formattedMrp}</span>
+                              <span className="text-green-600 font-semibold">
+                                {discountPercent}% OFF
+                              </span>
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
