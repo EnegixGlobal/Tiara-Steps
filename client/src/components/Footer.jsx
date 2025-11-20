@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter, Phone, Mail } from 'lucide-react';
+import { Facebook, Instagram, Youtube,Phone, Mail } from 'lucide-react';
 import logo from '../Images/Tiara-logo2.png'
 
 const Footer = () => {
@@ -20,16 +20,34 @@ const Footer = () => {
             <div>
               <h3 className="font-semibold text-gray-800 text-sm mb-3">KEEP IN TOUCH</h3>
               <div className="flex gap-4">
-                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
-                  <Facebook size={20} />
-                </a>
-                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
-                  <Instagram size={20} />
-                </a>
-                <a href="#" className="text-gray-800 hover:text-[#b89396] transition-colors">
-                  <Twitter size={20} />
-                </a>
-              </div>
+  <a
+    href="https://www.facebook.com/share/1AbUiFisGS/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-gray-800 hover:text-[#b89396] transition-colors"
+  >
+    <Facebook size={20} />
+  </a>
+
+  <a
+    href="https://www.instagram.com/tiarasteps_official?igsh=MW01dW01N2pwbjF0Zg=="
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-gray-800 hover:text-[#b89396] transition-colors"
+  >
+    <Instagram size={20} />
+  </a>
+
+  <a
+    href="https://youtube.com/@tiarasteps?si=lSPhTbkaRDL1f2Hx"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-gray-800 hover:text-[#b89396] transition-colors"
+  >
+    <Youtube size={20} />
+  </a>
+</div>
+
             </div>
           </div>
 
@@ -70,9 +88,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
-                  FAQ
-                </Link>
+                <Link to="/about#faq-section" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
+  FAQ
+</Link>
+
               </li>
               <li>
                 <Link to="/help" className="text-gray-700 hover:text-[#b89396] transition-colors text-sm">
