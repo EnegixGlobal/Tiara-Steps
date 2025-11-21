@@ -915,30 +915,40 @@ const CategoryPage = () => {
                       }}
                     >
                       <div className="relative w-full pt-[100%] overflow-hidden bg-gray-100">
-                        {productImage ? (
-                          <img
-                            src={productImage}
-                            alt={productName}
-                            className="absolute top-0 left-0 w-full h-full object-cover transition-transform hover:scale-[1.08]"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="absolute top-0 left-0 w-full h-full bg-gray-100 flex items-center justify-center text-sm text-gray-500">
-                            Image unavailable
-                          </div>
-                        )}
-                        <button
-                          className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
-                            }`}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            if (productId) toggleFavorite(productId);
-                          }}
-                          type="button"
-                        >
-                          <Heart size={18} />
-                        </button>
-                      </div>
+
+  {/* NEW Badge */}
+  <div className="absolute top-2 left-2 bg-[#b06a8e] text-white text-[10px] font-semibold px-2 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
+    New
+  </div>
+
+  {productImage ? (
+    <img
+      src={productImage}
+      alt={productName}
+      className="absolute top-0 left-0 w-full h-full object-cover transition-transform hover:scale-[1.08]"
+      loading="lazy"
+    />
+  ) : (
+    <div className="absolute top-0 left-0 w-full h-full bg-gray-100 flex items-center justify-center text-sm text-gray-500">
+      Image unavailable
+    </div>
+  )}
+
+  {/* Wishlist Button */}
+  <button
+    className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${
+      isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
+    }`}
+    onClick={(event) => {
+      event.stopPropagation();
+      if (productId) toggleFavorite(productId);
+    }}
+    type="button"
+  >
+    <Heart size={18} />
+  </button>
+</div>
+
 
                       <div className="p-4">
                         <div className="text-[13px] text-gray-600 uppercase tracking-wide mb-1 line-clamp-1">
