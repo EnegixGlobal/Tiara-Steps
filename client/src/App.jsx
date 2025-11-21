@@ -30,6 +30,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CustomerList = lazy(() => import("./pages/CustomerList"));
 const CouponList = lazy(() => import("./pages/CouponList"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders"));
+const AdminReturns = lazy(() => import("./pages/AdminReturns"));
 const AdminProductList = lazy(() => import("./pages/AdminProductList"));
 const AddProducts = lazy(() => import("./pages/AddProducts"));
 const UpdateProducts = lazy(() => import("./pages/UpdateProducts"));
@@ -123,6 +124,7 @@ const App = () => {
             <Route path="customers" element={<CustomerList />} />
             <Route path="coupons" element={<CouponList />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="returns" element={<AdminReturns />} />
             <Route path="products" element={<AdminProductList />} />
             <Route path="product/add" element={<AddProducts />} />
             <Route path="product/update/:slug" element={<UpdateProducts />} />

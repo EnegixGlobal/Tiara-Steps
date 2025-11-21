@@ -18,6 +18,7 @@ const ProductForm = ({
   handleCancel,
   changeCategory,
   changeColor,
+  currentProductId = null,
 }) => {
   const uploadImageToCloudinary = async (file) => {
     try {
@@ -132,6 +133,7 @@ const ProductForm = ({
   };
   const [options, setOptions] = useState([]);
   const [colors, setColors] = useState([]);
+  const [linkableProducts, setLinkableProducts] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -169,6 +171,27 @@ const ProductForm = ({
       }
     };
     fetchColors();
+  }, []);
+
+  useEffect(() => {
+    const fetchLinkableProducts = async () => {
+      try {
+        const token = localStorage.getItem("jwtAdmin");
+        if (!token) {
+          return;
+        }
+        const res = await Axios.get("/admin/products", {
+          params: { page: 1, limit: 500, searchTerm: "" },
+          headers: { Authorization: token },
+        });
+        if (res.data.success && Array.isArray(res.data.products)) {
+          setLinkableProducts(res.data.products);
+        }
+      } catch (error) {
+        console.log("Failed to load products for linking", error);
+      }
+    };
+    fetchLinkableProducts();
   }, []);
 
   // const colors = [
@@ -447,6 +470,31 @@ const ProductForm = ({
             <option value="false">false</option>
             <option value="true">true</option>
           </select>
+        </div>
+
+        <div className="w-full">
+          <label htmlFor="parentProductId" className="text-sm font-medium text-[#1a1a1a] mb-2 block">
+            Link To Existing Product (Color Grouping)
+          </label>
+          <select
+            id="parentProductId"
+            className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded w-full outline-none focus:border-[#54bab9] transition-colors"
+            value={data.parentProductId || ""}
+            onChange={handleInputChange}
+          >
+            <option value="">Treat as standalone / base color</option>
+            {linkableProducts
+              .filter((prod) => !currentProductId || prod._id !== currentProductId)
+              .map((prod) => (
+                <option key={prod._id} value={prod._id}>
+                  {prod.name} — {prod.desc}
+                </option>
+              ))}
+          </select>
+          <p className="text-xs text-gray-500 mt-1">
+            Optional: Select another product to group colors. Customers will see all linked
+            colors on the product page.
+          </p>
         </div>
       </div>
       <div className="w-full mb-6">

@@ -18,12 +18,14 @@ const UpdateProducts = () => {
     material: "",
     category: "",
     featured: "false",
+    parentProductId: "",
   });
   const [link, setLink] = useState(null);
   const [imageLinks, setImageLinks] = useState([]);
   const [fields, setFields] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [currentProductId, setCurrentProductId] = useState(null);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -58,7 +60,9 @@ const UpdateProducts = () => {
           mrp: response.data.data.mrp ?? response.data.data.price,
           sku: response.data.data.sku,
           category: response.data.data.category,
+          parentProductId: response.data.data.parentProduct || "",
         });
+        setCurrentProductId(response.data.data._id);
         setLoading(false);
       } catch (error) {
         toast.error(error?.response?.data?.message || "Something went wrong", {
@@ -126,6 +130,7 @@ const UpdateProducts = () => {
         sizeQuantity: validFields,
         image: link,
         images: imageLinks && imageLinks.length > 0 ? imageLinks : [],
+        parentProductId: data.parentProductId || "",
       };
       const response = await Axios.put(
         `/product/update/${slug}`,
@@ -167,6 +172,7 @@ const UpdateProducts = () => {
           changeColor={changeColor}
           handleSubmit={handleSubmit}
           handleCancel={() => navigate("/admin/products")}
+          currentProductId={currentProductId}
         />
       </div>
     </div>

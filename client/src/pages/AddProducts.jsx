@@ -16,6 +16,7 @@ const AddProducts = () => {
     material: "",
     category: "",
     featured: "false",
+    parentProductId: "",
   });
   const [link, setLink] = useState(null);
   const [imageLinks, setImageLinks] = useState([]);
@@ -79,6 +80,7 @@ const AddProducts = () => {
         sizeQuantity: validFields,
         image: link,
         images: imageLinks && imageLinks.length > 0 ? imageLinks : [],
+        parentProductId: data.parentProductId || "",
       };
       const response = await Axios.post(
         "/product/create",
@@ -120,6 +122,7 @@ const AddProducts = () => {
           changeColor={changeColor}
           handleSubmit={handleSubmit}
           handleCancel={() => navigate("/admin/products")}
+          currentProductId={null}
         />
       </div>
     </div>

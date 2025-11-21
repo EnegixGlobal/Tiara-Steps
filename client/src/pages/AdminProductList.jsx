@@ -161,6 +161,9 @@ const AdminProductList = () => {
                 Status
               </th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">
+                New Tag
+              </th>
+              <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">
                 Price
               </th>
               <th className="bg-gray-100 py-3 px-5 text-xs leading-4 font-bold uppercase tracking-wide text-center">
@@ -206,6 +209,46 @@ const AdminProductList = () => {
                 </td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   {item.status}
+                </td>
+                <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
+                  <button
+                    className={`w-24 py-2.5 mx-1.5 text-white font-semibold rounded text-[13px] border cursor-pointer transition-colors ${
+                      item.isNew
+                        ? "bg-green-600 border-green-600 hover:bg-green-700 hover:border-green-700"
+                        : "bg-gray-400 border-gray-400 hover:bg-gray-500 hover:border-gray-500"
+                    }`}
+                    onClick={async () => {
+                      try {
+                        const token = localStorage.getItem("jwtAdmin");
+                        if (!token) {
+                          return toast.error("Access denied.");
+                        }
+                        const response = await Axios.put(
+                          `/admin/product/new/${item._id}`,
+                          {},
+                          {
+                            headers: { Authorization: token },
+                          }
+                        );
+                        if (response.data.success) {
+                          const updatedData = data.map((prod) =>
+                            prod._id === item._id
+                              ? { ...prod, isNew: response.data.isNew }
+                              : prod
+                          );
+                          setData(updatedData);
+                          toast.success(response.data.message);
+                        }
+                      } catch (error) {
+                        toast.error(
+                          error?.response?.data?.message ||
+                            "Failed to update New tag."
+                        );
+                      }
+                    }}
+                  >
+                    {item.isNew ? "New On" : "New Off"}
+                  </button>
                 </td>
                 <td className="py-4 border-b-2 border-gray-200 text-sm leading-5 text-center">
                   ₹{item.price}
