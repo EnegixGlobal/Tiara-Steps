@@ -546,10 +546,26 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
 
-      <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
-        <div className="
+  {/* Centered Heading */}
+  <div className="w-full flex justify-center mb-4">
+    <h1
+      style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: "34px",
+        fontWeight: "600",
+        letterSpacing: "1px",
+      }}
+      className="text-center"
+    >
+      New Collection
+    </h1>
+  </div>
+
+  {/* Category Icons Row */}
+  <div
+    className="
       flex 
       overflow-x-auto 
       whitespace-nowrap 
@@ -561,7 +577,9 @@ const CategoryPage = () => {
       gap-5 
       py-2.5 
       scrollbar-hide
-    ">
+    "
+  >
+
 
           {categories.map((cat, idx) => {
             const isSelected = isCategorySelected(cat.name);
@@ -610,11 +628,7 @@ const CategoryPage = () => {
               </div>
             );
           })}
-        </div>
-
-
-
-      </div>
+            </div>
 
       {/* Mobile Filter Toggle */}
       <div className="flex justify-between items-center mb-5 md:hidden">
