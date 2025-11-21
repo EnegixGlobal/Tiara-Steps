@@ -9,6 +9,7 @@ import {
   MdMenuOpen,
   MdCategory,
   MdPalette,
+  MdAssignmentReturn,
 } from "react-icons/md";
 import { BiSolidDiscount } from "react-icons/bi";
 import { TbBrandBooking } from "react-icons/tb";
@@ -51,6 +52,11 @@ const AdminSideBar = ({ toggleOpen }) => {
           iconName={<FaClipboardList size={18} />}
           text="Orders"
           to="/admin/orders"
+        />
+        <SideItems
+          iconName={<MdAssignmentReturn size={20} />}
+          text="Returns"
+          to="/admin/returns"
         />
         <SideItems
           iconName={<BiSolidDiscount size={20} />}

@@ -899,6 +899,8 @@ const CategoryPage = () => {
 
                   const cardKey = productId || productSlug || `product-${index}`;
 
+                  const isNew = product?.isNew;
+
                   return (
                     <div
                       key={cardKey}
@@ -916,10 +918,12 @@ const CategoryPage = () => {
                     >
                       <div className="relative w-full pt-[100%] overflow-hidden bg-gray-100">
 
-  {/* NEW Badge */}
-  <div className="absolute top-2 left-2 bg-[#b06a8e] text-white text-[10px] font-semibold px-2 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
-    New
-  </div>
+  {/* NEW Badge (dynamic from admin panel) */}
+  {isNew && (
+    <div className="absolute top-2 left-2 bg-[#b06a8e] text-white text-[10px] font-semibold px-2 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
+      New
+    </div>
+  )}
 
   {productImage ? (
     <img

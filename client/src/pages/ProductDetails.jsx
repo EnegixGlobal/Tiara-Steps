@@ -32,6 +32,7 @@ const ProductDetails = () => {
   const [deletingReviewIndex, setDeletingReviewIndex] = useState(null);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
+  const [variants, setVariants] = useState([]);
 
   // ✅ Fetch Product Data from API
   const fetchProduct = async () => {
@@ -42,6 +43,9 @@ const ProductDetails = () => {
 
       if (response.data.success && response.data.data) {
         setData(response.data.data);
+        setVariants(response.data.variants || []);
+        setSelectedImage(0);
+        setSize("");
       } else {
         setError("Product not found");
       }
@@ -49,6 +53,7 @@ const ProductDetails = () => {
       console.error("Error fetching product:", err);
       const errorMessage = err.response?.data?.message || "Failed to load product";
       setError(errorMessage);
+      setVariants([]);
       toast.error(errorMessage, {
         position: "bottom-right",
       });
@@ -66,6 +71,11 @@ const ProductDetails = () => {
       fetchProduct();
     }
   }, [slug, navigate]);
+
+  useEffect(() => {
+    setSelectedImage(0);
+    setSize("");
+  }, [slug]);
 
   // ✅ Fetch Similar Products based on category
   const fetchSimilarProducts = async (productCategory, currentProductId) => {
@@ -451,6 +461,16 @@ const ProductDetails = () => {
 
   const mainImageUrl = getMainImageUrl();
 
+  const getVariantImage = (variant) => {
+    if (!variant) return null;
+    return (
+      extractImageUrl(variant.image) ||
+      (Array.isArray(variant.images) && variant.images.length > 0
+        ? extractImageUrl(variant.images[0])
+        : null)
+    );
+  };
+
   // Get 4 thumbnail images from images array (excluding main image if it's in the array)
   const getThumbnailImages = () => {
     if (!data.images || !Array.isArray(data.images) || data.images.length === 0) {
@@ -553,13 +573,15 @@ const ProductDetails = () => {
         {/* Left Side - Images */}
         <div className="flex flex-col gap-5 lg:max-w-[570px] lg:mx-auto">
 
-  {/* MAIN IMAGE WITH NEW BADGE */}
+  {/* MAIN IMAGE WITH OPTIONAL NEW BADGE */}
   <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
 
-    {/* NEW Badge */}
-    <div className="absolute top-3 left-3 bg-[#b06a8e] text-white text-[11px] font-semibold px-3 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
-      New
-    </div>
+    {/* NEW Badge (dynamic from admin panel) */}
+    {data.isNew && (
+      <div className="absolute top-3 left-3 bg-[#b06a8e] text-white text-[11px] font-semibold px-3 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
+        New
+      </div>
+    )}
 
     <img
       src={allProductImages[selectedImage] || mainImageUrl || ""}
@@ -645,6 +667,56 @@ const ProductDetails = () => {
               {data.ratings?.length || 10} Ratings
             </span>
           </div>
+
+          {/* Color Variants */}
+          {variants && variants.length > 1 && (
+            <div className="my-2 sm:my-3">
+              <h3 className="text-base font-semibold text-black mb-3 sm:mb-4">
+                Available Colors
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {variants.map((variant) => {
+                  const colorLabel = Array.isArray(variant.color)
+                    ? variant.color.join(", ")
+                    : variant.color || variant.name;
+                  const isActiveVariant = variant.slug === data.slug;
+                  const variantImage = getVariantImage(variant);
+
+                  return (
+                    <button
+                      type="button"
+                      key={variant._id}
+                      className={`flex items-center gap-2  rounded-full border text-xs sm:text-sm transition-colors ${
+                        isActiveVariant
+                          ? "border-[#b89396] bg-[#fdf2f8] text-[#b89396]"
+                          : "border-gray-300 text-gray-700 hover:border-[#b89396]"
+                      }`}
+                      onClick={() => {
+                        if (!isActiveVariant) {
+                          navigate(`/product/${variant.slug}`);
+                        }
+                      }}
+                    >
+                      <span className="w-12 h-12 rounded-full border border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50">
+                        {variantImage ? (
+                          <img
+                            src={variantImage}
+                            alt={colorLabel}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-[11px] text-gray-500">Img</span>
+                        )}
+                      </span>
+                      {/* <span className="max-w-[8rem] truncate">
+                        {colorLabel}
+                      </span> */}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Size Selection */}
           <div className="my-2 sm:my-3">
