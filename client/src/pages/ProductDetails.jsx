@@ -552,53 +552,64 @@ const ProductDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
         {/* Left Side - Images */}
         <div className="flex flex-col gap-5 lg:max-w-[570px] lg:mx-auto">
-          <div className="w-full aspect-square overflow-hidden bg-gray-100">
-            <img
-              src={allProductImages[selectedImage] || mainImageUrl || ""}
-              alt={data.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {/* Show 4 different thumbnail images (excluding main image) */}
-            {thumbnailImages.length > 0 ? (
-              thumbnailImages.map((img, index) => (
-                <div
-                  key={index}
-                  className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index + 1
-                      ? "border-[#b89396]"
-                      : "border-transparent hover:border-[#b89396]"
-                    }`}
-                  onClick={() => setSelectedImage(index + 1)}
-                >
-                  <img
-                    src={img}
-                    alt={`Product view ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))
-            ) : (
-              // If no thumbnails, show main image 4 times as fallback
-              Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${selectedImage === index
-                      ? "border-[#b89396]"
-                      : "border-transparent hover:border-[#b89396]"
-                    }`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <img
-                    src={mainImageUrl || ""}
-                    alt={`Product view ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))
-            )}
-          </div>
+
+  {/* MAIN IMAGE WITH NEW BADGE */}
+  <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+
+    {/* NEW Badge */}
+    <div className="absolute top-3 left-3 bg-[#b06a8e] text-white text-[11px] font-semibold px-3 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
+      New
+    </div>
+
+    <img
+      src={allProductImages[selectedImage] || mainImageUrl || ""}
+      alt={data.name}
+      className="w-full h-full object-cover"
+    />
+  </div>
+
+  {/* THUMBNAIL IMAGES */}
+  <div className="grid grid-cols-4 gap-4">
+    {thumbnailImages.length > 0 ? (
+      thumbnailImages.map((img, index) => (
+        <div
+          key={index}
+          className={`relative aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${
+            selectedImage === index + 1
+              ? "border-[#b89396]"
+              : "border-transparent hover:border-[#b89396]"
+          }`}
+          onClick={() => setSelectedImage(index + 1)}
+        >
+          <img
+            src={img}
+            alt={`Product view ${index + 1}`}
+            className="w-full h-full object-cover"
+          />
         </div>
+      ))
+    ) : (
+      Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className={`aspect-square cursor-pointer border-2 rounded-lg overflow-hidden bg-gray-100 transition-colors ${
+            selectedImage === index
+              ? "border-[#b89396]"
+              : "border-transparent hover:border-[#b89396]"
+          }`}
+          onClick={() => setSelectedImage(index)}
+        >
+          <img
+            src={mainImageUrl || ""}
+            alt={`Product view ${index + 1}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
 
         {/* Right Side - Product Info */}
         <div className="flex flex-col gap-5 sm:gap-6">
