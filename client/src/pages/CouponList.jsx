@@ -39,7 +39,23 @@ const CouponList = () => {
     },
     {
       Header: "Discount",
-      accessor: "percent_off",
+      accessor: (row) => {
+        if (row.discountType === "percentage" && row.percent_off) {
+          return `${row.percent_off}%`;
+        } else if (row.discountType === "fixed" && row.discount) {
+          return `₹${row.discount}`;
+        }
+        return row.percent_off || row.discount || "N/A";
+      },
+    },
+    {
+      Header: "Max Discount",
+      accessor: (row) => {
+        if (row.maxDiscount) {
+          return `₹${row.maxDiscount}`;
+        }
+        return "No limit";
+      },
     },
     {
       Header: "Duration",
@@ -57,16 +73,18 @@ const CouponList = () => {
     duration: "forever",
     duration_in_months: "",
     max_redemptions: "",
+    max_discount: "",
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       name: e.id,
-      discount: e.percent_off,
+      discount: e.discountType === "percentage" ? e.percent_off : e.discount,
       duration: e.duration !== "forever" ? "repeating" : "forever",
       duration_in_months: e.duration_in_months || 12,
       max_redemptions: e.max_redemptions,
+      max_discount: e.maxDiscount || "",
     });
   };
   const handleInputChange = (event) => {
@@ -85,7 +103,7 @@ const CouponList = () => {
         !formData.duration ||
         !formData.max_redemptions
       ) {
-        return toast.error("Please fill all the fields.");
+        return toast.error("Please fill all the required fields.");
       }
       const token = localStorage.getItem("jwtAdmin");
       if (!token) {
@@ -111,9 +129,7 @@ const CouponList = () => {
       if (!formData.name) {
         return toast.error("Please select a coupon to delete.");
       }
-      if (formData.name === "SUMILSUTHAR197") {
-        return toast.error("You can't delete this coupon.");
-      }
+      // Removed hardcoded coupon protection - implement database-based protection if needed
 
       const token = localStorage.getItem("jwtAdmin");
       if (!token) {
@@ -131,9 +147,10 @@ const CouponList = () => {
       setFormData({
         name: "",
         discount: "",
-        duration: "",
+        duration: "forever",
         duration_in_months: "",
         max_redemptions: "",
+        max_discount: "",
       });
       fetch();
     } catch (error) {
@@ -165,11 +182,29 @@ const CouponList = () => {
                 className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded mb-2 w-full overflow-auto font-sans"
                 id="discount"
                 min="0"
-                max="100"
-                placeholder="Enter discount in percentage"
+                placeholder="Enter discount (0-100 for %, >100 for ₹ fixed)"
                 onChange={handleInputChange}
                 value={formData.discount}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Enter 0-100 for percentage discount, or amount in ₹ for fixed discount
+              </p>
+            </div>
+            <div className="w-full">
+              <label htmlFor="max_discount" className="text-sm font-medium text-[#1a1a1a]">Max Discount (₹)</label>
+              <input
+                type="number"
+                className="py-2 px-3 text-sm font-normal text-[#1a1a1a] bg-white border border-[#ccc] rounded mb-2 w-full overflow-auto font-sans disabled:bg-gray-100"
+                id="max_discount"
+                min="0"
+                placeholder="Max discount amount (optional, for % coupons only)"
+                disabled={!formData.discount || formData.discount > 100}
+                onChange={handleInputChange}
+                value={formData.max_discount}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Maximum discount amount (only for percentage coupons)
+              </p>
             </div>
             <div className="w-full">
               <label htmlFor="duration" className="text-sm font-medium text-[#1a1a1a]">Coupon Type</label>
