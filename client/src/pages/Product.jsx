@@ -442,6 +442,7 @@ const CategoryPage = () => {
         const params = {
           page: currentPage,
           limit: PRODUCTS_PER_PAGE,
+          sortBy: { value: "updatedAt_desc" }, // Explicitly set to show newest/updated products first
         };
 
         if (filters.categories.length > 0) params.category = filters.categories;
@@ -548,24 +549,24 @@ const CategoryPage = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm py-4 px-3 mb-6">
 
-  {/* Centered Heading */}
-  <div className="w-full flex justify-center mb-4">
-    <h1
-      style={{
-        fontFamily: "'Cormorant Garamond', serif",
-        fontSize: "34px",
-        fontWeight: "600",
-        letterSpacing: "1px",
-      }}
-      className="text-center"
-    >
-      New Collection
-    </h1>
-  </div>
+      {/* Centered Heading */}
+      <div className="w-full flex justify-center mb-4">
+        <h1
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "34px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          }}
+          className="text-center"
+        >
+          New Collection
+        </h1>
+      </div>
 
-  {/* Category Icons Row */}
-  <div
-    className="
+      {/* Category Icons Row */}
+      <div
+        className="
       flex 
       overflow-x-auto 
       whitespace-nowrap 
@@ -578,15 +579,15 @@ const CategoryPage = () => {
       py-2.5 
       scrollbar-hide
     "
-  >
+      >
 
 
-          {categories.map((cat, idx) => {
-            const isSelected = isCategorySelected(cat.name);
-            return (
-              <div
-                key={idx}
-                className={`
+        {categories.map((cat, idx) => {
+          const isSelected = isCategorySelected(cat.name);
+          return (
+            <div
+              key={idx}
+              className={`
               flex flex-col items-center gap-3 
               min-w-[120px] md:min-w-[180px] 
               cursor-pointer 
@@ -594,18 +595,18 @@ const CategoryPage = () => {
               hover:-translate-y-1 
               ${isSelected ? 'opacity-100' : 'opacity-90 hover:opacity-100'}
             `}
-                onClick={() => handleCategoryClick(cat.name)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCategoryClick(cat.name);
-                  }
-                }}
-              >
-                <div
-                  className={`
+              onClick={() => handleCategoryClick(cat.name)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCategoryClick(cat.name);
+                }
+              }}
+            >
+              <div
+                className={`
                 w-[110px] h-[110px] 
                 md:w-[140px] md:h-[140px] 
                 rounded-full bg-white flex items-center justify-center 
@@ -613,22 +614,22 @@ const CategoryPage = () => {
                 transition-all duration-300 
                 ${isSelected ? 'ring-4 ring-[#A37478] ring-offset-2' : ''}
               `}
-                >
-                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                </div>
+              >
+                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+              </div>
 
-                <div
-                  className={`
+              <div
+                className={`
                 text-base font-semibold transition-colors 
                 ${isSelected ? 'text-[#A37478]' : 'text-gray-800'}
               `}
-                >
-                  {cat.name}
-                </div>
+              >
+                {cat.name}
               </div>
-            );
-          })}
             </div>
+          );
+        })}
+      </div>
 
       {/* Mobile Filter Toggle */}
       <div className="flex justify-between items-center mb-5 md:hidden">
@@ -918,40 +919,39 @@ const CategoryPage = () => {
                     >
                       <div className="relative w-full pt-[100%] overflow-hidden bg-gray-100">
 
-  {/* NEW Badge (dynamic from admin panel) */}
-  {isNew && (
-    <div className="absolute top-2 left-2 bg-[#b06a8e] text-white text-[10px] font-semibold px-2 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
-      New
-    </div>
-  )}
+                        {/* NEW Badge (dynamic from admin panel) */}
+                        {isNew && (
+                          <div className="absolute top-2 left-2 bg-[#b06a8e] text-white text-[10px] font-semibold px-2 py-1 rounded-sm shadow-md uppercase tracking-wide z-20">
+                            New
+                          </div>
+                        )}
 
-  {productImage ? (
-    <img
-      src={productImage}
-      alt={productName}
-      className="absolute top-0 left-0 w-full h-full object-cover transition-transform hover:scale-[1.08]"
-      loading="lazy"
-    />
-  ) : (
-    <div className="absolute top-0 left-0 w-full h-full bg-gray-100 flex items-center justify-center text-sm text-gray-500">
-      Image unavailable
-    </div>
-  )}
+                        {productImage ? (
+                          <img
+                            src={productImage}
+                            alt={productName}
+                            className="absolute top-0 left-0 w-full h-full object-cover transition-transform hover:scale-[1.08]"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="absolute top-0 left-0 w-full h-full bg-gray-100 flex items-center justify-center text-sm text-gray-500">
+                            Image unavailable
+                          </div>
+                        )}
 
-  {/* Wishlist Button */}
-  <button
-    className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${
-      isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
-    }`}
-    onClick={(event) => {
-      event.stopPropagation();
-      if (productId) toggleFavorite(productId);
-    }}
-    type="button"
-  >
-    <Heart size={18} />
-  </button>
-</div>
+                        {/* Wishlist Button */}
+                        <button
+                          className={`absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-250 ${isFavorite ? "bg-[#A37478] text-white" : "bg-white/85 hover:bg-white hover:scale-110"
+                            }`}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            if (productId) toggleFavorite(productId);
+                          }}
+                          type="button"
+                        >
+                          <Heart size={18} />
+                        </button>
+                      </div>
 
 
                       <div className="p-4">
