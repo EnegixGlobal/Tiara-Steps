@@ -560,7 +560,9 @@ const CategoryPage = () => {
           }}
           className="text-center"
         >
-          New Collection
+          {filters.categories.length > 0
+            ? filters.categories[0].toUpperCase()
+            : "NEW COLLECTION"}
         </h1>
       </div>
 
