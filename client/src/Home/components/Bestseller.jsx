@@ -28,14 +28,14 @@ const Bestsellers = () => {
 
         const params = new URLSearchParams();
         params.append("page", "1");
-        params.append("limit", "20");
+        params.append("limit", "100"); // Increased limit to fetch more products
         params.append("category", "best seller");
 
         const response = await Axios.get(`/product/filter?${params.toString()}`);
 
         if (response.data?.success && response.data?.products) {
-          const shuffled = [...response.data.products].sort(() => Math.random() - 0.5);
-          setProducts(shuffled.slice(0, 6));
+          // Show all fetched products (no limit)
+          setProducts(response.data.products);
         }
       } catch (err) {
         console.error("Error:", err);

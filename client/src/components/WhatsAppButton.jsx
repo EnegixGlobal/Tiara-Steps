@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Phone, MessageCircle } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 const WhatsAppButton = ({
     phoneNumber = "919304978001",
     message = "Hi! I'm interested in TiaraSteps products. Can you help me?",
     className = "",
-    showIcon = "whatsapp", // DEFAULT
     variant = "floating",
     showTooltip = true,
 }) => {
@@ -16,8 +15,6 @@ const WhatsAppButton = ({
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
-
-  const IconComponent = showIcon === "phone" ? Phone : MessageCircle;
 
   if (variant === "floating") {
     return (
@@ -32,11 +29,11 @@ const WhatsAppButton = ({
           onClick={handleWhatsAppClick}
           onMouseEnter={() => setShowTooltipState(true)}
           onMouseLeave={() => setShowTooltipState(false)}
-          className={`flex items-center gap-3 rounded-full border-2 border-green-500 bg-white px-4 py-2 text-black shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 ${className}`}
+          className={`flex items-center gap-2 rounded-full border-2 border-green-500 bg-white px-2 py-2 text-black shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 ${className}`}
           title="Chat with us on WhatsApp"
           aria-label="Chat with us on WhatsApp"
         >
-          <IconComponent className="h-6 w-6 text-green-500" />
+          <FaWhatsapp className="h-7 w-7 text-green-500" />
           <span className="text-sm font-semibold">Chat with us</span>
         </button>
       </div>
@@ -51,7 +48,7 @@ const WhatsAppButton = ({
         title="Chat with us on WhatsApp"
         aria-label="Chat with us on WhatsApp"
       >
-        <IconComponent className="h-6 w-6" />
+        <FaWhatsapp className="h-6 w-6" />
         <span>Chat with us</span>
       </button>
     );
@@ -65,7 +62,7 @@ const WhatsAppButton = ({
         title="Chat with us on WhatsApp"
         aria-label="Chat with us on WhatsApp"
       >
-        <IconComponent className="h-6 w-6" />
+        <FaWhatsapp className="h-6 w-6" />
       </button>
     );
   }
