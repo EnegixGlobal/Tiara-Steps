@@ -115,71 +115,74 @@ const Bestsellers = () => {
         Bestsellers to light up your Party wardrobe.
       </h2>
 
-      {/* GRID SECTION */}
-      <div
-        className="
-          grid gap-6 mt-10 mb-8
-          grid-cols-2        /* ✅ ALWAYS 2 per row on mobile */
-          sm:grid-cols-2
-          md:grid-cols-3
-          xl:grid-cols-4
-          2xl:grid-cols-6
-        "
+      {/* CAROUSEL SECTION */}
+      <div 
+        className="mt-10 mb-8 overflow-x-auto hide-scrollbar"
+        style={{ 
+          WebkitOverflowScrolling: 'touch'
+        }}
       >
-        {products.map((product, i) => {
-          const productId = product?._id;
-          const image =
-            product?.image ||
-            product?.thumbnail ||
-            product?.images?.[0]?.url ||
-            product?.images?.[0];
+        <div 
+          className="flex gap-6 pb-4"
+          style={{ 
+            scrollBehavior: 'smooth'
+          }}
+        >
+          {products.map((product, i) => {
+            const productId = product?._id;
+            const image =
+              product?.image ||
+              product?.thumbnail ||
+              product?.images?.[0]?.url ||
+              product?.images?.[0];
 
-          return (
-            <div
-              key={productId || i}
-              className="group cursor-pointer"
-              onClick={() => handleProductClick(product)}
-            >
-              {/* IMAGE BOX */}
-              <div className="relative overflow-hidden rounded-xl shadow-sm">
-                <img
-                  src={image}
-                  alt={product?.name}
-                  className="
-                    w-full object-cover transition-all duration-300
-                    h-[220px] xs:h-[240px] sm:h-[230px] md:h-[260px] lg:h-[300px]
-                    group-hover:scale-[1.04]
-                  "
-                />
-
-                {/* HEART BUTTON */}
-                <button
-                  onClick={(e) => toggleFavorite(productId, e)}
-                  className={`
-                    absolute top-3 right-3 p-2 rounded-full
-                    transition-all duration-300 shadow-md
-                    ${
-                      favorites[productId]
-                        ? "bg-[#b89396] text-white"
-                        : "bg-white text-gray-700 hover:text-[#b89396]"
-                    }
-                  `}
-                >
-                  <Heart
-                    size={20}
-                    fill={favorites[productId] ? "currentColor" : "none"}
+            return (
+              <div
+                key={productId || i}
+                className="group cursor-pointer flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px]"
+                onClick={() => handleProductClick(product)}
+              >
+                {/* IMAGE BOX */}
+                <div className="relative overflow-hidden rounded-xl shadow-sm">
+                  <img
+                    src={image}
+                    alt={product?.name}
+                    className="
+                      w-full object-cover transition-all duration-300
+                      h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px]
+                      group-hover:scale-[1.04]
+                    "
                   />
-                </button>
-              </div>
 
-              {/* NAME + PRICE */}
-              <h4 className="mt-3 text-[15px] font-semibold text-gray-800">
-                {product?.name}
-              </h4>
-              <p className="text-[14px] text-gray-500">{formatPrice(product?.price)}</p>
-            </div>
-          );
-        })}
+                  {/* HEART BUTTON */}
+                  <button
+                    onClick={(e) => toggleFavorite(productId, e)}
+                    className={`
+                      absolute top-3 right-3 p-2 rounded-full
+                      transition-all duration-300 shadow-md
+                      ${
+                        favorites[productId]
+                          ? "bg-[#b89396] text-white"
+                          : "bg-white text-gray-700 hover:text-[#b89396]"
+                      }
+                    `}
+                  >
+                    <Heart
+                      size={20}
+                      fill={favorites[productId] ? "currentColor" : "none"}
+                    />
+                  </button>
+                </div>
+
+                {/* NAME + PRICE */}
+                <h4 className="mt-3 text-[15px] font-semibold text-gray-800">
+                  {product?.name}
+                </h4>
+                <p className="text-[14px] text-gray-500">{formatPrice(product?.price)}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
       
       <button
