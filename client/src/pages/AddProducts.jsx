@@ -14,7 +14,7 @@ const AddProducts = () => {
     color: "",
     brand: "",
     material: "",
-    category: "",
+    category: [], // Changed to array
     featured: "false",
     parentProductId: "",
   });
@@ -55,6 +55,12 @@ const AddProducts = () => {
         return toast.error("Access denied.");
       }
       const validFields = fields.filter((field) => field && field.quantity > 0);
+      
+      // Validate category is an array with at least one item
+      if (!Array.isArray(data.category) || data.category.length === 0) {
+        return toast.error("Please select at least one category.");
+      }
+      
       if (
         validFields.length === 0 ||
         !data.name ||

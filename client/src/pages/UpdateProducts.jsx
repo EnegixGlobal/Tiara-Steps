@@ -16,7 +16,7 @@ const UpdateProducts = () => {
     color: "",
     brand: "",
     material: "",
-    category: "",
+    category: [], // Changed to array
     featured: "false",
     parentProductId: "",
   });
@@ -48,6 +48,19 @@ const UpdateProducts = () => {
           ? response.data.data.color.join(",") 
           : response.data.data.color || "";
         
+        // Handle category - must be an array (new format only)
+        const productCategory = Array.isArray(response.data.data.category)
+          ? response.data.data.category
+          : [];
+        
+        // If category is not an array, show warning and use empty array
+        if (!Array.isArray(response.data.data.category) && response.data.data.category) {
+          console.warn("Product category is not in array format. Please migrate the product.");
+          toast.warning("This product needs to be migrated to the new category format.", {
+            position: "bottom-right",
+          });
+        }
+        
         setData({
           ...data,
           brand: response.data.data.brand,
@@ -59,7 +72,7 @@ const UpdateProducts = () => {
           price: response.data.data.price,
           mrp: response.data.data.mrp ?? response.data.data.price,
           sku: response.data.data.sku,
-          category: response.data.data.category,
+          category: productCategory,
           parentProductId: response.data.data.parentProduct || "",
         });
         setCurrentProductId(response.data.data._id);
@@ -104,6 +117,12 @@ const UpdateProducts = () => {
         return toast.error("Access denied.");
       }
       const validFields = fields.filter((field) => field && field.quantity > 0);
+      
+      // Validate category is an array with at least one item
+      if (!Array.isArray(data.category) || data.category.length === 0) {
+        return toast.error("Please select at least one category.");
+      }
+      
       console.log({ ...data, sizeQuantity: validFields, image: link });
       if (
         validFields.length === 0 ||

@@ -512,9 +512,9 @@ const ProductForm = ({
                 }))
               : []
           }
-          value={data.category === "" ? [] : data.category.split(",")}
+          value={Array.isArray(data.category) ? data.category : (data.category === "" ? [] : data.category.split(","))}
           onChange={(e) => {
-            changeCategory(e.join(","));
+            changeCategory(e); // Send array directly
           }}
         />
       </div>
