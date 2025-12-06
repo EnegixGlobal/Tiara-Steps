@@ -245,8 +245,12 @@ const Navbar = () => {
         {/* Right Section - Search + Icons */}
         <div className="flex items-center gap-6">
           {/* Search Bar - desktop only */}
-          <div ref={searchContainerRef} className="hidden lg:flex relative">
-            <div className="flex items-center border border-gray-300 rounded-full px-5 py-2 bg-white shadow-sm w-[300px]">
+          <div
+  ref={searchContainerRef}
+  className="hidden lg:flex relative lg:mr-6 xl:mr-25"
+>
+
+            <div className="flex items-center border border-gray-300 rounded-full px-5 py-3 bg-white shadow-sm w-[520px]">
               <input
                 ref={searchInputRef}
                 type="text"
