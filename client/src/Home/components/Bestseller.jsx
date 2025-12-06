@@ -126,7 +126,7 @@ const Bestsellers = () => {
     );
 
   return (
-    <section className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-24 py-16">
+    <section id="bestsellers" className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-24 py-16">
       <h2 className="text-xl md:text-2xl font-semibold text-center">
         Bestsellers to light up your Party wardrobe.
       </h2>
