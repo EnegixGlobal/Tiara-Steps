@@ -21,6 +21,7 @@ const Bestsellers = () => {
   const [loading, setLoading] = useState(true);
 
   const sliderRef = useRef(null);
+  const pausedRef = useRef(false);
 
   // Fetch bestsellers
   useEffect(() => {
@@ -86,29 +87,33 @@ const Bestsellers = () => {
     navigate(`/product/${product?.slug || product?._id}`);
 
   // ===========================
-  // ★ CONTINUOUS NO-BREAK SLIDER
+  // SMOOTH INFINITE SLIDER
   // ===========================
   useEffect(() => {
     if (!sliderRef.current || products.length === 0) return;
 
     const slider = sliderRef.current;
-
+    let x = 0;
+    const speed = 0.6;
     let animationFrame;
-    const speed = 0.5; // Adjust speed here
 
-    const smoothScroll = () => {
-      slider.scrollLeft += speed;
+    const animate = () => {
+      if (!pausedRef.current) {
+        x -= speed;
 
-      // Reset when reaching halfway (duplicated list)
-      if (slider.scrollLeft >= slider.scrollWidth / 2) {
-        slider.scrollLeft = 0;
+        const contentWidth = slider.scrollWidth / 2;
+
+        if (Math.abs(x) >= contentWidth) {
+          x = 0;
+        }
+
+        slider.style.transform = `translateX(${x}px)`;
       }
 
-      animationFrame = requestAnimationFrame(smoothScroll);
+      animationFrame = requestAnimationFrame(animate);
     };
 
-    smoothScroll();
-
+    animate();
     return () => cancelAnimationFrame(animationFrame);
   }, [products]);
 
@@ -126,14 +131,17 @@ const Bestsellers = () => {
         Bestsellers to light up your Party wardrobe.
       </h2>
 
-      <div
-        ref={sliderRef}
-        className="mt-10 mb-8 overflow-x-auto hide-scrollbar"
-        style={{ scrollBehavior: "smooth", whiteSpace: "nowrap" }}
-      >
-        <div className="flex gap-6 pb-4">
-
-          {/* DUPLICATING PRODUCT LIST FOR INFINITE LOOP */}
+      {/* Scroller wrapper */}
+      <div className="relative overflow-hidden mt-10 mb-8">
+        <div
+          ref={sliderRef}
+          className="flex gap-6 pb-4 w-max"
+          style={{
+            whiteSpace: "nowrap",
+            willChange: "transform",
+            touchAction: "pan-y", // ✅ allows touch scrolling + slider drag
+          }}
+        >
           {[...products, ...products].map((product, i) => {
             const image =
               product?.image ||
@@ -145,6 +153,16 @@ const Bestsellers = () => {
               <div
                 key={product?._id + "_dup_" + i}
                 className="group cursor-pointer flex-shrink-0 w-[200px] sm:w-[220px] lg:w-[240px]"
+
+                // Desktop pause
+                onMouseEnter={() => (pausedRef.current = true)}
+                onMouseLeave={() => (pausedRef.current = false)}
+
+                // Mobile touch pause (works while keeping swipe functionality)
+                onTouchStart={() => (pausedRef.current = true)}
+                onTouchEnd={() => (pausedRef.current = false)}
+                onTouchCancel={() => (pausedRef.current = false)}
+
                 onClick={() => handleProductClick(product)}
               >
                 <div className="relative overflow-hidden rounded-xl shadow-sm">
@@ -169,7 +187,6 @@ const Bestsellers = () => {
                   </button>
                 </div>
 
-                {/* FIXED TITLE WRAP */}
                 <h4 className="mt-3 text-[15px] font-semibold text-gray-800 whitespace-normal line-clamp-2 leading-snug">
                   {product?.name}
                 </h4>
@@ -185,8 +202,7 @@ const Bestsellers = () => {
 
       <button
         onClick={() =>
-          navigate(`/products?category=${encodeURIComponent("best seller")}`)
-        }
+          navigate(`/products?category=${encodeURIComponent("best seller")}`)}
         className="bg-[#b89396] text-white font-medium px-10 py-3 rounded-full mt-4 hover:bg-[#a77f83] transition mx-auto block"
       >
         View All Products
