@@ -400,7 +400,7 @@ const CategoryPage = () => {
     return () => controller.abort();
   }, []);
 
-  // Read category from URL params and apply to filters
+  // Read category and search from URL params and apply to filters
   useEffect(() => {
     const categoryParam = searchParams.get("category");
     if (categoryParam) {
@@ -445,6 +445,12 @@ const CategoryPage = () => {
           sortBy: { value: "updatedAt_desc" }, // Explicitly set to show newest/updated products first
         };
 
+        // Add search query from URL if present
+        const searchQuery = searchParams.get("search");
+        if (searchQuery && searchQuery.trim()) {
+          params.search = searchQuery.trim();
+        }
+
         if (filters.categories.length > 0) params.category = filters.categories;
         if (filters.colors.length > 0) params.color = filters.colors;
         if (filters.sizes.length > 0) params.size = filters.sizes;
@@ -480,6 +486,7 @@ const CategoryPage = () => {
     sizeFilterKey,
     colorFilterKey,
     filters.heelsType,
+    searchParams,
   ]);
 
   const totalPages = Math.max(1, Math.ceil(totalProducts / PRODUCTS_PER_PAGE));
@@ -560,7 +567,9 @@ const CategoryPage = () => {
           }}
           className="text-center"
         >
-          {filters.categories.length > 0
+          {searchParams.get("search")
+            ? `Search Results: "${searchParams.get("search")}"`
+            : filters.categories.length > 0
             ? filters.categories[0].toUpperCase()
             : "NEW COLLECTION"}
         </h1>
