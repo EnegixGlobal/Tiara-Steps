@@ -274,7 +274,8 @@ const Navbar = () => {
               />
             </div>
             
-            {/* Search Suggestions Dropdown */}
+            {/* Search Suggestions Dropdown - COMMENTED OUT */}
+            {/* 
             {showSuggestions && (searchQuery.trim().length >= 2 || mobileSearchQuery.trim().length >= 2) && (
               <div
                 ref={searchDropdownRef}
@@ -288,7 +289,6 @@ const Navbar = () => {
                   <div className="p-4 text-center text-gray-500">Searching...</div>
                 ) : (
                   <>
-                    {/* Categories Section */}
                     {searchResults.categories.length > 0 && (
                       <div className="p-3 border-b border-gray-100">
                         <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">
@@ -308,7 +308,6 @@ const Navbar = () => {
                       </div>
                     )}
 
-                    {/* Products Section */}
                     {searchResults.products.length > 0 && (
                       <div className="p-3">
                         <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-2">
@@ -356,7 +355,6 @@ const Navbar = () => {
                       </div>
                     )}
 
-                    {/* No Results */}
                     {searchResults.products.length === 0 && searchResults.categories.length === 0 && (
                       <div className="p-4 text-center text-gray-500 text-sm">
                         No results found
@@ -366,6 +364,7 @@ const Navbar = () => {
                 )}
               </div>
             )}
+            */}
           </div>
 
           {/* Mobile Search Icon */}
@@ -501,7 +500,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Search Suggestions Dropdown */}
-          {showSuggestions && mobileSearchQuery.trim().length >= 2 && (
+          {/* {showSuggestions && mobileSearchQuery.trim().length >= 2 && (
             <div
               ref={searchDropdownRef}
               className="absolute top-full left-0 right-0 mt-1 mx-6 bg-white border border-gray-200 rounded-lg shadow-xl z-[10000] max-h-[500px] overflow-y-auto custom-scrollbar"
@@ -513,9 +512,9 @@ const Navbar = () => {
               {loadingSuggestions ? (
                 <div className="p-4 text-center text-gray-500">Searching...</div>
               ) : (
-                <>
+                <> */}
                   {/* Categories Section */}
-                  {searchResults.categories.length > 0 && (
+                  {/* {searchResults.categories.length > 0 && (
                     <div className="p-3 border-b border-gray-100">
                       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">
                         Categories
@@ -532,10 +531,10 @@ const Navbar = () => {
                         ))}
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Products Section */}
-                  {searchResults.products.length > 0 && (
+                  {/* {searchResults.products.length > 0 && (
                     <div className="p-3">
                       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-2">
                         Products
@@ -580,18 +579,18 @@ const Navbar = () => {
                         })}
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* No Results */}
-                  {searchResults.products.length === 0 && searchResults.categories.length === 0 && (
+                  {/* {searchResults.products.length === 0 && searchResults.categories.length === 0 && (
                     <div className="p-4 text-center text-gray-500 text-sm">
                       No results found
                     </div>
                   )}
                 </>
-              )}
-            </div>
-          )}
+              )} */}
+            {/* </div> */}
+          {/* )} */}
         </div>
       )}
     </div>
