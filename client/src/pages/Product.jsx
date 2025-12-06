@@ -551,20 +551,23 @@ const CategoryPage = () => {
 
       {/* Centered Heading */}
       <div className="w-full flex justify-center mb-4">
-        <h1
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "34px",
-            fontWeight: "600",
-            letterSpacing: "1px",
-          }}
-          className="text-center"
-        >
-          {filters.categories.length > 0
-            ? filters.categories[0].toUpperCase()
-            : "NEW COLLECTION"}
-        </h1>
-      </div>
+  <h1
+    style={{
+      fontFamily: "'Playfair Display', serif",
+      fontSize: "38px",
+      fontWeight: "700",
+      letterSpacing: "1.5px",
+      color: "#867D7D",
+    }}
+    className="text-center"
+  >
+    {filters.categories.length > 0
+      ? filters.categories[0].toUpperCase()
+      : "NEW COLLECTION"}
+  </h1>
+</div>
+
+
 
       {/* Category Icons Row */}
       <div
