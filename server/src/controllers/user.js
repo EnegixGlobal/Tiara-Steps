@@ -1,0 +1,474 @@
+import "dotenv/config";
+import jwt from "jsonwebtoken";
+import user from "../models/user.js";
+import sendEmail from "../utils/sendEmail.js";
+import asyncErrorHandler from "express-async-handler";
+import errorHandler from "../utils/errorHandler.js";
+import order from "../models/order.js";
+
+const secret = process.env.JWT_SECRET;
+
+// Register user
+export const register = asyncErrorHandler(async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return next(new errorHandler("Please fill aldfgdfl fields", 400));
+  }
+
+  const emailAlreadyExists = await user.findOne({ email });
+  if (emailAlreadyExists) {
+    return next(new errorHandler("Email already exists", 400));
+  }
+
+  await user.create({ name, email, password });
+
+  res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+  });
+});
+
+// User login
+export const login = asyncErrorHandler(async (req, res, next) => {
+  const { email, password, role } = req.body;
+
+  if (!email || !password) {
+    return next(new errorHandler("Please provide email and password", 400));
+  }
+
+  const userExists = await user.findOne({ email, role });
+  if (!userExists) {
+    return next(new errorHandler("Invalid credentials", 401));
+  }
+
+  const isMatch = await userExists.comparePassword(password);
+  if (!isMatch) {
+    return next(new errorHandler("Invalid credentials", 401));
+  }
+
+  const token = jwt.sign(
+    { id: userExists._id, email: userExists.email },
+    secret,
+    { expiresIn: "48h" }
+  );
+
+  const cartSize = userExists.cart.items.reduce((a, p) => a + p.qty, 0);
+
+  res.status(200).json({
+    success: true,
+    message: "User logged in successfully",
+    user: {
+      name: userExists.name,
+      email: userExists.email,
+      role: userExists.role,
+      cartSize,
+    },
+    token,
+  });
+});
+
+// Admin login
+export const adminLogin = asyncErrorHandler(async (req, res, next) => {
+  const { email, password, role } = req.body;
+
+  if (!email || !password) {
+    return next(new errorHandler("Please provide email and password", 400));
+  }
+
+  const userExists = await user.findOne({ email, role });
+  if (!userExists) {
+    return next(new errorHandler("Invalid credentials", 401));
+  }
+
+  const isMatch = await userExists.comparePassword(password);
+  if (!isMatch) {
+    return next(new errorHandler("Invalid credentials", 401));
+  }
+
+  const token = jwt.sign(
+    { id: userExists._id, email: userExists.email, role: userExists.role },
+    secret,
+    { expiresIn: "30d" }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Admin logged in successfully",
+    user: {
+      name: userExists.name,
+      email: userExists.email,
+    },
+    token,
+  });
+});
+
+// Verify token and return user data
+export const verifyUser = asyncErrorHandler(async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return next(new errorHandler("Token not found", 401));
+
+  const { id } = jwt.verify(token, secret);
+  const userObj = await user.findById(id);
+  if (!userObj) return next(new errorHandler("Invalid Token", 401));
+
+  const cartSize = userObj.cart.items.reduce((a, p) => a + p.qty, 0);
+  res.status(200).json({
+    success: true,
+    user: {
+      name: userObj.name,
+      email: userObj.email,
+      cartSize,
+    },
+  });
+});
+
+// Get Orders by user token
+export const getOrder = asyncErrorHandler(async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return next(new errorHandler("Token not found", 401));
+  
+  // Handle both "Bearer <token>" and just "<token>" formats
+  const token = authHeader.startsWith("Bearer ") 
+    ? authHeader.split(" ")[1] 
+    : authHeader;
+    
+  if (!token) return next(new errorHandler("Token not found", 401));
+
+  let id;
+  try {
+    const decoded = jwt.verify(token, secret);
+    id = decoded.id;
+  } catch (error) {
+    return next(new errorHandler("Invalid or expired token", 401));
+  }
+  const orderObj = await order.find({ userId: id }).populate({
+    path: "products.productId",
+    select: "name price brand image slug color",
+  });
+
+  const formattedOrders = orderObj.map((order) => ({
+    id: order._id,
+    paymentId: order.paymentIntentId,
+    totalPrice: order.total,
+    delivered: order.delivery_status,
+    createdAt: order.createdAt,
+    items: order.products.map((item) => ({
+      id: item.productId._id,
+      name: `${item.productId.brand} ${item.productId.name}`,
+      price: item.productId.price,
+      image: item.productId.image,
+      color: item.productId.color,
+      slug: item.productId.slug,
+      qty: item.quantity,
+      size: item.size,
+      isReviewed: item.isReviewed,
+      productItemId: item._id,
+      returnRequest: {
+        status: item.returnRequest?.status || "none",
+        reason: item.returnRequest?.reason || "",
+        returnQuantity: item.returnRequest?.returnQuantity || 0,
+        requestedAt: item.returnRequest?.requestedAt || null,
+        approvedAt: item.returnRequest?.approvedAt || null,
+        returnedAt: item.returnRequest?.returnedAt || null,
+        refundId: item.returnRequest?.refundId || "",
+      },
+    })),
+  }));
+
+  res.status(200).json({
+    success: true,
+    orders: formattedOrders.reverse(),
+  });
+});
+
+// Forgot Password
+export const forgetPassword = asyncErrorHandler(async (req, res, next) => {
+  const { email } = req.params;
+  const userExists = await user.findOne({ email, role: "user" });
+  if (!userExists) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  const token = jwt.sign({ id: userExists._id }, secret + userExists.password, {
+    expiresIn: "5m",
+  });
+
+  // URL encode the token to handle special characters
+  const encodedToken = encodeURIComponent(token);
+  const resetUrl = `${process.env.CLIENT_URL}/resetpassword?token=${encodedToken}&id=${userExists._id}`;
+  await sendEmail({
+    email,
+    subject: "Password Reset Request for Your Account",
+    message: `
+      <div style="background-color: #FFF0E3; padding: 20px;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+          <div style="padding: 20px;">
+            <h1>Password Reset Request</h1>
+            <p>We received a request to reset your password. Click the button below to set a new password:</p>
+            <div style="text-align: center; margin: 20px 0;">
+              <a href="${resetUrl}" style="background-color: #4CAF50; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Reset Password</a>
+            </div>
+            <p style="margin-top: 20px; word-break: break-all;">If the button doesn't work, copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: #0066cc;"><a href="${resetUrl}" style="color: #0066cc;">${resetUrl}</a></p>
+            <p style="margin-top: 20px;"><strong>Please Note:</strong> This link is valid for 5 minutes only.</p>
+            <p>If you didn't request a password reset, please ignore this email.</p>
+            <p>Thanks,<br/>Team TiaraSteps</p>
+          </div>
+        </div>
+      </div>`,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: `Email sent to ${email}`,
+  });
+});
+
+// Change Reset Password
+export const changeResetPassword = asyncErrorHandler(async (req, res, next) => {
+  const { password, userId } = req.body;
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!password || !userId || !token)
+    return next(new errorHandler("Please provide all fields", 400));
+
+  const userExists = await user.findById(userId);
+  if (!userExists) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  try {
+    const verify = jwt.verify(token, secret + userExists.password);
+    
+    // Check if token id matches userId
+    if (verify.id !== userId.toString()) {
+      return next(new errorHandler("Invalid token", 400));
+    }
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return next(new errorHandler("Token has expired", 400));
+    }
+    return next(new errorHandler("Invalid or expired token", 400));
+  }
+
+  userExists.password = password;
+  await userExists.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password changed successfully",
+  });
+});
+
+// Add Address
+export const addAddress = asyncErrorHandler(async (req, res, next) => {
+  const id = req.tokenId;
+  const {
+    fullName,
+    phone,
+    pincode,
+    state,
+    city,
+    addressLine1,
+    addressLine2,
+    landmark,
+    addressType,
+    isDefault,
+  } = req.body;
+
+  if (!fullName || !phone || !pincode || !state || !city || !addressLine1) {
+    return next(new errorHandler("Please fill all required fields", 400));
+  }
+
+  const userObj = await user.findById(id);
+  if (!userObj) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  // If this is set as default, unset all other defaults
+  if (isDefault) {
+    userObj.addresses.forEach((addr) => {
+      addr.isDefault = false;
+    });
+  }
+
+  // If this is the first address, make it default
+  if (userObj.addresses.length === 0) {
+    userObj.addresses.push({
+      fullName,
+      phone,
+      pincode,
+      state,
+      city,
+      addressLine1,
+      addressLine2: addressLine2 || "",
+      landmark: landmark || "",
+      addressType: addressType || "home",
+      isDefault: true,
+    });
+  } else {
+    userObj.addresses.push({
+      fullName,
+      phone,
+      pincode,
+      state,
+      city,
+      addressLine1,
+      addressLine2: addressLine2 || "",
+      landmark: landmark || "",
+      addressType: addressType || "home",
+      isDefault: isDefault || false,
+    });
+  }
+
+  await userObj.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Address added successfully",
+    addresses: userObj.addresses,
+  });
+});
+
+// Get Addresses
+export const getAddresses = asyncErrorHandler(async (req, res, next) => {
+  const id = req.tokenId;
+
+  const userObj = await user.findById(id).select("addresses");
+  if (!userObj) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    addresses: userObj.addresses || [],
+  });
+});
+
+// Update Address
+export const updateAddress = asyncErrorHandler(async (req, res, next) => {
+  const id = req.tokenId;
+  const { addressId } = req.params;
+  const {
+    fullName,
+    phone,
+    pincode,
+    state,
+    city,
+    addressLine1,
+    addressLine2,
+    landmark,
+    addressType,
+    isDefault,
+  } = req.body;
+
+  if (!fullName || !phone || !pincode || !state || !city || !addressLine1) {
+    return next(new errorHandler("Please fill all required fields", 400));
+  }
+
+  const userObj = await user.findById(id);
+  if (!userObj) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  const address = userObj.addresses.id(addressId);
+  if (!address) {
+    return next(new errorHandler("Address not found", 404));
+  }
+
+  // If this is set as default, unset all other defaults
+  if (isDefault) {
+    userObj.addresses.forEach((addr) => {
+      if (addr._id.toString() !== addressId) {
+        addr.isDefault = false;
+      }
+    });
+  }
+
+  address.fullName = fullName;
+  address.phone = phone;
+  address.pincode = pincode;
+  address.state = state;
+  address.city = city;
+  address.addressLine1 = addressLine1;
+  address.addressLine2 = addressLine2 || "";
+  address.landmark = landmark || "";
+  address.addressType = addressType || "home";
+  address.isDefault = isDefault !== undefined ? isDefault : address.isDefault;
+
+  await userObj.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Address updated successfully",
+    addresses: userObj.addresses,
+  });
+});
+
+// Delete Address
+export const deleteAddress = asyncErrorHandler(async (req, res, next) => {
+  const id = req.tokenId;
+  const { addressId } = req.params;
+
+  const userObj = await user.findById(id);
+  if (!userObj) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  userObj.addresses = userObj.addresses.filter(
+    (addr) => addr._id.toString() !== addressId
+  );
+
+  await userObj.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Address deleted successfully",
+    addresses: userObj.addresses,
+  });
+});
+
+// Update User Profile
+export const updateProfile = asyncErrorHandler(async (req, res, next) => {
+  const id = req.tokenId;
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return next(new errorHandler("Please provide name and email", 400));
+  }
+
+  // Validate email format
+  const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,})$/;
+  if (!emailRegex.test(email)) {
+    return next(new errorHandler("Please provide a valid email", 400));
+  }
+
+  const userObj = await user.findById(id);
+  if (!userObj) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  // Check if email is being changed and if it already exists
+  if (email !== userObj.email) {
+    const emailExists = await user.findOne({ email });
+    if (emailExists) {
+      return next(new errorHandler("Email already exists", 400));
+    }
+  }
+
+  // Update user profile
+  userObj.name = name;
+  userObj.email = email;
+  await userObj.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    user: {
+      name: userObj.name,
+      email: userObj.email,
+      role: userObj.role,
+    },
+  });
+});
