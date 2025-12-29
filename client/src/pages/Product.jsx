@@ -504,7 +504,57 @@ const CategoryPage = () => {
     }
   }, [currentPage]);
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, idx) => idx + 1);
+  // Generate smart pagination numbers with ellipsis
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 7; // Show max 7 page numbers
+    
+    if (totalPages <= maxVisiblePages) {
+      // If total pages is less than max, show all
+      return Array.from({ length: totalPages }, (_, idx) => idx + 1);
+    }
+    
+    // Always show first page
+    pages.push(1);
+    
+    // Calculate start and end of visible range around current page
+    let startPage = Math.max(2, currentPage - 1);
+    let endPage = Math.min(totalPages - 1, currentPage + 1);
+    
+    // Adjust if we're near the start
+    if (currentPage <= 3) {
+      endPage = Math.min(5, totalPages - 1);
+    }
+    
+    // Adjust if we're near the end
+    if (currentPage >= totalPages - 2) {
+      startPage = Math.max(2, totalPages - 4);
+    }
+    
+    // Add ellipsis after first page if needed
+    if (startPage > 2) {
+      pages.push('...');
+    }
+    
+    // Add pages in the visible range
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    // Add ellipsis before last page if needed
+    if (endPage < totalPages - 1) {
+      pages.push('...');
+    }
+    
+    // Always show last page (if more than 1 page)
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+    
+    return pages;
+  };
+
+  const pageNumbers = getPageNumbers();
 
   const goToPrevPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
   const goToNextPage = () => setCurrentPage((prev) => Math.min(totalPages, prev + 1));
@@ -1063,16 +1113,31 @@ const CategoryPage = () => {
                   <ChevronLeft size={20} />
                 </button>
 
-                {pageNumbers.map((num) => (
-                  <div
-                    key={num}
-                    className={`w-10 h-10 border rounded flex items-center justify-center cursor-pointer transition-all text-sm ${currentPage === num ? "bg-[#A37478] text-white border-[#8b686b]" : "border-gray-300 bg-white hover:bg-gray-100"
-                      }`}
-                    onClick={() => setCurrentPage(num)}
-                  >
-                    {num}
-                  </div>
-                ))}
+                {pageNumbers.map((num, index) => {
+                  // Handle ellipsis
+                  if (num === '...') {
+                    return (
+                      <div
+                        key={`ellipsis-${index}`}
+                        className="w-10 h-10 flex items-center justify-center text-gray-400"
+                      >
+                        ...
+                      </div>
+                    );
+                  }
+                  
+                  // Handle page numbers
+                  return (
+                    <div
+                      key={num}
+                      className={`w-10 h-10 border rounded flex items-center justify-center cursor-pointer transition-all text-sm ${currentPage === num ? "bg-[#A37478] text-white border-[#8b686b]" : "border-gray-300 bg-white hover:bg-gray-100"
+                        }`}
+                      onClick={() => setCurrentPage(num)}
+                    >
+                      {num}
+                    </div>
+                  );
+                })}
 
                 <button
                   onClick={goToNextPage}
