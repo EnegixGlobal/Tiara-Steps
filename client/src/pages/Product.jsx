@@ -510,17 +510,37 @@ const CategoryPage = () => {
   const goToNextPage = () => setCurrentPage((prev) => Math.min(totalPages, prev + 1));
 
   // Helper function to check if a category is selected (case-insensitive comparison)
+  // Handles variations like "Dr sole" vs "dr. sole" by normalizing periods and spaces
   const isCategorySelected = (categoryName) => {
-    return filters.categories.some(
-      (cat) => cat.toLowerCase().trim() === categoryName.toLowerCase().trim()
-    );
+    if (!categoryName) return false;
+    
+    const normalizeForComparison = (str) => {
+      return str.toLowerCase().trim().replace(/\./g, '').replace(/\s+/g, ' ').trim();
+    };
+    
+    const normalizedInput = normalizeForComparison(categoryName);
+    
+    return filters.categories.some((cat) => {
+      const normalizedFilter = normalizeForComparison(cat);
+      return normalizedFilter === normalizedInput;
+    });
   };
 
   // Helper function to find the exact category name from filters (for removal)
+  // Handles variations like "Dr sole" vs "dr. sole" by normalizing periods and spaces
   const findCategoryInFilters = (categoryName) => {
-    return filters.categories.find(
-      (cat) => cat.toLowerCase().trim() === categoryName.toLowerCase().trim()
-    );
+    if (!categoryName) return undefined;
+    
+    const normalizeForComparison = (str) => {
+      return str.toLowerCase().trim().replace(/\./g, '').replace(/\s+/g, ' ').trim();
+    };
+    
+    const normalizedInput = normalizeForComparison(categoryName);
+    
+    return filters.categories.find((cat) => {
+      const normalizedFilter = normalizeForComparison(cat);
+      return normalizedFilter === normalizedInput;
+    });
   };
 
   // Helper function to map icon category name to database category name
