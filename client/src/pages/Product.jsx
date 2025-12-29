@@ -523,9 +523,52 @@ const CategoryPage = () => {
     );
   };
 
+  // Helper function to map icon category name to database category name
+  // This ensures icon clicks use the exact category name from the database
+  const mapToDatabaseCategory = (iconCategoryName) => {
+    if (!iconCategoryName) return iconCategoryName;
+    
+    const normalizedIconName = iconCategoryName.toLowerCase().trim();
+    
+    // Try to find exact match first
+    const exactMatch = categoryOptions.find(
+      (cat) => cat.toLowerCase().trim() === normalizedIconName
+    );
+    if (exactMatch) return exactMatch;
+    
+    // Try matching with normalized versions (handles periods, spaces, etc.)
+    // e.g., "Dr sole" -> "dr. sole", "dr sole" -> "dr. sole"
+    const normalizedMatch = categoryOptions.find((cat) => {
+      const normalizedCat = cat.toLowerCase().trim();
+      // Remove periods and extra spaces for comparison
+      const iconNormalized = normalizedIconName.replace(/\./g, '').replace(/\s+/g, ' ').trim();
+      const catNormalized = normalizedCat.replace(/\./g, '').replace(/\s+/g, ' ').trim();
+      return iconNormalized === catNormalized;
+    });
+    if (normalizedMatch) return normalizedMatch;
+    
+    // Try partial/fuzzy matching for common variations
+    // e.g., "Dr sole" -> "dr. sole"
+    const partialMatch = categoryOptions.find((cat) => {
+      const normalizedCat = cat.toLowerCase().trim();
+      // Remove periods for partial matching
+      const iconWithoutPeriod = normalizedIconName.replace(/\./g, '');
+      const catWithoutPeriod = normalizedCat.replace(/\./g, '');
+      return catWithoutPeriod.includes(iconWithoutPeriod) || 
+             iconWithoutPeriod.includes(catWithoutPeriod);
+    });
+    if (partialMatch) return partialMatch;
+    
+    // If no match found, return the original name (backend will normalize it)
+    return iconCategoryName;
+  };
+
   const handleCategoryClick = (categoryName) => {
+    // Map the icon category name to the database category name
+    const databaseCategoryName = mapToDatabaseCategory(categoryName);
+    
     // Use case-insensitive matching to ensure consistency with sidebar
-    const existingCategory = findCategoryInFilters(categoryName);
+    const existingCategory = findCategoryInFilters(databaseCategoryName);
     const isSelected = !!existingCategory;
 
     if (isSelected) {
@@ -540,14 +583,15 @@ const CategoryPage = () => {
       setSearchParams(newSearchParams, { replace: true });
     } else {
       // If not selected, replace all categories with this one (single selection behavior)
-      // You can change this to [...prev.categories, categoryName] if you want multiple selection
+      // Use the database category name to ensure it matches the sidebar filter options
+      // You can change this to [...prev.categories, databaseCategoryName] if you want multiple selection
       setFilters((prev) => ({
         ...prev,
-        categories: [categoryName],
+        categories: [databaseCategoryName],
       }));
-      // Update URL params with selected category
+      // Update URL params with selected category (use database name)
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("category", categoryName);
+      newSearchParams.set("category", databaseCategoryName);
       setSearchParams(newSearchParams, { replace: true });
     }
     setCurrentPage(1); // Reset to first page
@@ -558,21 +602,21 @@ const CategoryPage = () => {
 
       {/* Centered Heading */}
       <div className="w-full flex justify-center mb-4">
-  <h1
-    style={{
-      fontFamily: "'Playfair Display', serif",
-      fontSize: "38px",
-      fontWeight: "700",
-      letterSpacing: "1.5px",
-      color: "#867D7D",
-    }}
-    className="text-center"
-  >
-    {filters.categories.length > 0
-      ? filters.categories[0].toUpperCase()
-      : "NEW COLLECTION"}
-  </h1>
-</div>
+        <h1
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "38px",
+            fontWeight: "700",
+            letterSpacing: "1.5px",
+            color: "#867D7D",
+          }}
+          className="text-center"
+        >
+          {filters.categories.length > 0
+            ? filters.categories[0].toUpperCase()
+            : "NEW COLLECTION"}
+        </h1>
+      </div>
 
 
 
