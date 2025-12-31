@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import Axios from "../Axios";
 import MultiSelectBox from "./MultiSelectBox";
@@ -20,33 +19,49 @@ const ProductForm = ({
   changeColor,
   currentProductId = null,
 }) => {
-  const uploadImageToCloudinary = async (file) => {
+  // Helper function to get base server URL (without /api/v1)
+  const getBaseServerURL = () => {
+    const backendURL = import.meta.env.VITE_BACKEND_URL || "";
+    if (!backendURL) return "";
+    
+    // Remove /api/v1 or /api from the end if present
+    let baseURL = backendURL.replace(/\/api\/v1\/?$/, "").replace(/\/api\/?$/, "");
+    
+    // Remove trailing slash
+    baseURL = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL;
+    
+    return baseURL;
+  };
+
+  const uploadImageToServer = async (file) => {
     try {
-      // Upload directly to Cloudinary
+      const token = localStorage.getItem("jwtAdmin");
+      if (!token) {
+        throw new Error("Admin authentication required");
+      }
+
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "tiarasteps");
-      formData.append("folder", "image");
 
-      const cloudinaryResponse = await axios.post(
-        "https://api.cloudinary.com/v1_1/dnwcwqhue/image/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          timeout: 60000, // 60 second timeout
-        }
-      );
+      const response = await Axios.post("/upload/single", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+        timeout: 60000, // 60 second timeout
+      });
 
-      if (cloudinaryResponse.data && cloudinaryResponse.data.secure_url) {
-        return cloudinaryResponse.data.secure_url;
+      if (response.data && response.data.success && response.data.url) {
+        // Construct full URL: base server URL + /uploads/filename
+        const baseServerURL = getBaseServerURL();
+        const imageUrl = baseServerURL + response.data.url;
+        return imageUrl;
       } else {
-        throw new Error("Cloudinary did not return a secure URL");
+        throw new Error("Server did not return a valid URL");
       }
     } catch (error) {
       console.error("Image upload failed:", error);
-      const errorMessage = error.response?.data?.error?.message || 
+      const errorMessage = error.response?.data?.message || 
                           error.message || 
                           "Failed to upload image. Please try again.";
       // Don't show toast here - let handleMultipleFiles handle it
@@ -58,7 +73,7 @@ const ProductForm = ({
     const file = event.target.files[0];
     if (file) {
       try {
-        const imageUrl = await uploadImageToCloudinary(file);
+        const imageUrl = await uploadImageToServer(file);
         if (imageUrl) {
           changeLink(imageUrl);
           toast.success("Image uploaded successfully");
@@ -66,6 +81,43 @@ const ProductForm = ({
       } catch (error) {
         toast.error(error.message || "Failed to upload image. Please try again.");
       }
+    }
+  };
+
+  const uploadMultipleImagesToServer = async (files) => {
+    try {
+      const token = localStorage.getItem("jwtAdmin");
+      if (!token) {
+        throw new Error("Admin authentication required");
+      }
+
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      const response = await Axios.post("/upload/multiple", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+        timeout: 120000, // 120 second timeout for multiple files
+      });
+
+      if (response.data && response.data.success && response.data.urls) {
+        // Construct full URLs: base server URL + /uploads/filename
+        const baseServerURL = getBaseServerURL();
+        const imageUrls = response.data.urls.map((url) => baseServerURL + url);
+        return imageUrls;
+      } else {
+        throw new Error("Server did not return valid URLs");
+      }
+    } catch (error) {
+      console.error("Multiple image upload failed:", error);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          "Failed to upload images. Please try again.";
+      throw new Error(errorMessage);
     }
   };
 
@@ -78,41 +130,66 @@ const ProductForm = ({
 
     toast.info(`Uploading ${files.length} image(s)...`);
     
-    // Upload files one by one with better error handling
-    const uploadedUrls = [];
-    const failedUploads = [];
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      try {
-        const url = await uploadImageToCloudinary(file);
-        if (url) {
-          uploadedUrls.push(url);
+    try {
+      // Use batch upload for better performance
+      const uploadedUrls = await uploadMultipleImagesToServer(files);
+      
+      if (uploadedUrls.length > 0) {
+        const currentImages = imageLinks || [];
+        const newImageLinks = [...currentImages, ...uploadedUrls];
+        changeImageLinks(newImageLinks);
+        
+        if (uploadedUrls.length < files.length) {
+          toast.warning(
+            `${uploadedUrls.length} of ${files.length} image(s) uploaded successfully.`,
+            { autoClose: 5000 }
+          );
         } else {
+          toast.success(`${uploadedUrls.length} image(s) uploaded successfully`);
+        }
+      } else {
+        toast.error(`Failed to upload all ${files.length} image(s). Please try again.`);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      // Fallback to individual uploads if batch fails
+      toast.info("Batch upload failed, trying individual uploads...");
+      
+      const uploadedUrls = [];
+      const failedUploads = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          const url = await uploadImageToServer(file);
+          if (url) {
+            uploadedUrls.push(url);
+          } else {
+            failedUploads.push(file.name || `Image ${i + 1}`);
+          }
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
           failedUploads.push(file.name || `Image ${i + 1}`);
         }
-      } catch (error) {
-        console.error(`Failed to upload ${file.name}:`, error);
-        failedUploads.push(file.name || `Image ${i + 1}`);
       }
-    }
-    
-    // Update image links with successful uploads
-    if (uploadedUrls.length > 0) {
-      const currentImages = imageLinks || [];
-      const newImageLinks = [...currentImages, ...uploadedUrls];
-      changeImageLinks(newImageLinks);
       
-      if (failedUploads.length > 0) {
-        toast.warning(
-          `${uploadedUrls.length} image(s) uploaded successfully. ${failedUploads.length} failed: ${failedUploads.join(", ")}`,
-          { autoClose: 5000 }
-        );
+      // Update image links with successful uploads
+      if (uploadedUrls.length > 0) {
+        const currentImages = imageLinks || [];
+        const newImageLinks = [...currentImages, ...uploadedUrls];
+        changeImageLinks(newImageLinks);
+        
+        if (failedUploads.length > 0) {
+          toast.warning(
+            `${uploadedUrls.length} image(s) uploaded successfully. ${failedUploads.length} failed: ${failedUploads.join(", ")}`,
+            { autoClose: 5000 }
+          );
+        } else {
+          toast.success(`${uploadedUrls.length} image(s) uploaded successfully`);
+        }
       } else {
-        toast.success(`${uploadedUrls.length} image(s) uploaded successfully`);
+        toast.error(`Failed to upload all ${files.length} image(s). Please try again.`);
       }
-    } else {
-      toast.error(`Failed to upload all ${files.length} image(s). Please try again.`);
     }
   };
 
