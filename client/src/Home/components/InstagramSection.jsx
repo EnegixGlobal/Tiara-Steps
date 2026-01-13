@@ -3,7 +3,7 @@ import React from "react";
 const InstagramSection = () => (
   <section className="text-center my-12">
     <a
-      href="https://www.instagram.com/yourusername"
+      href="https://www.instagram.com/tiarasteps_official?igsh=MW01dW01N2pwbjF0Zg=="
       target="_blank"
       rel="noopener noreferrer"
       className="

@@ -14,7 +14,7 @@ const Home = () => {
       <HeroSlider />
       <CategoryStrip />
       <VideoBanner />
-      <CollectionGrid />
+      {/* <CollectionGrid /> */}
       <Bestsellers />
       <DualBanner />
       <MidBannerSlider/>
