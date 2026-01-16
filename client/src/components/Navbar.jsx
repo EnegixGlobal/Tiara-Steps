@@ -19,7 +19,10 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchQuery, setMobileSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchResults, setSearchResults] = useState({ products: [], categories: [] });
+  const [searchResults, setSearchResults] = useState({
+    products: [],
+    categories: [],
+  });
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const profileDropdownRef = useRef(null);
   const searchDropdownRef = useRef(null);
@@ -27,22 +30,25 @@ const Navbar = () => {
   const mobileSearchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
   const mobileSearchContainerRef = useRef(null);
-  
+
   // Debounce search queries
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const debouncedMobileSearchQuery = useDebounce(mobileSearchQuery, 300);
 
   const handleBestsellerClick = (e) => {
     e.preventDefault();
-    if (location.pathname === "/") {
+    if (location.pathname === "/home") {
       // If already on home page, scroll to section
       const bestsellerSection = document.getElementById("bestsellers");
       if (bestsellerSection) {
-        bestsellerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        bestsellerSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     } else {
       // If not on home page, navigate to home and then scroll
-      navigate("/");
+      navigate("/home");
       // Wait for page to render, then scroll
       setTimeout(() => {
         let retryCount = 0;
@@ -50,7 +56,10 @@ const Navbar = () => {
         const scrollToBestseller = () => {
           const bestsellerSection = document.getElementById("bestsellers");
           if (bestsellerSection) {
-            bestsellerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            bestsellerSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           } else if (retryCount < maxRetries) {
             // Retry if element not found yet
             retryCount++;
@@ -121,8 +130,9 @@ const Navbar = () => {
   // Fetch search suggestions
   useEffect(() => {
     const fetchSuggestions = async () => {
-      const query = debouncedSearchQuery.trim() || debouncedMobileSearchQuery.trim();
-      
+      const query =
+        debouncedSearchQuery.trim() || debouncedMobileSearchQuery.trim();
+
       if (!query || query.length < 2) {
         setSearchResults({ products: [], categories: [] });
         setShowSuggestions(false);
@@ -144,7 +154,7 @@ const Navbar = () => {
         const categoryResponse = await Axios.get("/product/filterOptions");
         const allCategories = categoryResponse.data?.category || [];
         const matchingCategories = allCategories
-          .filter((cat) => 
+          .filter((cat) =>
             cat.name?.toLowerCase().includes(query.toLowerCase())
           )
           .slice(0, 4) // Limit to 4 categories
@@ -170,16 +180,22 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Close profile dropdown
-      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
         setShowProfileDropdown(false);
       }
-      
+
       // Close search suggestions dropdown
-      const isClickInsideSearch = 
-        (searchContainerRef.current && searchContainerRef.current.contains(event.target)) ||
-        (searchDropdownRef.current && searchDropdownRef.current.contains(event.target)) ||
-        (mobileSearchContainerRef.current && mobileSearchContainerRef.current.contains(event.target));
-      
+      const isClickInsideSearch =
+        (searchContainerRef.current &&
+          searchContainerRef.current.contains(event.target)) ||
+        (searchDropdownRef.current &&
+          searchDropdownRef.current.contains(event.target)) ||
+        (mobileSearchContainerRef.current &&
+          mobileSearchContainerRef.current.contains(event.target));
+
       if (showSuggestions && !isClickInsideSearch) {
         setShowSuggestions(false);
       }
@@ -197,7 +213,6 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 left-0 right-0 z-[9999] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
       <div className="flex items-center justify-between px-8 md:px-14 lg:px-20 h-[85px] font-[Poppins]">
-        
         {/* Left Section - Logo + Hamburger */}
         <div className="flex items-center gap-4">
           {/* Hamburger Icon - mobile only */}
@@ -221,23 +236,35 @@ const Navbar = () => {
 
         {/* Center Section - Nav Links (hidden in mobile) */}
         <div className="hidden md:flex items-center gap-10 text-[17px] font-medium text-gray-500">
-          <NavLink to="/" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/home"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Home
           </NavLink>
-          <a 
-            href="#bestsellers" 
+          <a
+            href="#bestsellers"
             onClick={handleBestsellerClick}
             className="hover:text-[#b89396] transition-colors cursor-pointer"
           >
             Best Sellers
           </a>
-          <NavLink to="/products" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/products"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Products
           </NavLink>
-          <NavLink to="/about" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/about"
+            className="hover:text-[#b89396] transition-colors"
+          >
             About
           </NavLink>
-          <NavLink to="/contact" className="hover:text-[#b89396] transition-colors">
+          <NavLink
+            to="/contact"
+            className="hover:text-[#b89396] transition-colors"
+          >
             Contact
           </NavLink>
         </div>
@@ -246,10 +273,9 @@ const Navbar = () => {
         <div className="flex items-center gap-6">
           {/* Search Bar - desktop only */}
           <div
-  ref={searchContainerRef}
-  className="hidden lg:flex relative lg:mr-6 xl:mr-25"
->
-
+            ref={searchContainerRef}
+            className="hidden lg:flex relative lg:mr-6 xl:mr-25"
+          >
             <div className="flex items-center border border-gray-300 rounded-full px-5 py-3 bg-white shadow-sm w-[520px]">
               <input
                 ref={searchInputRef}
@@ -268,12 +294,12 @@ const Navbar = () => {
                 }}
                 className="w-full border-none outline-none text-[16px] text-gray-700 placeholder-gray-400 bg-transparent"
               />
-              <FiSearch 
-                className="text-gray-500 text-2xl cursor-pointer hover:text-[#b89396] transition-colors" 
+              <FiSearch
+                className="text-gray-500 text-2xl cursor-pointer hover:text-[#b89396] transition-colors"
                 onClick={handleSearchIconClick}
               />
             </div>
-            
+
             {/* Search Suggestions Dropdown - COMMENTED OUT */}
             {/* 
             {showSuggestions && (searchQuery.trim().length >= 2 || mobileSearchQuery.trim().length >= 2) && (
@@ -406,13 +432,15 @@ const Navbar = () => {
           </div>
 
           {/* Profile Icon */}
-          <div 
+          <div
             ref={profileDropdownRef}
             className="text-[28px] cursor-pointer text-[#4b3f3f] hover:text-[#b89396] relative transition-colors"
           >
             {auth ? (
               <>
-                <div onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                <div
+                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                >
                   <LuUserRound className="text-[30px]" />
                 </div>
                 {showProfileDropdown && (
@@ -458,17 +486,41 @@ const Navbar = () => {
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md py-4 px-6 space-y-3 text-gray-600 font-medium text-[17px] animate-slideDown">
-          <NavLink to="/" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Home</NavLink>
-          <a 
-            href="#bestsellers" 
+          <NavLink
+            to="/home"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Home
+          </NavLink>
+          <a
+            href="#bestsellers"
             onClick={handleBestsellerClick}
             className="block hover:text-[#b89396] cursor-pointer"
           >
             Best Sellers
           </a>
-          <NavLink to="/products" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Products</NavLink>
-          <NavLink to="/about" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">About</NavLink>
-          <NavLink to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-[#b89396]">Contact</NavLink>
+          <NavLink
+            to="/products"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Products
+          </NavLink>
+          <NavLink
+            to="/about"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            onClick={() => setIsOpen(false)}
+            className="block hover:text-[#b89396]"
+          >
+            Contact
+          </NavLink>
         </div>
       )}
 
@@ -493,8 +545,8 @@ const Navbar = () => {
               }}
               className="flex-1 border border-gray-300 rounded-full px-4 py-2 outline-none text-gray-700"
             />
-            <FiSearch 
-              className="text-2xl text-gray-600 cursor-pointer hover:text-[#b89396]" 
+            <FiSearch
+              className="text-2xl text-gray-600 cursor-pointer hover:text-[#b89396]"
               onClick={handleMobileSearchIconClick}
             />
           </div>
@@ -513,8 +565,8 @@ const Navbar = () => {
                 <div className="p-4 text-center text-gray-500">Searching...</div>
               ) : (
                 <> */}
-                  {/* Categories Section */}
-                  {/* {searchResults.categories.length > 0 && (
+          {/* Categories Section */}
+          {/* {searchResults.categories.length > 0 && (
                     <div className="p-3 border-b border-gray-100">
                       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-2">
                         Categories
@@ -533,8 +585,8 @@ const Navbar = () => {
                     </div>
                   )} */}
 
-                  {/* Products Section */}
-                  {/* {searchResults.products.length > 0 && (
+          {/* Products Section */}
+          {/* {searchResults.products.length > 0 && (
                     <div className="p-3">
                       <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-2">
                         Products
@@ -581,15 +633,15 @@ const Navbar = () => {
                     </div>
                   )} */}
 
-                  {/* No Results */}
-                  {/* {searchResults.products.length === 0 && searchResults.categories.length === 0 && (
+          {/* No Results */}
+          {/* {searchResults.products.length === 0 && searchResults.categories.length === 0 && (
                     <div className="p-4 text-center text-gray-500 text-sm">
                       No results found
                     </div>
                   )}
                 </>
               )} */}
-            {/* </div> */}
+          {/* </div> */}
           {/* )} */}
         </div>
       )}
